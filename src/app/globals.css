@@ -1,26 +1,86 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --lino: #F7F2EC;
+  --arena: #E6D9C8;
+  --nude-rosado: #EBCFC6;
+  --rosa-empolvado: #D7A7A8;
+  --agua: #CFE6E2;
+  --turquesa-salvia: #8FC1BB;
+  --moka: #9A7B6C;
+  --cacao: #4A3A33;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F7F2EC;
+  color: #4A3A33;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Palette Utility Classes */
+.bg-lino { background-color: #F7F2EC; }
+.bg-arena { background-color: #E6D9C8; }
+.bg-nude-rosado { background-color: #EBCFC6; }
+.bg-rosa-empolvado { background-color: #D7A7A8; }
+.bg-agua { background-color: #CFE6E2; }
+.bg-turquesa-salvia { background-color: #8FC1BB; }
+.bg-moka { background-color: #9A7B6C; }
+.bg-cacao { background-color: #4A3A33; }
+
+.text-cacao { color: #4A3A33; }
+.text-moka { color: #9A7B6C; }
+.text-turquesa { color: #8FC1BB; }
+.text-rosa { color: #D7A7A8; }
+
+.border-moka { border-color: #9A7B6C; }
+.border-turquesa { border-color: #8FC1BB; }
+.border-arena { border-color: #E6D9C8; }
+.border-nude { border-color: #EBCFC6; }
+
+.glass-light {
+  background: rgba(247, 242, 236, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(230, 217, 200, 0.8);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(235, 207, 198, 0.6);
+}
+
+.text-gradient-cacao {
+  background: linear-gradient(135deg, #4A3A33 0%, #9A7B6C 60%, #8FC1BB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-rosa {
+  background: linear-gradient(135deg, #D7A7A8 0%, #9A7B6C 50%, #4A3A33 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
