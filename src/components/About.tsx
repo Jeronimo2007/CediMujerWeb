@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ShieldCheck, Award, HeartHandshake, Microscope, CheckCircle2, UserCheck } from "lucide-react";
 import { ASSETS } from "@/config/assets";
@@ -63,9 +64,12 @@ export const About: React.FC = () => {
 
             {/* Secondary Image Overlay */}
             <div className="hidden sm:block absolute -bottom-8 -right-6 w-52 h-52 rounded-2xl overflow-hidden border-4 border-[#F7F2EC] shadow-xl z-10">
-              <img
+              <Image
                 src={ASSETS.about.secondaryImage}
                 alt="Tecnología Médica"
+                width={208}
+                height={208}
+                unoptimized
                 className="w-full h-full object-cover"
               />
             </div>

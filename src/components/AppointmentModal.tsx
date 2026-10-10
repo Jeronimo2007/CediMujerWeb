@@ -40,7 +40,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       const res = await fetch("http://localhost:8000/api/health");
       const data = await res.json();
       setBackendStatus(`🟢 ${data.message} (${data.clinic})`);
-    } catch (err) {
+    } catch {
       setBackendStatus("🔴 Error al conectar con el backend (Asegúrate de ejecutar FastAPI en el puerto 8000)");
     } finally {
       setLoadingBackend(false);

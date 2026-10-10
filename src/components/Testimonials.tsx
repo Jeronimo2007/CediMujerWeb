@@ -78,7 +78,7 @@ export const Testimonials: React.FC = () => {
                 </div>
 
                 <p className="text-[#4A3A33] text-sm font-semibold leading-relaxed italic">
-                  "{t.comment}"
+                  &ldquo;{t.comment}&rdquo;
                 </p>
               </div>
 
