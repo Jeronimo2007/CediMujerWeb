@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, ChevronDown, Sparkles, ArrowRight, ShieldCheck, Activity, HeartPulse } from "lucide-react";
@@ -13,70 +13,40 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [viewportWidth, setViewportWidth] = useState<number>(1440);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportWidth(window.innerWidth);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize, { passive: true });
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Responsive scaling calculations based on aspect ratio & display width
-  // In ultra-wide screens (>1800px or >2400px), standard scale values blow up the image and crop the logo.
-  // In smaller screens (<768px), higher scale is needed to achieve the "enter clinic" sensation.
-  const isUltrawide = viewportWidth >= 1920;
-  const isLargeDesktop = viewportWidth >= 1440 && viewportWidth < 1920;
-  const isMobile = viewportWidth < 768;
-
-  const targetScale = isUltrawide ? 1.75 : isLargeDesktop ? 2.05 : isMobile ? 2.6 : 2.25;
-  const targetX = isUltrawide ? "-6%" : isLargeDesktop ? "-9%" : isMobile ? "-20%" : "-14%";
-  const targetY = isUltrawide ? "4%" : isLargeDesktop ? "6%" : isMobile ? "12%" : "9%";
-
-  // We track the scroll over a container
+  // We track scroll progress across a generous 280vh track
+  // This provides plenty of scroll distance so the zoom feels gradual, controlled and calm (not sudden or fast)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Responsive zoom and camera movements:
-  const imageScale = useTransform(scrollYProgress, [0, 0.7, 1], [1.0, (1.0 + targetScale) / 2, targetScale]);
-  const imageX = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", `calc(${targetX} * 0.6)`, targetX]);
-  const imageY = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", `calc(${targetY} * 0.6)`, targetY]);
+  // Pure optical zoom straight into the entrance logo (70% horizontal, 30% vertical)
+  // By pinning transformOrigin to "70% 30%" and removing conflicting x/y translations,
+  // the camera stays 100% steady on target without shaking, shifting sideways or jumping around!
+  const imageScale = useTransform(scrollYProgress, [0, 0.85], [1.0, 1.85]);
 
-  // Hero text gracefully fades and scales outwards as the viewer passes through into the clinic
-  const textOpacity = useTransform(scrollYProgress, [0, 0.38], [1, 0]);
-  const textScale = useTransform(scrollYProgress, [0, 0.38], [1, 1.06]);
-  const textY = useTransform(scrollYProgress, [0, 0.38], [0, -35]);
+  // Gentle rounded corners that form smoothly as you zoom in
+  const imageBorderRadius = useTransform(scrollYProgress, [0, 0.3, 0.7, 0.95], ["0px", "28px", "36px", "0px"]);
+  const imageInset = useTransform(scrollYProgress, [0, 0.3, 0.7, 0.95], ["0px", "14px", "18px", "0px"]);
 
-  // Dynamic responsive rounded border and framing during the zoom transition
-  const imageBorderRadius = useTransform(
-    scrollYProgress,
-    [0, 0.25, 0.8, 1],
-    ["0px", isUltrawide ? "40px" : "32px", isUltrawide ? "56px" : "44px", "0px"]
-  );
-  const imageInset = useTransform(
-    scrollYProgress,
-    [0, 0.25, 0.8, 1],
-    ["0px", isUltrawide ? "24px" : "16px", isUltrawide ? "36px" : "22px", "0px"]
-  );
+  // The hero text card gracefully fades away early in the scroll so the viewer has full clear visibility of the clinic
+  const textOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
+  const textScale = useTransform(scrollYProgress, [0, 0.28], [1, 0.97]);
+  const textY = useTransform(scrollYProgress, [0, 0.28], [0, -30]);
 
   return (
-    <div ref={containerRef} className="relative h-[200vh] sm:h-[220vh]">
+    <div ref={containerRef} className="relative h-[260vh] sm:h-[280vh]">
       {/* Sticky viewport frame */}
       <section
         id="inicio"
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#F7F2EC]"
       >
-        {/* Background Image: Responsive zoom & pan perfectly calibrated for any display width */}
+        {/* Background Image: Rock-steady zoom anchored directly to the CediMujer logo above the entrance */}
         <motion.div
           style={{
             scale: imageScale,
-            x: imageX,
-            y: imageY,
-            transformOrigin: isUltrawide ? "65% 26%" : "70% 28%",
+            transformOrigin: "70% 30%",
             borderRadius: imageBorderRadius,
             top: imageInset,
             bottom: imageInset,
@@ -91,11 +61,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
             fill
             priority
             unoptimized
-            className="object-cover object-center 2xl:object-[68%_32%] filter brightness-100 contrast-[1.02]"
+            className="object-cover object-center filter brightness-100 contrast-[1.02]"
           />
 
           {/* Very subtle vignette to retain full photo realism */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F7F2EC]/60 via-transparent to-[#F7F2EC]/20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#F7F2EC]/50 via-transparent to-[#F7F2EC]/20 pointer-events-none" />
         </motion.div>
 
         {/* Ambient Glows */}
