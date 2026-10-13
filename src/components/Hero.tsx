@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, ChevronDown, Sparkles, ArrowRight, ShieldCheck, Activity, HeartPulse } from "lucide-react";
@@ -13,43 +13,70 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [viewportWidth, setViewportWidth] = useState<number>(1440);
 
-  // We track the scroll over a taller container (220vh)
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Responsive scaling calculations based on aspect ratio & display width
+  // In ultra-wide screens (>1800px or >2400px), standard scale values blow up the image and crop the logo.
+  // In smaller screens (<768px), higher scale is needed to achieve the "enter clinic" sensation.
+  const isUltrawide = viewportWidth >= 1920;
+  const isLargeDesktop = viewportWidth >= 1440 && viewportWidth < 1920;
+  const isMobile = viewportWidth < 768;
+
+  const targetScale = isUltrawide ? 1.75 : isLargeDesktop ? 2.05 : isMobile ? 2.6 : 2.25;
+  const targetX = isUltrawide ? "-6%" : isLargeDesktop ? "-9%" : isMobile ? "-20%" : "-14%";
+  const targetY = isUltrawide ? "4%" : isLargeDesktop ? "6%" : isMobile ? "12%" : "9%";
+
+  // We track the scroll over a container
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Entering inside the image effect aimed higher towards the CediMujer logo on the wall above reception:
-  // Starts at scale 1, smoothly scales up to a balanced 2.35 (a little less intense zoom)
-  const imageScale = useTransform(scrollYProgress, [0, 0.7, 1], [1.0, 1.65, 2.35]);
-  // Zoom shift camera towards the illuminated logo and entrance
-  const imageX = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", "-10%", "-18%"]);
-  const imageY = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", "6%", "12%"]);
-  
+  // Responsive zoom and camera movements:
+  const imageScale = useTransform(scrollYProgress, [0, 0.7, 1], [1.0, (1.0 + targetScale) / 2, targetScale]);
+  const imageX = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", `calc(${targetX} * 0.6)`, targetX]);
+  const imageY = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", `calc(${targetY} * 0.6)`, targetY]);
+
   // Hero text gracefully fades and scales outwards as the viewer passes through into the clinic
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
-  const textScale = useTransform(scrollYProgress, [0, 0.4], [1, 1.08]);
-  const textY = useTransform(scrollYProgress, [0, 0.4], [0, -45]);
-  // Dynamic rounded border and framing during the zoom transition:
-  // Starts with 0px and progressively curves into elegant rounded corners (up to 48px) as you enter
-  const imageBorderRadius = useTransform(scrollYProgress, [0, 0.25, 0.8, 1], ["0px", "32px", "48px", "0px"]);
-  const imageInset = useTransform(scrollYProgress, [0, 0.25, 0.8, 1], ["0px", "16px", "24px", "0px"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.38], [1, 0]);
+  const textScale = useTransform(scrollYProgress, [0, 0.38], [1, 1.06]);
+  const textY = useTransform(scrollYProgress, [0, 0.38], [0, -35]);
+
+  // Dynamic responsive rounded border and framing during the zoom transition
+  const imageBorderRadius = useTransform(
+    scrollYProgress,
+    [0, 0.25, 0.8, 1],
+    ["0px", isUltrawide ? "40px" : "32px", isUltrawide ? "56px" : "44px", "0px"]
+  );
+  const imageInset = useTransform(
+    scrollYProgress,
+    [0, 0.25, 0.8, 1],
+    ["0px", isUltrawide ? "24px" : "16px", isUltrawide ? "36px" : "22px", "0px"]
+  );
 
   return (
-    <div ref={containerRef} className="relative h-[220vh]">
+    <div ref={containerRef} className="relative h-[200vh] sm:h-[220vh]">
       {/* Sticky viewport frame */}
       <section
         id="inicio"
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#F7F2EC]"
       >
-        {/* Background Image: Aimed slightly higher towards the CediMujer illuminated logo above the reception */}
+        {/* Background Image: Responsive zoom & pan perfectly calibrated for any display width */}
         <motion.div
           style={{
             scale: imageScale,
             x: imageX,
             y: imageY,
-            transformOrigin: "70% 28%", // Aimed higher directly at the CediMujer wall logo
+            transformOrigin: isUltrawide ? "65% 26%" : "70% 28%",
             borderRadius: imageBorderRadius,
             top: imageInset,
             bottom: imageInset,
@@ -64,7 +91,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
             fill
             priority
             unoptimized
-            className="object-cover object-center filter brightness-100 contrast-[1.02]"
+            className="object-cover object-center 2xl:object-[68%_32%] filter brightness-100 contrast-[1.02]"
           />
 
           {/* Very subtle vignette to retain full photo realism */}
@@ -91,13 +118,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
           className="absolute bottom-12 right-10 w-96 h-96 bg-[#EBCFC6]/25 rounded-full blur-3xl pointer-events-none"
         />
 
-        {/* Hero Content - Perfectly Centered with Clean Uniform Card Styling */}
+        {/* Hero Content - Perfectly Centered & Responsive Card Styling */}
         <motion.div
           style={{ opacity: textOpacity, scale: textScale, y: textY }}
-          className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full"
+          className="relative z-10 max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full"
         >
           {/* Main Card with clean solid/frosted brand styling in Lino */}
-          <div className="w-full max-w-3xl bg-[#F7F2EC]/95 backdrop-blur-md p-6 sm:p-9 rounded-3xl border border-[#E6D9C8] shadow-2xl flex flex-col items-center text-center">
+          <div className="w-full max-w-3xl 2xl:max-w-4xl bg-[#F7F2EC]/95 backdrop-blur-md p-6 sm:p-9 2xl:p-12 rounded-3xl border border-[#E6D9C8] shadow-2xl flex flex-col items-center text-center">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -115,7 +142,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#4A3A33] tracking-tight leading-[1.12]"
+              className="text-3xl sm:text-5xl lg:text-6xl 2xl:text-7xl font-black text-[#4A3A33] tracking-tight leading-[1.12]"
             >
               Cuidado Médico Integral con{" "}
               <span className="bg-gradient-to-r from-[#8FC1BB] via-[#9A7B6C] to-[#D7A7A8] bg-clip-text text-transparent">
@@ -128,7 +155,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-4 text-base sm:text-lg text-[#4A3A33] font-medium leading-relaxed max-w-2xl"
+              className="mt-4 text-base sm:text-lg 2xl:text-xl text-[#4A3A33] font-medium leading-relaxed max-w-2xl 2xl:max-w-3xl"
             >
               En <strong className="text-[#4A3A33] font-black">CediMujer</strong> combinamos tecnología diagnóstica de última generación con la calidez humana que mereces en cada etapa de tu vida.
             </motion.p>
@@ -142,7 +169,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
             >
               <button
                 onClick={onOpenAppointment}
-                className="px-7 py-3.5 rounded-full text-sm sm:text-base font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-xl shadow-[#8FC1BB]/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 border border-[#8FC1BB]"
+                className="px-7 py-3.5 2xl:px-8 2xl:py-4 rounded-full text-sm sm:text-base 2xl:text-lg font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-xl shadow-[#8FC1BB]/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 border border-[#8FC1BB]"
               >
                 <Calendar className="w-5 h-5 text-[#4A3A33]" />
                 <span>Agendar Cita</span>
@@ -152,7 +179,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
               {onOpenCalculator && (
                 <button
                   onClick={onOpenCalculator}
-                  className="px-6 py-3.5 rounded-full text-sm sm:text-base font-extrabold text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8] border border-[#D7A7A8] shadow-md hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                  className="px-6 py-3.5 2xl:px-7 2xl:py-4 rounded-full text-sm sm:text-base 2xl:text-lg font-extrabold text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8] border border-[#D7A7A8] shadow-md hover:scale-105 transition-all duration-300 flex items-center gap-2"
                 >
                   <Sparkles className="w-4 h-4 text-[#8FC1BB]" />
                   <span>Calculadora Gestacional</span>
@@ -161,7 +188,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
 
               <a
                 href="#servicios"
-                className="px-6 py-3.5 rounded-full text-sm sm:text-base font-bold text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#EBCFC6] border border-[#9A7B6C]/30 transition-all duration-300 flex items-center gap-2"
+                className="px-6 py-3.5 2xl:px-7 2xl:py-4 rounded-full text-sm sm:text-base 2xl:text-lg font-bold text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#EBCFC6] border border-[#9A7B6C]/30 transition-all duration-300 flex items-center gap-2"
               >
                 <span>Servicios</span>
               </a>
@@ -179,8 +206,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Especialistas</p>
-                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Certificadas</p>
+                  <p className="text-[10px] 2xl:text-xs text-[#9A7B6C] uppercase tracking-wider font-bold">Especialistas</p>
+                  <p className="text-xs sm:text-sm 2xl:text-base font-bold text-[#4A3A33]">Certificadas</p>
                 </div>
               </div>
 
@@ -189,8 +216,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
                   <Activity className="w-4 h-4" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Tecnología</p>
-                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Ecografía 3D/4D</p>
+                  <p className="text-[10px] 2xl:text-xs text-[#9A7B6C] uppercase tracking-wider font-bold">Tecnología</p>
+                  <p className="text-xs sm:text-sm 2xl:text-base font-bold text-[#4A3A33]">Ecografía 3D/4D</p>
                 </div>
               </div>
 
@@ -199,8 +226,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
                   <HeartPulse className="w-4 h-4" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Atención</p>
-                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Personalizada</p>
+                  <p className="text-[10px] 2xl:text-xs text-[#9A7B6C] uppercase tracking-wider font-bold">Atención</p>
+                  <p className="text-xs sm:text-sm 2xl:text-base font-bold text-[#4A3A33]">Personalizada</p>
                 </div>
               </div>
             </motion.div>

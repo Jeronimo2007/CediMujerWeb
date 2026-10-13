@@ -37,7 +37,7 @@ export const ZoomSquarePortal: React.FC<ZoomSquarePortalProps> = ({
           scale: squareScale,
           borderRadius: squareRadius,
         }}
-        className="relative mx-auto max-w-[1400px] w-full transition-colors duration-700 overflow-hidden shadow-lg border border-[#E6D9C8]"
+        className="relative mx-auto max-w-[1400px] 2xl:max-w-[1640px] w-full transition-colors duration-700 overflow-hidden shadow-lg border border-[#E6D9C8]"
       >
         {/* Animated Background Color Gradient */}
         <div
