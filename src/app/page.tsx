@@ -16,6 +16,7 @@ import { AppointmentModal } from "@/components/AppointmentModal";
 import { ZoomSquarePortal } from "@/components/ZoomSquarePortal";
 import { SquareTransitionPortal } from "@/components/SquareTransitionPortal";
 import { GestationalCalculator } from "@/components/GestationalCalculator";
+import { CurtainPreloader } from "@/components/CurtainPreloader";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +52,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#F7F2EC] text-[#4A3A33] overflow-x-clip">
+      {/* Cinematic Curtain Preloader Opening Effect */}
+      <CurtainPreloader />
+
       {/* Header Navbar with hide-on-scroll-down */}
       <Navbar
         onOpenAppointment={() => handleOpenAppointment()}

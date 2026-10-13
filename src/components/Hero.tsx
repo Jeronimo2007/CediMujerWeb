@@ -28,7 +28,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
 
   // Gentle rounded corners that form smoothly as you zoom in
   const imageBorderRadius = useTransform(scrollYProgress, [0, 0.3, 0.7, 0.95], ["0px", "28px", "36px", "0px"]);
-  const imageInset = useTransform(scrollYProgress, [0, 0.3, 0.7, 0.95], ["0px", "14px", "18px", "0px"]);
 
   // The hero text card gracefully fades away early in the scroll so the viewer has full clear visibility of the clinic
   const textOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
@@ -36,32 +35,28 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
   const textY = useTransform(scrollYProgress, [0, 0.28], [0, -30]);
 
   return (
-    <div ref={containerRef} className="relative h-[260vh] sm:h-[280vh]">
+    <div ref={containerRef} className="relative h-[220vh] sm:h-[260vh]">
       {/* Sticky viewport frame */}
       <section
         id="inicio"
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#F7F2EC]"
       >
-        {/* Background Image: Rock-steady zoom anchored directly to the CediMujer logo above the entrance */}
+        {/* Background Image: Hardware-accelerated smooth zoom on GPU compositor */}
         <motion.div
           style={{
             scale: imageScale,
             transformOrigin: "70% 30%",
             borderRadius: imageBorderRadius,
-            top: imageInset,
-            bottom: imageInset,
-            left: imageInset,
-            right: imageInset,
           }}
-          className="absolute z-0 overflow-hidden will-change-transform shadow-2xl transition-[border-radius] duration-200"
+          className="absolute inset-2 sm:inset-4 md:inset-6 z-0 overflow-hidden shadow-2xl [transform:translateZ(0)] [backface-visibility:hidden] will-change-transform"
         >
           <Image
             src={ASSETS.hero.mainImage}
             alt="Instalaciones CediMujer - Centro de Diagnóstico"
             fill
             priority
-            unoptimized
-            className="object-cover object-center filter brightness-100 contrast-[1.02]"
+            sizes="100vw"
+            className="object-cover object-center filter brightness-100 contrast-[1.02] [transform:translateZ(0)]"
           />
 
           {/* Very subtle vignette to retain full photo realism */}
