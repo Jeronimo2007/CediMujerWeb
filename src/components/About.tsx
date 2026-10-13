@@ -39,7 +39,7 @@ export const About: React.FC = () => {
   return (
     <section ref={sectionRef} id="nosotros" className="py-24 bg-[#E6D9C8]/50 text-[#4A3A33] relative overflow-hidden">
       {/* Background Decorative Blob */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#CFE6E2]/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#CFE6E2]/30 rounded-full [filter:blur(36px)] pointer-events-none" />
 
       <motion.div style={{ scale: sectionScale }} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 origin-center relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">

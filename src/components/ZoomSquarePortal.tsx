@@ -48,7 +48,7 @@ export const ZoomSquarePortal: React.FC<ZoomSquarePortalProps> = ({
         />
 
         {/* Square Portal Glow Ring Effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#CFE6E2]/40 blur-[100px] pointer-events-none z-0" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#CFE6E2]/35 [filter:blur(36px)] pointer-events-none z-0" />
 
         {/* Square Frame Decorative Border Line */}
         <div className="absolute inset-0 border border-[#8FC1BB]/30 rounded-[inherit] pointer-events-none z-10" />

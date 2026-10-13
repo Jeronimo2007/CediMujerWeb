@@ -49,8 +49,8 @@ export const SquareTransitionPortal: React.FC<SquareTransitionPortalProps> = ({
         />
 
         {/* Square Portal Ambient Rays */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#CFE6E2]/50 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#EBCFC6]/50 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#CFE6E2]/40 rounded-full [filter:blur(36px)] pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#EBCFC6]/40 rounded-full [filter:blur(36px)] pointer-events-none" />
 
         {/* Content Inside Expanding Square */}
         <motion.div style={{ scale: textScale }} className="relative z-10 text-center max-w-2xl mx-auto space-y-4">

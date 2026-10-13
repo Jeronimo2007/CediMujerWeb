@@ -63,25 +63,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
           <div className="absolute inset-0 bg-gradient-to-t from-[#F7F2EC]/50 via-transparent to-[#F7F2EC]/20 pointer-events-none" />
         </motion.div>
 
-        {/* Ambient Glows */}
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            x: [0, 20, 0],
-            y: [0, -15, 0],
-          }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-10 w-96 h-96 bg-[#CFE6E2]/25 rounded-full blur-3xl pointer-events-none"
-        />
-        <motion.div
-          animate={{
-            scale: [1.15, 1, 1.15],
-            x: [0, -20, 0],
-            y: [0, 15, 0],
-          }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-12 right-10 w-96 h-96 bg-[#EBCFC6]/25 rounded-full blur-3xl pointer-events-none"
-        />
+        {/* Lightweight Ambient Gradients (Zero GPU CPU Cost on old devices) */}
+        <div className="absolute top-1/4 left-10 w-80 h-80 bg-[#CFE6E2]/20 rounded-full [filter:blur(40px)] pointer-events-none [transform:translateZ(0)]" />
+        <div className="absolute bottom-12 right-10 w-80 h-80 bg-[#EBCFC6]/20 rounded-full [filter:blur(40px)] pointer-events-none [transform:translateZ(0)]" />
 
         {/* Hero Content - Perfectly Centered & Responsive Card Styling */}
         <motion.div
