@@ -72,7 +72,7 @@ export const About: React.FC = () => {
                 alt="Salas de Atención Médica CediMujer"
                 width={224}
                 height={224}
-                unoptimized
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -83,7 +83,7 @@ export const About: React.FC = () => {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="absolute top-6 left-6 z-20 bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-3.5 rounded-2xl shadow-lg flex items-center gap-3.5 max-w-xs"
+              className="absolute top-6 left-6 z-20 bg-[#F7F2EC] md:backdrop-blur-sm md:bg-[#F7F2EC]/95 border border-[#8FC1BB] p-3.5 rounded-2xl shadow-lg flex items-center gap-3.5 max-w-xs"
             >
               <div className="w-12 h-12 rounded-xl bg-white border border-[#8FC1BB]/40 flex items-center justify-center p-1 shadow-sm shrink-0">
                 <Image

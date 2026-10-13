@@ -67,13 +67,13 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
         <div className="absolute top-1/4 left-10 w-80 h-80 bg-[#CFE6E2]/20 rounded-full [filter:blur(40px)] pointer-events-none [transform:translateZ(0)]" />
         <div className="absolute bottom-12 right-10 w-80 h-80 bg-[#EBCFC6]/20 rounded-full [filter:blur(40px)] pointer-events-none [transform:translateZ(0)]" />
 
-        {/* Hero Content - Perfectly Centered & Responsive Card Styling */}
+        {/* Hero Content - Perfectly Centered & Responsive Card Styling with Top Clearance */}
         <motion.div
           style={{ opacity: textOpacity, scale: textScale, y: textY }}
-          className="relative z-10 max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full"
+          className="relative z-10 max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-8 text-center flex flex-col items-center justify-center w-full"
         >
           {/* Main Card with clean solid/frosted brand styling in Lino */}
-          <div className="w-full max-w-3xl 2xl:max-w-4xl bg-[#F7F2EC]/95 backdrop-blur-md p-6 sm:p-9 2xl:p-12 rounded-3xl border border-[#E6D9C8] shadow-2xl flex flex-col items-center text-center">
+          <div className="w-full max-w-3xl 2xl:max-w-4xl bg-[#F7F2EC]/98 md:backdrop-blur-md md:bg-[#F7F2EC]/95 p-6 sm:p-9 2xl:p-12 rounded-3xl border border-[#E6D9C8] shadow-2xl flex flex-col items-center text-center">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}

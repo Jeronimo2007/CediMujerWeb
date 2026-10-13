@@ -109,20 +109,22 @@ export const FacilitiesGallery: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveImage(null)}
-              className="fixed inset-0 z-50 bg-[#4A3A33]/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+              className="fixed inset-0 z-50 bg-[#4A3A33]/85 md:backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
             >
               <motion.div
-                initial={{ scale: 0.9 }}
+                initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
-                exit={{ scale: 0.9 }}
-                className="relative max-w-5xl w-full h-[70vh] sm:h-[80vh] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-2xl"
+                exit={{ scale: 0.95 }}
+                transition={{ duration: 0.25 }}
+                className="relative max-w-5xl w-full h-[70vh] sm:h-[80vh] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-2xl [transform:translateZ(0)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Image
                   src={activeImage}
                   alt="Vista Ampliada CediMujer"
                   fill
-                  unoptimized
+                  decoding="async"
+                  sizes="(max-width: 1200px) 100vw, 1200px"
                   className="object-contain bg-black/60"
                 />
                 <button

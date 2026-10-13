@@ -152,7 +152,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`group relative ${service.bgColor} rounded-3xl overflow-hidden border ${service.borderColor} hover:border-[#8FC1BB] shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between backdrop-blur-md`}
+                className={`group relative ${service.bgColor} rounded-3xl overflow-hidden border ${service.borderColor} hover:border-[#8FC1BB] shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between`}
               >
                 <div>
                   {/* Card Banner Image */}
@@ -162,14 +162,15 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                         src={service.image}
                         alt={service.title}
                         fill
-                        unoptimized
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover filter brightness-95 transition-all duration-300"
                       />
                     </motion.div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/50 via-transparent to-transparent pointer-events-none" />
                     
                     {/* Category Tag */}
-                    <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#F7F2EC]/90 backdrop-blur-md text-[11px] font-bold text-[#4A3A33] border border-[#E6D9C8]">
+                    <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#F7F2EC] md:bg-[#F7F2EC]/90 text-[11px] font-bold text-[#4A3A33] border border-[#E6D9C8]">
                       {service.category}
                     </span>
 

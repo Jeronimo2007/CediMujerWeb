@@ -131,7 +131,7 @@ export const ImpactStats: React.FC = () => {
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className={`relative p-8 rounded-3xl ${stat.bgColor} border ${stat.borderColor} hover:border-[#8FC1BB] shadow-md hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between backdrop-blur-md`}
+                className={`relative p-8 rounded-3xl ${stat.bgColor} border ${stat.borderColor} hover:border-[#8FC1BB] shadow-md hover:-translate-y-1.5 transition-transform duration-300 flex flex-col justify-between`}
               >
                 <div className="flex items-center justify-between mb-6">
                   <div className="w-14 h-14 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md">
