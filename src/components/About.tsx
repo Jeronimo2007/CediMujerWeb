@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ShieldCheck, Award, HeartHandshake, Microscope, CheckCircle2, UserCheck } from "lucide-react";
+import { ShieldCheck, HeartHandshake, Microscope, CheckCircle2, UserCheck } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 
 export const About: React.FC = () => {
@@ -52,23 +52,26 @@ export const About: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="lg:col-span-6 relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E6D9C8] group">
-              <motion.img
-                style={{ scale: imageScale }}
-                src={ASSETS.about.mainImage}
-                alt="Consulta Médica CediMujer"
-                className="w-full h-[480px] sm:h-[540px] object-cover transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/40 via-transparent to-transparent" />
+            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E6D9C8] group h-[480px] sm:h-[540px]">
+              <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
+                <Image
+                  src={ASSETS.about.mainImage}
+                  alt="Equipo Médico CediMujer en Trabajo Clínico"
+                  fill
+                  unoptimized
+                  className="object-cover transition-transform duration-700"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/40 via-transparent to-transparent pointer-events-none" />
             </div>
 
-            {/* Secondary Image Overlay */}
-            <div className="hidden sm:block absolute -bottom-8 -right-6 w-52 h-52 rounded-2xl overflow-hidden border-4 border-[#F7F2EC] shadow-xl z-10">
+            {/* Secondary Image Overlay (Salas Clínicas) */}
+            <div className="hidden sm:block absolute -bottom-8 -right-6 w-56 h-56 rounded-2xl overflow-hidden border-4 border-[#F7F2EC] shadow-2xl z-10">
               <Image
                 src={ASSETS.about.secondaryImage}
-                alt="Tecnología Médica"
-                width={208}
-                height={208}
+                alt="Salas de Atención Médica CediMujer"
+                width={224}
+                height={224}
                 unoptimized
                 className="w-full h-full object-cover"
               />
@@ -80,10 +83,17 @@ export const About: React.FC = () => {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="absolute top-6 left-6 z-20 bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-4 rounded-2xl shadow-lg flex items-center gap-4 max-w-xs"
+              className="absolute top-6 left-6 z-20 bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-3.5 rounded-2xl shadow-lg flex items-center gap-3.5 max-w-xs"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold">
-                <Award className="w-6 h-6 text-[#4A3A33]" />
+              <div className="w-12 h-12 rounded-xl bg-white border border-[#8FC1BB]/40 flex items-center justify-center p-1 shadow-sm shrink-0">
+                <Image
+                  src={ASSETS.logo.emblem}
+                  alt="Emblema CediMujer"
+                  width={40}
+                  height={40}
+                  unoptimized
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <p className="text-xl font-extrabold text-[#4A3A33]">18+ Años</p>

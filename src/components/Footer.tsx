@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { Heart, Phone, Mail, MapPin, ArrowRight, Share2, Globe, MessageCircle } from "lucide-react";
+import Image from "next/image";
+import { Phone, Mail, MapPin, ArrowRight, Share2, Globe, MessageCircle } from "lucide-react";
+import { ASSETS } from "@/config/assets";
 
 export const Footer: React.FC = () => {
   return (
@@ -13,17 +15,15 @@ export const Footer: React.FC = () => {
           
           {/* Column 1: Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <a href="#inicio" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#8FC1BB] flex items-center justify-center shadow-md">
-                <Heart className="w-5 h-5 text-[#4A3A33] fill-[#4A3A33]/20" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-extrabold tracking-tight text-[#F7F2EC]">
-                  Cedi<span className="text-[#8FC1BB]">Mujer</span>
-                </span>
-                <span className="text-[10px] tracking-wider uppercase text-[#E6D9C8] font-semibold">
-                  Salud Integral Femenina
-                </span>
+            <a href="#inicio" className="flex items-center gap-3 group">
+              <div className="relative h-12 w-44 sm:w-52 flex items-center bg-[#F7F2EC] px-3 py-1.5 rounded-2xl shadow-md border border-[#8FC1BB]/30 transition-transform group-hover:scale-105">
+                <Image
+                  src={ASSETS.logo.primary}
+                  alt="CediMujer - Salud Integral Femenina"
+                  fill
+                  unoptimized
+                  className="object-contain p-1"
+                />
               </div>
             </a>
 
@@ -48,7 +48,7 @@ export const Footer: React.FC = () => {
           <div className="space-y-4">
             <h4 className="text-sm font-extrabold text-[#F7F2EC] uppercase tracking-wider">Navegación</h4>
             <ul className="space-y-2.5 text-sm font-semibold">
-              {["Inicio", "Sobre CediMujer", "Servicios Médicos", "Nuestras Cifras", "Acreditaciones"].map((item, index) => (
+              {["Inicio", "Sobre CediMujer", "Servicios Médicos", "Instalaciones", "Nuestras Cifras", "Acreditaciones"].map((item, index) => (
                 <li key={index}>
                   <a href={`#${item.toLowerCase().replace(/ /g, "")}`} className="hover:text-[#8FC1BB] transition-colors">
                     {item}
@@ -64,11 +64,11 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm font-semibold">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#8FC1BB] shrink-0 mt-0.5" />
-                <span>Av. Principal de Ciencias Médicas, Edif. CediMujer, Piso 4</span>
+                <span>Cl. 75 Sur #43 A -202, Sabaneta, Antioquia</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#8FC1BB] shrink-0" />
-                <span>+57 (601) 555-0199 / +57 300 987 6543</span>
+                <span>+57 (604) 448-0202 / +57 300 987 6543</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#8FC1BB] shrink-0" />

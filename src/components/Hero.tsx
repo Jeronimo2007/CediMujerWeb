@@ -1,189 +1,229 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, ChevronDown, Sparkles, ArrowRight, ShieldCheck, Activity, HeartPulse } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 
 interface HeroProps {
   onOpenAppointment?: () => void;
+  onOpenCalculator?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenAppointment }) => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  
+export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // We track the scroll over a taller container (220vh)
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
+    target: containerRef,
+    offset: ["start start", "end end"],
   });
 
-  // Smooth scroll zoom
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.0, 1.3]);
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  // Entering inside the image effect aimed higher towards the CediMujer logo on the wall above reception:
+  // Starts at scale 1, smoothly scales up to a balanced 2.35 (a little less intense zoom)
+  const imageScale = useTransform(scrollYProgress, [0, 0.7, 1], [1.0, 1.65, 2.35]);
+  // Zoom shift camera towards the illuminated logo and entrance
+  const imageX = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", "-10%", "-18%"]);
+  const imageY = useTransform(scrollYProgress, [0, 0.7, 1], ["0%", "6%", "12%"]);
+  
+  // Hero text gracefully fades and scales outwards as the viewer passes through into the clinic
+  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const textScale = useTransform(scrollYProgress, [0, 0.4], [1, 1.08]);
+  const textY = useTransform(scrollYProgress, [0, 0.4], [0, -45]);
+  // Dynamic rounded border and framing during the zoom transition:
+  // Starts with 0px and progressively curves into elegant rounded corners (up to 48px) as you enter
+  const imageBorderRadius = useTransform(scrollYProgress, [0, 0.25, 0.8, 1], ["0px", "32px", "48px", "0px"]);
+  const imageInset = useTransform(scrollYProgress, [0, 0.25, 0.8, 1], ["0px", "16px", "24px", "0px"]);
 
   return (
-    <section
-      ref={sectionRef}
-      id="inicio"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-16 bg-[#F7F2EC]"
-    >
-      {/* Background Video / Image with Warm Light Overlay */}
-      <motion.div
-        style={{ scale: bgScale, y: bgY }}
-        className="absolute inset-0 z-0 origin-center w-full h-full"
+    <div ref={containerRef} className="relative h-[220vh]">
+      {/* Sticky viewport frame */}
+      <section
+        id="inicio"
+        className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-[#F7F2EC]"
       >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster={ASSETS.hero.fallbackImage}
-          className="w-full h-full object-cover filter brightness-95 opacity-40 mix-blend-multiply"
+        {/* Background Image: Aimed slightly higher towards the CediMujer illuminated logo above the reception */}
+        <motion.div
+          style={{
+            scale: imageScale,
+            x: imageX,
+            y: imageY,
+            transformOrigin: "70% 28%", // Aimed higher directly at the CediMujer wall logo
+            borderRadius: imageBorderRadius,
+            top: imageInset,
+            bottom: imageInset,
+            left: imageInset,
+            right: imageInset,
+          }}
+          className="absolute z-0 overflow-hidden will-change-transform shadow-2xl transition-[border-radius] duration-200"
         >
-          <source src={ASSETS.hero.videoUrl} type="video/mp4" />
-        </video>
-        {/* Soft Organic Gradients in Brand Palette (Lino, Arena, Agua, Nude Rosado) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F7F2EC] via-[#F7F2EC]/85 to-[#E6D9C8]/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#F7F2EC] via-transparent to-[#F7F2EC]/80" />
-      </motion.div>
+          <Image
+            src={ASSETS.hero.mainImage}
+            alt="Instalaciones CediMujer - Centro de Diagnóstico"
+            fill
+            priority
+            unoptimized
+            className="object-cover object-center filter brightness-100 contrast-[1.02]"
+          />
 
-      {/* Floating Animated Organic Blobs (Surprise Effects) */}
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 30, 0],
-          y: [0, -20, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-10 w-96 h-96 bg-[#CFE6E2]/50 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          scale: [1.2, 1, 1.2],
-          x: [0, -30, 0],
-          y: [0, 20, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-10 right-10 w-96 h-96 bg-[#EBCFC6]/50 rounded-full blur-3xl pointer-events-none"
-      />
+          {/* Very subtle vignette to retain full photo realism */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#F7F2EC]/60 via-transparent to-[#F7F2EC]/20 pointer-events-none" />
+        </motion.div>
 
-      {/* Hero Main Content */}
-      <motion.div
-        style={{ y: textY }}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col justify-center min-h-[calc(100vh-120px)]"
-      >
-        <div className="max-w-3xl">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EBCFC6]/70 border border-[#D7A7A8]/50 text-[#4A3A33] text-xs sm:text-sm font-bold backdrop-blur-md mb-6 shadow-sm"
-          >
-            <Sparkles className="w-4 h-4 text-[#8FC1BB]" />
-            <span>Centro Médico de Alta Especialidad en la Mujer</span>
-            <span className="w-2 h-2 rounded-full bg-[#8FC1BB] animate-pulse"></span>
-          </motion.div>
+        {/* Ambient Glows */}
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            x: [0, 20, 0],
+            y: [0, -15, 0],
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/4 left-10 w-96 h-96 bg-[#CFE6E2]/25 rounded-full blur-3xl pointer-events-none"
+        />
+        <motion.div
+          animate={{
+            scale: [1.15, 1, 1.15],
+            x: [0, -20, 0],
+            y: [0, 15, 0],
+          }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-12 right-10 w-96 h-96 bg-[#EBCFC6]/25 rounded-full blur-3xl pointer-events-none"
+        />
 
-          {/* Main Headline in Cacao */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#4A3A33] tracking-tight leading-[1.1]"
-          >
-            Cuidado Médico Integral con{" "}
-            <span className="bg-gradient-to-r from-[#8FC1BB] via-[#9A7B6C] to-[#D7A7A8] bg-clip-text text-transparent">
-              Empatía y Ciencia
-            </span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-6 text-lg sm:text-xl text-[#9A7B6C] font-semibold leading-relaxed max-w-2xl"
-          >
-            En <strong className="text-[#4A3A33] font-bold">CediMujer</strong> combinamos tecnología diagnóstica de última generación con la calidez humana que mereces en cada etapa de tu vida.
-          </motion.p>
-
-          {/* Action CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-10 flex flex-wrap items-center justify-center md:justify-start gap-4"
-          >
-            <button
-              onClick={onOpenAppointment}
-              className="px-8 py-4 rounded-full text-base font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-xl shadow-[#8FC1BB]/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3 border border-[#8FC1BB]"
+        {/* Hero Content - Perfectly Centered with Clean Uniform Card Styling */}
+        <motion.div
+          style={{ opacity: textOpacity, scale: textScale, y: textY }}
+          className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full"
+        >
+          {/* Main Card with clean solid/frosted brand styling in Lino */}
+          <div className="w-full max-w-3xl bg-[#F7F2EC]/95 backdrop-blur-md p-6 sm:p-9 rounded-3xl border border-[#E6D9C8] shadow-2xl flex flex-col items-center text-center">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EBCFC6] border border-[#D7A7A8] text-[#4A3A33] text-xs sm:text-sm font-bold mb-5 shadow-sm"
             >
-              <Calendar className="w-5 h-5 text-[#4A3A33]" />
-              <span>Agendar Cita Ahora</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              <Sparkles className="w-4 h-4 text-[#8FC1BB]" />
+              <span className="capitalize">Centro de diagnóstico especializado en salud para la mujer</span>
+              <span className="w-2 h-2 rounded-full bg-[#8FC1BB] animate-pulse"></span>
+            </motion.div>
 
-            <a
-              href="#servicios"
-              className="px-8 py-4 rounded-full text-base font-bold text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#EBCFC6] border border-[#9A7B6C]/30 backdrop-blur-md transition-all duration-300 flex items-center gap-2"
+            {/* Main Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#4A3A33] tracking-tight leading-[1.12]"
             >
-              <span>Explorar Servicios</span>
-            </a>
-          </motion.div>
+              Cuidado Médico Integral con{" "}
+              <span className="bg-gradient-to-r from-[#8FC1BB] via-[#9A7B6C] to-[#D7A7A8] bg-clip-text text-transparent">
+                Empatía y Ciencia
+              </span>
+            </motion.h1>
 
-          {/* Quick Value Cards */}
+            {/* Subtitle with seamless matching background */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="mt-4 text-base sm:text-lg text-[#4A3A33] font-medium leading-relaxed max-w-2xl"
+            >
+              En <strong className="text-[#4A3A33] font-black">CediMujer</strong> combinamos tecnología diagnóstica de última generación con la calidez humana que mereces en cada etapa de tu vida.
+            </motion.p>
+
+            {/* Action CTAs Centered */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45 }}
+              className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4 w-full"
+            >
+              <button
+                onClick={onOpenAppointment}
+                className="px-7 py-3.5 rounded-full text-sm sm:text-base font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-xl shadow-[#8FC1BB]/30 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 border border-[#8FC1BB]"
+              >
+                <Calendar className="w-5 h-5 text-[#4A3A33]" />
+                <span>Agendar Cita</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              {onOpenCalculator && (
+                <button
+                  onClick={onOpenCalculator}
+                  className="px-6 py-3.5 rounded-full text-sm sm:text-base font-extrabold text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8] border border-[#D7A7A8] shadow-md hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 text-[#8FC1BB]" />
+                  <span>Calculadora Gestacional</span>
+                </button>
+              )}
+
+              <a
+                href="#servicios"
+                className="px-6 py-3.5 rounded-full text-sm sm:text-base font-bold text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#EBCFC6] border border-[#9A7B6C]/30 transition-all duration-300 flex items-center gap-2"
+              >
+                <span>Servicios</span>
+              </a>
+            </motion.div>
+
+            {/* Quick Value Cards Centered & Harmonized */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+              className="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full pt-5 border-t border-[#E6D9C8]"
+            >
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 p-3 rounded-2xl bg-[#E6D9C8]/40 border border-[#E6D9C8]">
+                <div className="p-2 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Especialistas</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Certificadas</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 p-3 rounded-2xl bg-[#CFE6E2]/40 border border-[#8FC1BB]/30">
+                <div className="p-2 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
+                  <Activity className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Tecnología</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Ecografía 3D/4D</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 p-3 rounded-2xl bg-[#EBCFC6]/40 border border-[#D7A7A8]/40">
+                <div className="p-2 rounded-xl bg-[#D7A7A8] text-[#4A3A33]">
+                  <HeartPulse className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] text-[#9A7B6C] uppercase tracking-wider font-bold">Atención</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#4A3A33]">Personalizada</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Scroll invitation */}
+        <motion.div
+          style={{ opacity: textOpacity }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 pointer-events-none"
+        >
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#4A3A33] bg-[#E6D9C8]/90 px-3.5 py-1 rounded-full shadow-sm border border-[#9A7B6C]/20">
+            Desplaza hacia abajo para ingresar a la clínica
+          </span>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="mt-12 grid grid-cols-2 sm:grid-cols-3 gap-4 pt-8 border-t border-[#E6D9C8]"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8 }}
+            className="p-2 rounded-full bg-[#E6D9C8] border border-[#9A7B6C]/30 text-[#4A3A33] shadow-md"
           >
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#EBCFC6]/40 border border-[#D7A7A8]/30">
-              <div className="p-2.5 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-[#9A7B6C] uppercase tracking-wider font-semibold">Especialistas</p>
-                <p className="text-sm font-bold text-[#4A3A33]">Certificadas</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#CFE6E2]/40 border border-[#8FC1BB]/30">
-              <div className="p-2.5 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
-                <Activity className="w-5 h-5" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-[#9A7B6C] uppercase tracking-wider font-semibold">Tecnología</p>
-                <p className="text-sm font-bold text-[#4A3A33]">Ecografía 3D/4D</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#EBCFC6]/40 border border-[#D7A7A8]/30 col-span-2 sm:col-span-1">
-              <div className="p-2.5 rounded-xl bg-[#D7A7A8] text-[#4A3A33]">
-                <HeartPulse className="w-5 h-5" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-[#9A7B6C] uppercase tracking-wider font-semibold">Atención</p>
-                <p className="text-sm font-bold text-[#4A3A33]">Personalizada</p>
-              </div>
-            </div>
+            <ChevronDown className="w-5 h-5 text-[#8FC1BB]" />
           </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Scroll Down Indicator */}
-      <motion.a
-        href="#nosotros"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 8, 0] }}
-        transition={{ opacity: { delay: 1, duration: 1 }, y: { repeat: Infinity, duration: 2 } }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 p-2.5 rounded-full bg-[#E6D9C8] border border-[#9A7B6C]/30 text-[#4A3A33] hover:bg-[#8FC1BB] transition-colors shadow-md"
-        aria-label="Desplazarse hacia abajo"
-      >
-        <ChevronDown className="w-6 h-6" />
-      </motion.a>
-    </section>
+        </motion.div>
+      </section>
+    </div>
   );
 };

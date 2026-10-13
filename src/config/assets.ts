@@ -1,35 +1,57 @@
 /**
  * Configuración de Recursos y Multimedia de CediMujer
  * 
- * Para reemplazar las imágenes/videos de prueba con tus propios archivos locales:
- * 1. Guarda tus imágenes en: frontend/public/assets/images/
- * 2. Guarda tus videos en: frontend/public/assets/videos/
- * 3. Actualiza las rutas a continuación (ej. "/assets/images/mi-foto.jpg")
+ * Imágenes locales mapeadas desde frontend/public/assets/images/:
+ * - Header / Hero: header.jpg
+ * - Sobre CediMujer: trabajo.jpg (demuestra calidad humana y profesionalismo), sala1.jpg
+ * - Equipos e Instalaciones: equipo1.jpg, equipo2.jpg, equipo1vista2.jpg, equipo1vista3.jpg, sala2.jpg
+ * - Logos corporativos: logosinfondo#1.jpeg, logo#1.jpg, logo#2.jpeg, logo#3.jpeg
  */
 
 export const ASSETS = {
-  // Hero Video / Imagen de fondo
-  hero: {
-    // Si agregas un video local en /public/assets/videos/hero.mp4, cambia videoUrl por esa ruta
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-doctor-checking-a-patient-in-a-clinic-40822-large.mp4",
-    fallbackImage: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1920",
-  },
-  
-  // Sección Sobre Nosotros
-  about: {
-    mainImage: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1000",
-    secondaryImage: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
+  // Logos corporativos oficiales
+  logo: {
+    primary: "/assets/images/logo-cedimujer.png",
+    primaryHd: "/assets/images/logo-cedimujer-hd.png",
+    emblem: "/assets/images/logo-emblem.png",
+    transparent: "/assets/images/logo-cedimujer.png",
+    badge: "/assets/images/logo#1.jpg",
+    square: "/assets/images/logo#2.jpeg",
+    banner: "/assets/images/logo#3.jpeg",
   },
 
-  // Imágenes de Servicios Médicos
-  services: {
-    ginecologia: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=600",
-    obstetricia: "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?auto=format&fit=crop&q=80&w=600",
-    ecografia: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600",
-    mastologia: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600",
-    endocrinologia: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600",
-    cirugia: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=600",
+  // Hero Video / Imagen de fondo
+  hero: {
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-doctor-checking-a-patient-in-a-clinic-40822-large.mp4",
+    fallbackImage: "/assets/images/header.jpg",
+    mainImage: "/assets/images/header.jpg",
   },
+  
+  // Sección Sobre Nosotros (instalaciones y equipo de trabajo)
+  about: {
+    mainImage: "/assets/images/trabajo.jpg", // Calidad del equipo médico en consulta
+    secondaryImage: "/assets/images/sala1.jpg", // Instalaciones y salas de la clínica
+  },
+
+  // Imágenes de Servicios Médicos y Tecnología de la Clínica
+  services: {
+    ginecologia: "/assets/images/sala1.jpg", // Sala de consulta ginecológica
+    obstetricia: "/assets/images/trabajo.jpg", // Atención personalizada y calidez
+    ecografia: "/assets/images/equipo1.jpg", // Equipo de ultrasonido y ecografía de alta tecnología
+    mastologia: "/assets/images/equipo2.jpg", // Tecnología diagnóstica avanzada
+    endocrinologia: "/assets/images/equipo1vista2.jpg", // Monitoreo y equipos especializados
+    cirugia: "/assets/images/sala2.jpg", // Sala quirúrgica / procedimientos clínicos
+  },
+
+  // Galería de Equipos e Instalaciones
+  facilities: [
+    { id: 1, title: "Consultorios y Salas Clínicas", image: "/assets/images/sala1.jpg", tag: "Salas de Atención" },
+    { id: 2, title: "Quirófano y Procedimientos", image: "/assets/images/sala2.jpg", tag: "Instalaciones" },
+    { id: 3, title: "Tecnología de Ultrasonido HD", image: "/assets/images/equipo1.jpg", tag: "Equipos" },
+    { id: 4, title: "Diagnóstico Clínico Avanzado", image: "/assets/images/equipo2.jpg", tag: "Equipos" },
+    { id: 5, title: "Monitoreo y Precisión", image: "/assets/images/equipo1vista2.jpg", tag: "Equipos" },
+    { id: 6, title: "Atención Médica Humanizada", image: "/assets/images/trabajo.jpg", tag: "Nuestro Equipo" },
+  ],
 
   // Logotipos / Certificaciones para el Marquee
   certifications: [

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   Stethoscope, 
@@ -33,73 +34,73 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
     {
       id: "ginecologia",
       title: "Ginecología Integral",
-      category: "Prevención & Rutina",
+      category: "Salas de Atención",
       icon: Stethoscope,
       image: ASSETS.services.ginecologia,
       bgColor: "bg-[#EBCFC6]/40",
       borderColor: "border-[#D7A7A8]/40",
       description:
-        "Chequeos preventivos exhaustivos, citología, colposcopia, manejo de infecciones y salud íntima personalizada para cada edad.",
+        "Consultas preventivas con equipamiento ginecológico moderno, citología, colposcopia y salud íntima especializada.",
       highlights: ["Papanicolaou y Citología", "Salud Hormonal", "Colposcopia de Alta Precisión"],
     },
     {
       id: "obstetricia",
       title: "Obstetricia & Control Prenatal",
-      category: "Maternidad Segura",
+      category: "Calidad Humana",
       icon: Baby,
       image: ASSETS.services.obstetricia,
       bgColor: "bg-[#CFE6E2]/40",
       borderColor: "border-[#8FC1BB]/40",
       description:
-        "Acompañamiento médico continuo mes a mes durante tu gestación para garantizar el desarrollo óptimo de tu bebé y tu tranquilidad.",
+        "Acompañamiento médico cálido y riguroso durante cada etapa de tu gestación para cuidar a mamá y bebé.",
       highlights: ["Control de Alto Riesgo", "Monitoreo Fetal", "Plan de Parto Humanizado"],
     },
     {
       id: "ecografia",
       title: "Ecografía 3D / 4D HD",
-      category: "Diagnóstico por Imagen",
+      category: "Tecnología Médica",
       icon: Activity,
       image: ASSETS.services.ecografia,
       bgColor: "bg-[#E6D9C8]/40",
       borderColor: "border-[#9A7B6C]/40",
       description:
-        "Tecnología de ultrasonido de última generación para obtener imágenes hiperrealistas y realizar tamizaje genético estructural.",
+        "Equipos de ultrasonido médico de última generación para diagnósticos de alta resolución y seguimiento estructural.",
       highlights: ["Ecografía Genética 11-14 sem.", "Tamizaje Morfológico 20-24 sem.", "Ultrasonido 4D en Tiempo Real"],
     },
     {
       id: "mastologia",
       title: "Mastología & Salud Mamaria",
-      category: "Detección Precoz",
+      category: "Equipos Diagnósticos",
       icon: Heart,
       image: ASSETS.services.mastologia,
       bgColor: "bg-[#EBCFC6]/40",
       borderColor: "border-[#D7A7A8]/40",
       description:
-        "Evaluación clínica mamaria especializada, ecografía de mamas de alta frecuencia y diagnóstico oportuno de nódulos.",
-      highlights: ["Ecografía Mamaria de Alta Resolución", "Evaluación Precoz de Nódulos", "Asesoría Oncoplástica"],
+        "Evaluación especializada con tecnología diagnóstica avanzada para detección temprana y bienestar mamario integral.",
+      highlights: ["Ecografía Mamaria de Alta Resolución", "Evaluación Precoz de Nódulos", "Asesoría Integral"],
     },
     {
       id: "endocrinologia",
       title: "Endocrinología Femenina",
-      category: "Hormonas & Bienestar",
+      category: "Precisión Clínica",
       icon: Sparkles,
       image: ASSETS.services.endocrinologia,
       bgColor: "bg-[#CFE6E2]/40",
       borderColor: "border-[#8FC1BB]/40",
       description:
-        "Manejo médico integral del Síndrome de Ovario Poliquístico (SOP), disfunciones tiroideas, fertilidad y climaterio/menopausia.",
+        "Control hormonal preciso, manejo integral de SOP, tiroides y balance metabólico en cada etapa femenina.",
       highlights: ["Tratamiento de SOP", "Control de Menopausia", "Balance Hormonal Personalizado"],
     },
     {
       id: "cirugia",
       title: "Cirugía Ginecológica Avanzada",
-      category: "Mínima Invasión",
+      category: "Salas Quirúrgicas",
       icon: Microscope,
       image: ASSETS.services.cirugia,
       bgColor: "bg-[#E6D9C8]/40",
       borderColor: "border-[#9A7B6C]/40",
       description:
-        "Procedimientos laparoscópicos e histeroscópicos de vanguardia con incisiones mínimas y pronta reincorporación a tu rutina.",
+        "Salas acondicionadas para procedimientos mínimamente invasivos con los más altos estándares de bioseguridad.",
       highlights: ["Laparoscopia Ginecológica", "Histeroscopia Diagnóstica", "Histerectomía Mínimamente Invasiva"],
     },
   ];
@@ -116,7 +117,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8FC1BB]/20 border border-[#8FC1BB] text-[#4A3A33] text-xs font-bold uppercase tracking-widest mb-4"
           >
-            <span>Especialidades Médicas</span>
+            <span>Especialidades Médicas & Tecnología</span>
           </motion.div>
 
           <motion.h2
@@ -136,7 +137,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
             transition={{ delay: 0.2 }}
             className="mt-4 text-[#9A7B6C] font-semibold text-base sm:text-lg"
           >
-            Ofrecemos atención médica integral con tecnología avanzada y médicas especializadas dedicadas exclusivamente a tu salud.
+            Nuestras salas y equipos médicos propios reflejan el compromiso con la excelencia y el bienestar de cada paciente.
           </motion.p>
         </div>
 
@@ -156,13 +157,16 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
                 <div>
                   {/* Card Banner Image */}
                   <div className="relative h-48 overflow-hidden">
-                    <motion.img
-                      style={{ scale: imageZoom }}
-                      src={service.image}
-                      alt={service.title}
-                      className="w-full h-full object-cover filter brightness-95 transition-all duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/50 via-transparent to-transparent" />
+                    <motion.div style={{ scale: imageZoom }} className="w-full h-full relative">
+                      <Image
+                        src={service.image}
+                        alt={service.title}
+                        fill
+                        unoptimized
+                        className="object-cover filter brightness-95 transition-all duration-300"
+                      />
+                    </motion.div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/50 via-transparent to-transparent pointer-events-none" />
                     
                     {/* Category Tag */}
                     <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#F7F2EC]/90 backdrop-blur-md text-[11px] font-bold text-[#4A3A33] border border-[#E6D9C8]">

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, Mail, Phone, CheckCircle2, Server } from "lucide-react";
+import { ASSETS } from "@/config/assets";
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -68,6 +70,17 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
           {!submitted ? (
             <div>
+              <div className="flex items-center justify-between mb-4 pr-8">
+                <div className="relative h-10 w-36 sm:w-44">
+                  <Image
+                    src={ASSETS.logo.primary}
+                    alt="Logo CediMujer"
+                    fill
+                    unoptimized
+                    className="object-contain object-left"
+                  />
+                </div>
+              </div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2.5 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] shadow-md">
                   <Calendar className="w-6 h-6" />
