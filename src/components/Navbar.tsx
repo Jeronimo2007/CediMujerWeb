@@ -19,32 +19,37 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const prevScrollY = lastScrollYRef.current;
 
-      if (currentScrollY > 30) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+          const scrolled = currentScrollY > 30;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+
+          if (currentScrollY > 120 && currentScrollY - prevScrollY > 20 && !mobileMenuOpen) {
+            setIsVisible(false);
+          } else if (prevScrollY - currentScrollY > 10 || currentScrollY <= 80) {
+            setIsVisible(true);
+          }
+
+          lastScrollYRef.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
       }
-
-      // Smooth tolerance: only hide after scrolling down more than 15px past initial threshold
-      if (currentScrollY > 100 && currentScrollY - lastScrollY > 15 && !mobileMenuOpen) {
-        setIsVisible(false);
-      } else if (lastScrollY - currentScrollY > 5 || currentScrollY <= 100) {
-        setIsVisible(true);
-      }
-
-      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   interface NavItem {
     name: string;
@@ -74,41 +79,44 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
-        } ${
-          isScrolled
-            ? "bg-[#F7F2EC]/95 backdrop-blur-md py-2.5 shadow-lg shadow-[#4A3A33]/5 border-b border-[#E6D9C8]/80"
-            : "bg-gradient-to-b from-[#F7F2EC]/90 via-[#F7F2EC]/60 to-transparent py-4"
+        className={`fixed top-3 sm:top-4 inset-x-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto will-change-transform ${
+          isVisible ? "translate-y-0 opacity-100" : "-translate-y-24 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          {/* Logo Brand */}
+        <div
+          className={`flex items-center justify-between gap-4 px-4 sm:px-6 py-3.5 sm:py-4 rounded-3xl sm:rounded-full transition-all duration-300 border border-[#E6D9C8] ${
+            isScrolled
+              ? "bg-[#F7F2EC] md:backdrop-blur-md md:bg-[#F7F2EC]/95 shadow-xl shadow-[#4A3A33]/8"
+              : "bg-[#F7F2EC]/98 md:backdrop-blur-sm md:bg-[#F7F2EC]/90 shadow-lg shadow-[#4A3A33]/5"
+          }`}
+        >
+          {/* Logo Brand - Slightly larger & crisp */}
           <a
             href="#inicio"
             onClick={(e) => handleLinkClick(e, "#inicio")}
             className="flex items-center gap-3 shrink-0 group"
           >
-            <div className="relative h-10 sm:h-11 w-32 sm:w-40 flex items-center transition-transform duration-300 group-hover:scale-105">
+            <div className="relative h-11 sm:h-12 w-36 sm:w-44 flex items-center transition-transform duration-300 group-hover:scale-105">
               <Image
                 src={ASSETS.logo.primary}
                 alt="CediMujer - Salud Integral Femenina"
                 fill
                 priority
+                decoding="async"
                 unoptimized
                 className="object-contain object-left"
               />
             </div>
           </a>
 
-          {/* Desktop Navigation Links - Centered & perfectly proportioned */}
-          <nav className="hidden xl:flex items-center space-x-1 bg-[#E6D9C8]/50 p-1.5 rounded-full border border-[#E6D9C8] backdrop-blur-md shadow-xs">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden xl:flex items-center space-x-1.5 bg-[#E6D9C8]/60 p-1.5 rounded-full border border-[#E6D9C8]/80">
             {navLinks.map((link) =>
               link.isCalculator ? (
                 <button
                   key={link.name}
                   onClick={onOpenCalculator}
-                  className="px-3 py-1.5 text-xs font-bold text-[#4A3A33] hover:text-[#8FC1BB] bg-[#EBCFC6] hover:bg-[#D7A7A8] rounded-full transition-all duration-300 border border-[#D7A7A8]/50 shadow-xs"
+                  className="px-4 py-2 text-xs lg:text-sm font-bold text-[#4A3A33] hover:text-[#8FC1BB] bg-[#EBCFC6] hover:bg-[#D7A7A8] rounded-full transition-all duration-200 shadow-sm"
                 >
                   {link.name}
                 </button>
@@ -117,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleLinkClick(e, link.href)}
-                  className="px-3 py-1.5 text-xs font-bold text-[#4A3A33] hover:text-[#8FC1BB] rounded-full hover:bg-[#F7F2EC] transition-all duration-300"
+                  className="px-3.5 py-2 text-xs lg:text-sm font-bold text-[#4A3A33] hover:text-[#8FC1BB] rounded-full hover:bg-[#F7F2EC] transition-all duration-200"
                 >
                   {link.name}
                 </a>
