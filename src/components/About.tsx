@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ShieldCheck, HeartHandshake, Microscope, CheckCircle2, UserCheck } from "lucide-react";
 import { ASSETS } from "@/config/assets";
+import { InstitutionalPhilosophy } from "@/components/InstitutionalPhilosophy";
 
 export const About: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -180,6 +181,9 @@ export const About: React.FC = () => {
 
           </motion.div>
         </div>
+
+        {/* Sub-sección Institucional: Misión, Visión 2030 & Valores */}
+        <InstitutionalPhilosophy />
       </motion.div>
     </section>
   );

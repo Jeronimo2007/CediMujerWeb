@@ -15,7 +15,7 @@ export const LocationMap: React.FC = () => {
   const mapScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.0, 1.1]);
 
   const mapEmbedUrl =
-    "https://maps.google.com/maps?q=Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia&t=&z=16&ie=UTF8&iwloc=&output=embed";
+    "https://maps.google.com/maps?q=CC+Aves+Maria+Parque+Comercial,+Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia&t=&z=16&ie=UTF8&iwloc=&output=embed";
 
   return (
     <section ref={containerRef} id="ubicacion" className="py-24 bg-[#F7F2EC] text-[#4A3A33] relative overflow-hidden">
@@ -81,6 +81,9 @@ export const LocationMap: React.FC = () => {
               <p className="text-sm font-bold text-[#4A3A33]">
                 Cl. 75 Sur #43 A -202
               </p>
+              <p className="text-xs text-[#8FC1BB] font-bold">
+                C.C. Aves María Parque Comercial
+              </p>
               <span className="text-xs text-[#9A7B6C] font-semibold">Sabaneta, Antioquia</span>
             </div>
 
@@ -144,7 +147,7 @@ export const LocationMap: React.FC = () => {
             {/* Navigation Action Buttons */}
             <div className="grid grid-cols-2 gap-3 pt-1">
               <a
-                href="https://maps.google.com/?q=Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia"
+                href="https://maps.google.com/?q=CC+Aves+Maria+Parque+Comercial,+Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-3 px-4 rounded-xl bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-md border border-[#8FC1BB]"
@@ -155,7 +158,7 @@ export const LocationMap: React.FC = () => {
               </a>
 
               <a
-                href="https://waze.com/ul?q=Cl.+75+Sur+%2343+A+-202,+Sabaneta"
+                href="https://waze.com/ul?q=Aves+Maria+Parque+Comercial+Sabaneta"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-3 px-4 rounded-xl bg-[#F7F2EC] hover:bg-[#E6D9C8] text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-2 transition-all duration-300 border border-[#E6D9C8]"

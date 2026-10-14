@@ -13,6 +13,17 @@ export const metadata: Metadata = {
   title: "CediMujer | Centro de Salud Integral & Diagnóstico de la Mujer",
   description: "Centro médico especializado en ginecología, obstetricia, ecografía 3D/4D HD y salud integral femenina con tecnología avanzada y trato humano.",
   keywords: ["CediMujer", "Ginecología", "Obstetricia", "Ecografía 4D", "Salud Femenina", "Centro Médico Mujer"],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

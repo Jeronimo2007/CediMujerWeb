@@ -48,10 +48,18 @@ export const Footer: React.FC = () => {
           <div className="space-y-4">
             <h4 className="text-sm font-extrabold text-[#F7F2EC] uppercase tracking-wider">Navegación</h4>
             <ul className="space-y-2.5 text-sm font-semibold">
-              {["Inicio", "Sobre CediMujer", "Servicios Médicos", "Instalaciones", "Nuestras Cifras", "Acreditaciones"].map((item, index) => (
+              {[
+                { label: "Inicio", href: "#inicio" },
+                { label: "Sobre CediMujer", href: "#nosotros" },
+                { label: "Misión y Valores", href: "#filosofia" },
+                { label: "Servicios Médicos", href: "#servicios" },
+                { label: "Instalaciones", href: "#instalaciones" },
+                { label: "Nuestras Cifras", href: "#impacto" },
+                { label: "Acreditaciones", href: "#certificaciones" },
+              ].map((item, index) => (
                 <li key={index}>
-                  <a href={`#${item.toLowerCase().replace(/ /g, "")}`} className="hover:text-[#8FC1BB] transition-colors">
-                    {item}
+                  <a href={item.href} className="hover:text-[#8FC1BB] transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -64,7 +72,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm font-semibold">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#8FC1BB] shrink-0 mt-0.5" />
-                <span>Cl. 75 Sur #43 A -202, Sabaneta, Antioquia</span>
+                <span>Cl. 75 Sur #43 A -202, C.C. Aves María Parque Comercial, Sabaneta, Antioquia</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#8FC1BB] shrink-0" />
