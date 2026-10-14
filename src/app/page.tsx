@@ -17,6 +17,7 @@ import { ZoomSquarePortal } from "@/components/ZoomSquarePortal";
 import { SquareTransitionPortal } from "@/components/SquareTransitionPortal";
 import { GestationalCalculator } from "@/components/GestationalCalculator";
 import { CurtainPreloader } from "@/components/CurtainPreloader";
+import { SocialMediaBar } from "@/components/SocialMediaBar";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +62,9 @@ export default function Home() {
         onOpenCalculator={handleOpenCalculator}
         onNavigateHome={handleNavigateHome}
       />
+
+      {/* Floating Social Media Access (Instagram, TikTok, Facebook, YouTube) */}
+      <SocialMediaBar />
 
       <AnimatePresence mode="wait">
         {currentView === "calculator" ? (

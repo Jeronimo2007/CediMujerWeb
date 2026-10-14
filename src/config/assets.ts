@@ -61,5 +61,14 @@ export const ASSETS = {
     { id: 4, name: "Federación Médica Internacional", tag: "Excelencia Clínica" },
     { id: 5, name: "Centro de Ultrasonografía Avanzada", tag: "Sello de Garantía" },
     { id: 6, name: "Colegio de Obstetricia y Salud", tag: "Miembro Honorario" }
-  ]
+  ],
+
+  // Redes Sociales Oficiales de CediMujer
+  socialLinks: {
+    instagram: "https://www.instagram.com/cedimujer_?utm_source=ig_web_button_share_sheet&rpxt=ZDNlZDc0MzIxNw==",
+    tiktok: "https://www.tiktok.com/@cedimujer_?is_from_webapp=1&sender_device=pc",
+    facebook: "https://www.facebook.com/CEDIMUJERSABANETA/?locale=es_LA",
+    youtube: "https://www.youtube.com/@cedimujer",
+    whatsapp: "https://wa.me/573009876543",
+  }
 };
