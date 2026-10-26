@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -7,6 +7,13 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
   display: "swap",
   weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+  weight: ["600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={montserrat.variable}>
+    <html lang="es" className={`${montserrat.variable} ${playfair.variable}`}>
       <body className="antialiased bg-[#F7F2EC] text-[#4A3A33] selection:bg-[#8FC1BB] selection:text-[#4A3A33] font-sans">
         {children}
       </body>

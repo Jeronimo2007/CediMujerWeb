@@ -70,11 +70,11 @@ export default function Home() {
         {currentView === "calculator" ? (
           <motion.div
             key="calculator-view"
-            initial={{ opacity: 0, scale: 0.96, filter: "blur(6px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.96, filter: "blur(6px)" }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="pt-24 min-h-screen"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="pt-20 sm:pt-24 min-h-screen"
           >
             <GestationalCalculator
               onOpenAppointment={(srv) => handleOpenAppointment(srv)}
@@ -87,110 +87,107 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            {/* Hero Section with Walk-In Immersion Effect */}
+            {/* Hero Section */}
             <Hero
               onOpenAppointment={() => handleOpenAppointment()}
               onOpenCalculator={handleOpenCalculator}
             />
 
-            <motion.div
-              initial={{ opacity: 0, y: 160 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.01 }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-20 bg-[#F7F2EC] rounded-t-[2.5rem] shadow-[0_-30px_60px_rgba(74,58,51,0.15)]"
-            >
-            {/* Expanding Square Portal Divider #1 */}
-            <SquareTransitionPortal
-              badge="Acreditación Internacional"
-              title="Respaldados por los Mejores Estándares Médicos"
-              subtitle="Nuestros procesos de diagnóstico cuentan con certificación de calidad internacional ISO 9001."
-              fromColor="#F7F2EC"
-              toColor="#EBCFC6"
-            />
+            <div className="relative z-20 bg-[#F7F2EC] rounded-t-[2rem] sm:rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(74,58,51,0.12)]">
+              {/* Expanding Square Portal Divider #1 */}
+              <SquareTransitionPortal
+                badge="Acreditación Internacional"
+                title="Respaldados por los Mejores Estándares Médicos"
+                subtitle="Nuestros procesos de diagnóstico cuentan con certificación de calidad internacional ISO 9001."
+                fromColor="#F7F2EC"
+                toColor="#EBCFC6"
+              />
 
-            {/* Certifications Infinite Scroll Marquee */}
-            <CertificationsMarquee />
+              {/* Certifications Infinite Scroll Marquee */}
+              <CertificationsMarquee />
 
-            {/* Sobre CediMujer wrapped in Zoom Square Portal */}
-            <ZoomSquarePortal id="nosotros" bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-              <About />
-            </ZoomSquarePortal>
+              {/* Sobre CediMujer wrapped in Zoom Square Portal */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+                <About />
+              </ZoomSquarePortal>
 
-            {/* Expanding Square Portal Divider #2 */}
-            <SquareTransitionPortal
-              badge="Tecnología de Vanguardia"
-              title="Ultrasonografía 3D / 4D en Alta Definición"
-              subtitle="Imágenes nítidas en tiempo real para el seguimiento morfológico del bebé y la prevención ginecológica."
-              fromColor="#E6D9C8"
-              toColor="#CFE6E2"
-            />
+              {/* Expanding Square Portal Divider #2 */}
+              <SquareTransitionPortal
+                badge="Tecnología de Vanguardia"
+                title="Ultrasonografía 3D / 4D en Alta Definición"
+                subtitle="Imágenes nítidas en tiempo real para el seguimiento morfológico del bebé y la prevención ginecológica."
+                fromColor="#E6D9C8"
+                toColor="#CFE6E2"
+              />
 
-            {/* Grid de Servicios Médicos wrapped in Zoom Square Portal */}
-            <ZoomSquarePortal id="servicios" bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
-              <Services onSelectService={(serviceName) => handleOpenAppointment(serviceName)} />
-            </ZoomSquarePortal>
+              {/* Grid de Servicios Médicos wrapped in Zoom Square Portal */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
+                <Services onSelectService={(serviceName) => handleOpenAppointment(serviceName)} />
+              </ZoomSquarePortal>
 
-            {/* Galería de Salas & Equipos Clínicos */}
-            <ZoomSquarePortal id="instalaciones" bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-              <FacilitiesGallery />
-            </ZoomSquarePortal>
+              {/* Galería de Salas & Equipos Clínicos */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+                <FacilitiesGallery />
+              </ZoomSquarePortal>
 
-            {/* Cifras / Impacto Stats Reveal wrapped in Zoom Square Portal */}
-            <ZoomSquarePortal id="impacto" bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-              <ImpactStats />
-            </ZoomSquarePortal>
+              {/* Cifras / Impacto Stats Reveal wrapped in Zoom Square Portal */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+                <ImpactStats />
+              </ZoomSquarePortal>
 
-            {/* Banner Call-To-Action to Gestational Calculator right in the page flow */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-              <div className="relative rounded-3xl bg-gradient-to-r from-[#CFE6E2] via-[#EBCFC6] to-[#E6D9C8] p-8 sm:p-12 border border-[#8FC1BB]/40 shadow-xl overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="max-w-xl text-left">
-                  <span className="inline-block px-3 py-1 rounded-full bg-white/70 text-xs font-black text-[#4A3A33] uppercase tracking-wider mb-3">
-                    Herramienta Especializada
-                  </span>
-                  <h3 className="text-2xl sm:text-4xl font-black text-[#4A3A33] tracking-tight">
-                    ¿Estás en la dulce espera? Calcula tus semanas de gestación
-                  </h3>
-                  <p className="mt-3 text-sm sm:text-base text-[#4A3A33] font-semibold leading-relaxed">
-                    Accede a nuestra calculadora obstétrica para conocer tu fecha probable de parto, evolución semana a semana y las ecografías recomendadas por CediMujer.
-                  </p>
+              {/* Banner Call-To-Action to Gestational Calculator right in the page flow */}
+              <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="relative rounded-3xl bg-gradient-to-r from-[#CFE6E2] via-[#EBCFC6] to-[#E6D9C8] p-6 sm:p-12 border border-[#8FC1BB]/40 shadow-xl overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
+                  <div className="max-w-xl text-center md:text-left">
+                    <span className="inline-block px-3 py-1 rounded-full bg-white/75 text-xs font-black text-[#4A3A33] uppercase tracking-wider mb-3">
+                      Herramienta Especializada
+                    </span>
+                    <h3 className="text-2xl sm:text-4xl font-black text-[#4A3A33] tracking-tight">
+                      ¿Estás en la dulce espera? Calcula tus semanas de gestación
+                    </h3>
+                    <p className="mt-3 text-sm sm:text-base text-[#4A3A33] font-semibold leading-relaxed">
+                      Accede a nuestra calculadora obstétrica para conocer tu fecha probable de parto, evolución semana a semana y las ecografías recomendadas por CediMujer.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleOpenCalculator}
+                    className="w-full md:w-auto px-7 py-4 rounded-full bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-[#F7F2EC] font-black text-sm sm:text-base shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 shrink-0 border border-[#4A3A33]"
+                  >
+                    Abrir Calculadora Gestacional →
+                  </button>
                 </div>
-                <button
-                  onClick={handleOpenCalculator}
-                  className="px-8 py-4 rounded-full bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-[#F7F2EC] font-black text-sm sm:text-base shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 shrink-0 border border-[#4A3A33]"
-                >
-                  Abrir Calculadora Gestacional →
-                </button>
-              </div>
-            </section>
+              </section>
 
-            {/* Testimonios Reales wrapped in Zoom Square Portal */}
-            <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#EBCFC6">
-              <Testimonials />
-            </ZoomSquarePortal>
+              {/* Testimonios Reales wrapped in Zoom Square Portal */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#EBCFC6">
+                <Testimonials />
+              </ZoomSquarePortal>
 
-            {/* Expanding Square Portal Divider #3 */}
-            <SquareTransitionPortal
-              badge="Fácil Acceso & Parqueadero"
-              title="Visita Nuestra Sede en la Zona Médica"
-              subtitle="Instalaciones modernas diseñadas para brindarte máxima comodidad, privacidad y atención inmediata."
-              fromColor="#EBCFC6"
-              toColor="#CFE6E2"
-            />
+              {/* Expanding Square Portal Divider #3 */}
+              <SquareTransitionPortal
+                badge="Fácil Acceso & Parqueadero"
+                title="Visita Nuestra Sede en la Zona Médica"
+                subtitle="Instalaciones modernas diseñadas para brindarte máxima comodidad, privacidad y atención inmediata."
+                fromColor="#EBCFC6"
+                toColor="#CFE6E2"
+              />
 
-            {/* Location Map Section wrapped in Zoom Square Portal */}
-            <ZoomSquarePortal id="ubicacion" bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-              <LocationMap />
-            </ZoomSquarePortal>
-            </motion.div>
+              {/* Location Map Section wrapped in Zoom Square Portal */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+                <LocationMap />
+              </ZoomSquarePortal>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Footer & Contact info */}
-      <Footer />
+      <Footer
+        onNavigateHome={handleNavigateHome}
+        onOpenCalculator={handleOpenCalculator}
+      />
 
       {/* Interactive Appointment Modal */}
       <AppointmentModal

@@ -32,10 +32,10 @@ export const InstitutionalPhilosophy: React.FC = () => {
   ];
 
   return (
-    <div id="filosofia" className="mt-20 pt-16 border-t border-[#E6D9C8]">
+    <div id="filosofia" className="scroll-mt-24 mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-[#E6D9C8]">
       {/* Header Badge & Title */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#CFE6E2]/50 border border-[#8FC1BB]/40 text-[#4A3A33] text-xs font-bold uppercase tracking-wider mb-4 shadow-xs">
+      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#CFE6E2]/50 border border-[#8FC1BB]/40 text-[#4A3A33] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-[#8FC1BB]" />
           <span>Nuestra Identidad Institucional</span>
         </div>
@@ -48,41 +48,41 @@ export const InstitutionalPhilosophy: React.FC = () => {
       </div>
 
       {/* Interactive Tabs Selector */}
-      <div className="flex justify-center mb-10">
-        <div className="inline-flex p-1.5 rounded-full bg-[#E6D9C8]/60 border border-[#E6D9C8] gap-1 sm:gap-2 shadow-inner">
+      <div className="flex justify-center mb-8 sm:mb-10">
+        <div className="flex flex-wrap sm:inline-flex justify-center p-1.5 rounded-2xl sm:rounded-full bg-[#E6D9C8]/60 border border-[#E6D9C8] gap-1.5 sm:gap-2 shadow-inner w-full sm:w-auto">
           <button
             onClick={() => setActiveTab("mision")}
-            className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
               activeTab === "mision"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-102"
+                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
                 : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
             }`}
           >
-            <Compass className="w-4 h-4" />
+            <Compass className="w-4 h-4 shrink-0" />
             <span>Misión</span>
           </button>
 
           <button
             onClick={() => setActiveTab("vision")}
-            className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
               activeTab === "vision"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-102"
+                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
                 : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
             }`}
           >
-            <Target className="w-4 h-4" />
+            <Target className="w-4 h-4 shrink-0" />
             <span>Visión 2030</span>
           </button>
 
           <button
             onClick={() => setActiveTab("valores")}
-            className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
               activeTab === "valores"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-102"
+                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
                 : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
             }`}
           >
-            <HeartHandshake className="w-4 h-4" />
+            <HeartHandshake className="w-4 h-4 shrink-0" />
             <span>Valores & Actitudes</span>
           </button>
         </div>
@@ -98,11 +98,11 @@ export const InstitutionalPhilosophy: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="bg-[#F7F2EC] rounded-3xl p-8 sm:p-12 border border-[#E6D9C8] shadow-lg relative overflow-hidden"
+              className="bg-[#F7F2EC] rounded-3xl p-6 sm:p-12 border border-[#E6D9C8] shadow-lg relative overflow-hidden"
             >
-              <div className="flex flex-col lg:flex-row items-start gap-8">
-                <div className="w-16 h-16 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center shrink-0 shadow-md">
-                  <Compass className="w-8 h-8" />
+              <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center shrink-0 shadow-md">
+                  <Compass className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
                 <div className="space-y-4 flex-1">
                   <span className="text-xs font-bold uppercase tracking-widest text-[#8FC1BB]">
@@ -111,11 +111,11 @@ export const InstitutionalPhilosophy: React.FC = () => {
                   <h4 className="text-xl sm:text-2xl font-black text-[#4A3A33] leading-snug">
                     Nuestra Misión
                   </h4>
-                  <p className="text-base sm:text-lg text-[#4A3A33] font-semibold leading-relaxed">
+                  <p className="text-sm sm:text-lg text-[#4A3A33] font-semibold leading-relaxed">
                     Brindar servicios especializados en el diagnóstico de salud para las mujeres del área de influencia, con integralidad y calidad, basada en el conocimiento científico, responsabilidad, oportunidad, calidez, comodidad y bajo costo.
                   </p>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-[#E6D9C8]">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-[#E6D9C8]">
                     {["Conocimiento Científico", "Responsabilidad & Oportunidad", "Calidez & Bajo Costo"].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs font-bold text-[#9A7B6C]">
                         <CheckCircle2 className="w-4 h-4 text-[#8FC1BB] shrink-0" />

@@ -1,28 +1,20 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Eye, ShieldCheck, Microscope } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 
 export const FacilitiesGallery: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1.0, 0.98]);
-
   return (
-    <section ref={containerRef} id="instalaciones" className="py-24 bg-[#E6D9C8]/30 text-[#4A3A33] relative overflow-hidden">
-      <motion.div style={{ scale: sectionScale }} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 origin-center">
+    <section id="instalaciones" className="scroll-mt-20 py-16 sm:py-24 bg-[#E6D9C8]/30 text-[#4A3A33] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -83,7 +75,7 @@ export const FacilitiesGallery: React.FC = () => {
               </span>
 
               {/* Quick View Button */}
-              <div className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
+              <div className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shadow-md">
                 <Eye className="w-4 h-4" />
               </div>
 
@@ -109,7 +101,7 @@ export const FacilitiesGallery: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveImage(null)}
-              className="fixed inset-0 z-50 bg-[#4A3A33]/85 md:backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+              className="fixed inset-0 z-50 bg-[#4A3A33]/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
             >
               <motion.div
                 initial={{ scale: 0.95 }}
@@ -138,7 +130,7 @@ export const FacilitiesGallery: React.FC = () => {
           )}
         </AnimatePresence>
 
-      </motion.div>
+      </div>
     </section>
   );
 };

@@ -5,9 +5,23 @@ import Image from "next/image";
 import { Phone, Mail, MapPin, ArrowRight, MessageCircle } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigateHome?: (targetHash?: string) => void;
+  onOpenCalculator?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigateHome, onOpenCalculator }) => {
+  const [newsletterSubscribed, setNewsletterSubscribed] = React.useState(false);
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (onNavigateHome) {
+      e.preventDefault();
+      onNavigateHome(href);
+    }
+  };
+
   return (
-    <footer id="contacto" className="bg-[#4A3A33] text-[#E6D9C8] border-t border-[#9A7B6C]/40 pt-16 pb-12">
+    <footer id="contacto" className="scroll-mt-20 bg-[#4A3A33] text-[#E6D9C8] border-t border-[#9A7B6C]/40 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main 4-Column Grid */}
@@ -15,7 +29,11 @@ export const Footer: React.FC = () => {
           
           {/* Column 1: Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <a href="#inicio" className="flex items-center gap-3 group">
+            <a
+              href="#inicio"
+              onClick={(e) => handleLinkClick(e, "#inicio")}
+              className="flex items-center gap-3 group w-fit"
+            >
               <div className="relative h-12 w-44 sm:w-52 flex items-center bg-[#F7F2EC] px-3 py-1.5 rounded-2xl shadow-md border border-[#8FC1BB]/30 transition-transform group-hover:scale-105">
                 <Image
                   src={ASSETS.logo.primary}
@@ -116,11 +134,26 @@ export const Footer: React.FC = () => {
                 { label: "Acreditaciones", href: "#certificaciones" },
               ].map((item, index) => (
                 <li key={index}>
-                  <a href={item.href} className="hover:text-[#8FC1BB] transition-colors">
+                  <a
+                    href={item.href}
+                    onClick={(e) => handleLinkClick(e, item.href)}
+                    className="hover:text-[#8FC1BB] transition-colors"
+                  >
                     {item.label}
                   </a>
                 </li>
               ))}
+              {onOpenCalculator && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={onOpenCalculator}
+                    className="text-left hover:text-[#8FC1BB] transition-colors text-[#8FC1BB] font-bold"
+                  >
+                    Calculadora Gestacional →
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -149,33 +182,46 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-[#E6D9C8]/80 font-medium">
               Recibe artículos sobre salud preventiva femenina y jornadas de salud.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F2EC] border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-xs font-semibold"
-                />
-                <button
-                  type="submit"
-                  aria-label="Suscribirse al boletín"
-                  className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-[#8FC1BB] text-[#4A3A33] hover:bg-[#8FC1BB]/90 transition-colors"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </form>
+            {newsletterSubscribed ? (
+              <p className="text-xs font-bold text-[#8FC1BB] bg-[#9A7B6C]/20 border border-[#8FC1BB]/40 rounded-xl px-3.5 py-2.5">
+                ✓ ¡Gracias por suscribirte al boletín de CediMujer!
+              </p>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setNewsletterSubscribed(true);
+                }}
+                className="space-y-2"
+              >
+                <div className="relative">
+                  <input
+                    type="email"
+                    required
+                    placeholder="Tu correo electrónico"
+                    className="w-full pl-4 pr-11 py-2.5 rounded-xl bg-[#F7F2EC] border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-xs font-semibold"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Suscribirse al boletín"
+                    className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-[#8FC1BB] text-[#4A3A33] hover:bg-[#8FC1BB]/90 transition-colors"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
 
         </div>
 
         {/* Bottom Disclaimer and Copyright */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#E6D9C8]/70 gap-4 font-semibold">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#E6D9C8]/70 gap-4 font-semibold text-center md:text-left">
           <p>© {new Date().getFullYear()} CediMujer - Centro de Diagnóstico y Salud Integral de la Mujer. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-[#F7F2EC] transition-colors">Términos & Condiciones</a>
-            <a href="#" className="hover:text-[#F7F2EC] transition-colors">Política de Privacidad</a>
-            <a href="#" className="hover:text-[#F7F2EC] transition-colors">Aviso Legal Médico</a>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            <a href="#nosotros" onClick={(e) => handleLinkClick(e, "#nosotros")} className="hover:text-[#F7F2EC] transition-colors">Nuestra Institución</a>
+            <a href="#certificaciones" onClick={(e) => handleLinkClick(e, "#certificaciones")} className="hover:text-[#F7F2EC] transition-colors">Calidad Certificada</a>
+            <a href="#ubicacion" onClick={(e) => handleLinkClick(e, "#ubicacion")} className="hover:text-[#F7F2EC] transition-colors">Sede Sabaneta</a>
           </div>
         </div>
 

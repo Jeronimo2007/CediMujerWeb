@@ -16,8 +16,7 @@ export const About: React.FC = () => {
     offset: ["start end", "end start"],
   });
 
-  const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.0, 0.98]);
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.15, 1.0, 1.12]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.0, 1.08]);
 
   const pillars = [
     {
@@ -38,22 +37,22 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section ref={sectionRef} id="nosotros" className="py-24 bg-[#E6D9C8]/50 text-[#4A3A33] relative overflow-hidden">
+    <section ref={sectionRef} id="nosotros" className="scroll-mt-20 py-16 sm:py-24 bg-[#E6D9C8]/50 text-[#4A3A33] relative overflow-hidden">
       {/* Background Decorative Blob */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#CFE6E2]/30 rounded-full [filter:blur(36px)] pointer-events-none" />
 
-      <motion.div style={{ scale: sectionScale }} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 origin-center relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           
           {/* Left Side: Images & Floating Badge */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.7 }}
             className="lg:col-span-6 relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E6D9C8] group h-[480px] sm:h-[540px]">
+            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E6D9C8] group h-[360px] sm:h-[520px]">
               <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
                 <Image
                   src={ASSETS.about.mainImage}
@@ -165,7 +164,7 @@ export const About: React.FC = () => {
             </div>
 
             {/* List checklist */}
-            <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 "Consulta Ginecológica Preventiva",
                 "Control Prenatal de Alto Riesgo",
@@ -184,7 +183,7 @@ export const About: React.FC = () => {
 
         {/* Sub-sección Institucional: Misión, Visión 2030 & Valores */}
         <InstitutionalPhilosophy />
-      </motion.div>
+      </div>
     </section>
   );
 };

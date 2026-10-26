@@ -95,7 +95,7 @@ export const ImpactStats: React.FC = () => {
   ];
 
   return (
-    <section id="impacto" className="py-24 bg-[#E6D9C8]/40 text-[#4A3A33] relative">
+    <section id="impacto" className="scroll-mt-20 py-16 sm:py-24 bg-[#E6D9C8]/40 text-[#4A3A33] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

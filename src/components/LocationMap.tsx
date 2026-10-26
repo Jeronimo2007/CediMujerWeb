@@ -1,24 +1,15 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { MapPin, Navigation, Clock, Phone, ExternalLink, ShieldCheck, Compass, Star } from "lucide-react";
 
 export const LocationMap: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const mapScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.0, 1.1]);
-
   const mapEmbedUrl =
     "https://maps.google.com/maps?q=CC+Aves+Maria+Parque+Comercial,+Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia&t=&z=16&ie=UTF8&iwloc=&output=embed";
 
   return (
-    <section ref={containerRef} id="ubicacion" className="py-24 bg-[#F7F2EC] text-[#4A3A33] relative overflow-hidden">
+    <section id="ubicacion" className="scroll-mt-20 py-16 sm:py-24 bg-[#F7F2EC] text-[#4A3A33] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Title */}
@@ -145,40 +136,40 @@ export const LocationMap: React.FC = () => {
             </div>
 
             {/* Navigation Action Buttons */}
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 pt-1">
               <a
                 href="https://maps.google.com/?q=CC+Aves+Maria+Parque+Comercial,+Cl.+75+Sur+%2343+A+-202,+Sabaneta,+Antioquia"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-md border border-[#8FC1BB]"
+                className="py-3 px-3 sm:px-4 rounded-xl bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 shadow-md border border-[#8FC1BB] whitespace-nowrap"
               >
-                <Navigation className="w-4 h-4" />
+                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Google Maps</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
               </a>
 
               <a
                 href="https://waze.com/ul?q=Aves+Maria+Parque+Comercial+Sabaneta"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl bg-[#F7F2EC] hover:bg-[#E6D9C8] text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-2 transition-all duration-300 border border-[#E6D9C8]"
+                className="py-3 px-3 sm:px-4 rounded-xl bg-[#F7F2EC] hover:bg-[#E6D9C8] text-[#4A3A33] font-extrabold text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 border border-[#E6D9C8] whitespace-nowrap"
               >
-                <Navigation className="w-4 h-4 text-[#8FC1BB]" />
+                <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#8FC1BB] shrink-0" />
                 <span>Abrir en Waze</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
               </a>
             </div>
           </motion.div>
 
-          {/* Right Map Canvas with Scroll Zoom Effect */}
+          {/* Right Map Canvas */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="lg:col-span-7 relative h-[480px] sm:h-[560px] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-xl group"
+            className="lg:col-span-7 relative h-[360px] sm:h-[480px] lg:h-[560px] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-xl group"
           >
-            <motion.div style={{ scale: mapScale }} className="w-full h-full relative">
+            <div className="w-full h-full relative">
               <iframe
                 title="Ubicación CediMujer"
                 src={mapEmbedUrl}
@@ -186,7 +177,7 @@ export const LocationMap: React.FC = () => {
                 loading="lazy"
                 allowFullScreen
               />
-            </motion.div>
+            </div>
 
             {/* Floating Location Marker Card Overlay */}
             <div className="absolute bottom-6 left-6 right-6 sm:right-auto sm:max-w-xs bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-4 rounded-2xl shadow-xl flex items-center gap-3 z-10">

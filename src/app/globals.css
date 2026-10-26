@@ -2,15 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font-face declaration for Morisawa Role Serif Text Pro
-   If local .woff2 / .woff files are provided, they can be placed in /public/assets/fonts/ */
+/* Font-face declaration for Morisawa Role Serif Text Pro (uses local font if installed, with Playfair Display fallback) */
 @font-face {
   font-family: "Morisawa Role Serif Text Pro";
   src: local("Morisawa Role Serif Text Pro"),
        local("Role Serif Text Pro"),
-       local("RoleSerifTextPro-Regular"),
-       url("/assets/fonts/RoleSerifTextPro-Regular.woff2") format("woff2"),
-       url("/assets/fonts/RoleSerifTextPro-Regular.woff") format("woff");
+       local("RoleSerifTextPro-Regular");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -20,9 +17,7 @@
   font-family: "Morisawa Role Serif Text Pro";
   src: local("Morisawa Role Serif Text Pro Bold"),
        local("Role Serif Text Pro Bold"),
-       local("RoleSerifTextPro-Bold"),
-       url("/assets/fonts/RoleSerifTextPro-Bold.woff2") format("woff2"),
-       url("/assets/fonts/RoleSerifTextPro-Bold.woff") format("woff");
+       local("RoleSerifTextPro-Bold");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -37,7 +32,7 @@
   --turquesa-salvia: #8FC1BB;
   --moka: #9A7B6C;
   --cacao: #4A3A33;
-  --font-title: "Morisawa Role Serif Text Pro", "Role Serif Text Pro", "Role Serif", "Playfair Display", Baskerville, Georgia, serif;
+  --font-title: "Morisawa Role Serif Text Pro", "Role Serif Text Pro", "Role Serif", var(--font-playfair), "Playfair Display", Baskerville, Georgia, serif;
 }
 
 html {

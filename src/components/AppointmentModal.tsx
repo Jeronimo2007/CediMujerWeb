@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, User, Mail, Phone, CheckCircle2, Server } from "lucide-react";
@@ -30,6 +30,32 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   const [backendStatus, setBackendStatus] = useState<string | null>(null);
   const [loadingBackend, setLoadingBackend] = useState(false);
 
+  // Sync selected service when modal opens from a specific service card or calculator
+  useEffect(() => {
+    if (initialService) {
+      const normalized =
+        initialService === "Ecografía Obstétrica 3D / 4D"
+          ? "Ecografía 3D / 4D HD"
+          : initialService;
+      setFormData((prev) => ({ ...prev, servicio: normalized }));
+    }
+  }, [initialService, isOpen]);
+
+  // Close on Escape key & prevent background scroll when open
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen, onClose]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
@@ -53,26 +79,32 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4A3A33]/80 md:backdrop-blur-sm">
+      <div
+        onClick={onClose}
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#4A3A33]/80 backdrop-blur-sm overflow-y-auto"
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="relative w-full max-w-xl bg-[#F7F2EC] border border-[#E6D9C8] rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden [transform:translateZ(0)]"
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-xl max-h-[92dvh] overflow-y-auto bg-[#F7F2EC] border border-[#E6D9C8] rounded-3xl p-5 sm:p-8 shadow-2xl [transform:translateZ(0)]"
         >
-          {/* Close Button */}
+          {/* Sticky Close Button */}
           <button
+            type="button"
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-[#E6D9C8] text-[#4A3A33] hover:bg-[#EBCFC6] transition-colors"
+            aria-label="Cerrar ventana"
+            className="sticky top-0 float-right z-20 p-2 rounded-full bg-[#E6D9C8] text-[#4A3A33] hover:bg-[#EBCFC6] transition-colors shadow-sm"
           >
             <X className="w-5 h-5" />
           </button>
 
           {!submitted ? (
             <div>
-              <div className="flex items-center justify-between mb-4 pr-8">
-                <div className="relative h-10 w-36 sm:w-44">
+              <div className="flex items-center justify-between mb-3 pr-10">
+                <div className="relative h-9 w-32 sm:h-10 sm:w-40">
                   <Image
                     src={ASSETS.logo.primary}
                     alt="Logo CediMujer"
@@ -83,19 +115,19 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2.5 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] shadow-md">
-                  <Calendar className="w-6 h-6" />
+                <div className="p-2.5 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] shadow-md shrink-0">
+                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-extrabold text-[#4A3A33]">Agendar Cita Médica</h3>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-[#4A3A33]">Agendar Cita Médica</h3>
                   <p className="text-xs text-[#9A7B6C] font-semibold">Selecciona tu servicio y horario preferido</p>
                 </div>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <form onSubmit={handleSubmit} className="mt-4 sm:mt-5 space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                     Nombre Completo
                   </label>
                   <div className="relative">
@@ -103,7 +135,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="Ej. Dra. María González"
+                      placeholder="Ej. María González"
                       value={formData.nombre}
                       onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
@@ -111,9 +143,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                       Correo Electrónico
                     </label>
                     <div className="relative">
@@ -130,7 +162,7 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                       Teléfono / WhatsApp
                     </label>
                     <div className="relative">
@@ -147,9 +179,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                       Servicio de Interés
                     </label>
                     <select
@@ -162,12 +194,12 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                       <option value="Ecografía 3D / 4D HD">Ecografía 3D / 4D HD</option>
                       <option value="Mastología & Salud Mamaria">Mastología & Salud Mamaria</option>
                       <option value="Endocrinología Femenina">Endocrinología Femenina</option>
-                      <option value="Cirugía Mínimamente Invasiva">Cirugía Mínimamente Invasiva</option>
+                      <option value="Cirugía Ginecológica Avanzada">Cirugía Ginecológica Avanzada</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                       Fecha Preferida
                     </label>
                     <input
@@ -181,30 +213,31 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                     Observaciones o Síntomas (Opcional)
                   </label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     placeholder="Describe brevemente el motivo de tu consulta..."
                     value={formData.mensaje}
                     onChange={(e) => setFormData({ ...formData, mensaje: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
+                    className="w-full px-4 py-2 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
                   ></textarea>
                 </div>
 
                 {/* Submit Action */}
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 text-[#4A3A33] font-extrabold text-sm shadow-md shadow-[#8FC1BB]/30 hover:scale-[1.02] active:scale-95 transition-all duration-300 border border-[#8FC1BB]"
+                  className="w-full py-3.5 rounded-2xl bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 text-[#4A3A33] font-extrabold text-sm shadow-md shadow-[#8FC1BB]/30 hover:scale-[1.01] active:scale-95 transition-all duration-300 border border-[#8FC1BB]"
                 >
                   Confirmar Solicitud de Cita
                 </button>
               </form>
 
               {/* Backend Test Connection */}
-              <div className="mt-6 pt-4 border-t border-[#E6D9C8] flex flex-col gap-2">
+              <div className="mt-4 pt-3.5 border-t border-[#E6D9C8] flex flex-col gap-2">
                 <button
+                  type="button"
                   onClick={testBackendConnection}
                   disabled={loadingBackend}
                   className="w-full py-2 px-3 rounded-xl bg-[#E6D9C8] hover:bg-[#EBCFC6] text-xs font-mono text-[#4A3A33] font-bold flex items-center justify-center gap-2 border border-[#E6D9C8]"

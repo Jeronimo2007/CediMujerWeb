@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -45,6 +45,7 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
   const [cycleDays, setCycleDays] = useState<number>(28);
   const [result, setResult] = useState<GestationalResult | null>(null);
   const [error, setError] = useState<string>("");
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString("es-ES", {
@@ -206,6 +207,12 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
         approxWeight,
         approxLength,
       });
+
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
+        setTimeout(() => {
+          resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 120);
+      }
     } catch {
       setError("Ocurrió un error al calcular. Por favor verifica la información.");
     }
@@ -219,9 +226,9 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
   };
 
   return (
-    <section id="calculadora" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="calculadora" className="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header Badge & Title */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
+      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EBCFC6]/60 border border-[#D7A7A8]/40 text-[#4A3A33] text-xs font-bold mb-4 shadow-sm">
           <Baby className="w-4 h-4 text-[#8FC1BB]" />
           <span>Herramienta Obstétrica CediMujer</span>
@@ -229,15 +236,15 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
         <h2 className="text-3xl sm:text-5xl font-black text-[#4A3A33] tracking-tight">
           Calculadora Gestacional & Semanas de Embarazo
         </h2>
-        <p className="mt-4 text-base sm:text-lg text-[#9A7B6C] font-semibold leading-relaxed">
+        <p className="mt-4 text-sm sm:text-lg text-[#9A7B6C] font-semibold leading-relaxed">
           Conoce en qué semana de gestación te encuentras, tu fecha probable de parto y los estudios de diagnóstico recomendados para cada etapa.
         </p>
 
         {onBackToHome && (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <button
               onClick={onBackToHome}
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#8FC1BB] hover:text-[#4A3A33] bg-[#E6D9C8]/50 px-4 py-2 rounded-full border border-[#9A7B6C]/20 transition-colors"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#4A3A33] hover:text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#8FC1BB]/40 px-4 py-2 rounded-full border border-[#9A7B6C]/30 transition-colors shadow-sm"
             >
               <span>← Volver a la vista principal</span>
             </button>
@@ -247,7 +254,7 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Form: Data input */}
-        <div className="lg:col-span-5 bg-[#F7F2EC] rounded-3xl p-6 sm:p-8 border border-[#E6D9C8] shadow-xl">
+        <div className="lg:col-span-5 bg-[#F7F2EC] rounded-3xl p-5 sm:p-8 border border-[#E6D9C8] shadow-xl">
           <div className="flex rounded-2xl bg-[#E6D9C8]/60 p-1 mb-6 border border-[#E6D9C8]">
             <button
               type="button"
@@ -255,7 +262,7 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
                 setCalculationMode("fur");
                 setResult(null);
               }}
-              className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              className={`flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 calculationMode === "fur"
                   ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md"
                   : "text-[#9A7B6C] hover:text-[#4A3A33]"
@@ -269,7 +276,7 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
                 setCalculationMode("eco");
                 setResult(null);
               }}
-              className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              className={`flex-1 py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 calculationMode === "eco"
                   ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md"
                   : "text-[#9A7B6C] hover:text-[#4A3A33]"
@@ -287,14 +294,14 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
                     Primer día de la última menstruación (FUR)
                   </label>
                   <div className="relative">
+                    <CalendarDays className="absolute left-3.5 top-3.5 w-4 h-4 text-[#9A7B6C] pointer-events-none" />
                     <input
                       type="date"
                       value={furDate}
                       onChange={(e) => setFurDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl bg-white border border-[#E6D9C8] text-[#4A3A33] font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#8FC1BB] focus:border-transparent transition-all"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-[#E6D9C8] text-[#4A3A33] font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#8FC1BB] focus:border-transparent transition-all"
                       required
                     />
-                    <CalendarDays className="absolute right-4 top-3.5 w-5 h-5 text-[#9A7B6C] pointer-events-none" />
                   </div>
                   <p className="mt-1.5 text-xs text-[#9A7B6C]">
                     Introduce la fecha exacta del primer día de tu última regla.
@@ -302,11 +309,11 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
                 </div>
 
                 <div>
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="flex justify-between items-center gap-2 mb-2">
                     <label className="text-xs font-bold text-[#4A3A33] uppercase tracking-wider">
                       Duración del ciclo menstrual
                     </label>
-                    <span className="text-xs font-black text-[#8FC1BB] bg-[#CFE6E2]/40 px-2 py-0.5 rounded-md">
+                    <span className="text-xs font-black text-[#4A3A33] bg-[#8FC1BB]/40 border border-[#8FC1BB] px-2.5 py-0.5 rounded-md shrink-0 whitespace-nowrap">
                       {cycleDays} días
                     </span>
                   </div>
@@ -332,14 +339,14 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
                     Fecha en que se realizó la ecografía
                   </label>
                   <div className="relative">
+                    <CalendarDays className="absolute left-3.5 top-3.5 w-4 h-4 text-[#9A7B6C] pointer-events-none" />
                     <input
                       type="date"
                       value={ecoDate}
                       onChange={(e) => setEcoDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl bg-white border border-[#E6D9C8] text-[#4A3A33] font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#8FC1BB] focus:border-transparent transition-all"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-[#E6D9C8] text-[#4A3A33] font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#8FC1BB] focus:border-transparent transition-all"
                       required
                     />
-                    <CalendarDays className="absolute right-4 top-3.5 w-5 h-5 text-[#9A7B6C] pointer-events-none" />
                   </div>
                 </div>
 
@@ -418,7 +425,7 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
         </div>
 
         {/* Right Output: Interactive Results */}
-        <div className="lg:col-span-7">
+        <div ref={resultRef} className="lg:col-span-7 scroll-mt-24">
           <AnimatePresence mode="wait">
             {result ? (
               <motion.div
@@ -455,12 +462,12 @@ export const GestationalCalculator: React.FC<GestationalCalculatorProps> = ({
 
                   {/* Progress Bar 40 weeks */}
                   <div className="mb-6">
-                    <div className="flex justify-between text-xs font-bold text-[#9A7B6C] mb-2">
-                      <span>Semana 1</span>
-                      <span className="text-[#4A3A33] font-black">
-                        {Math.min(100, Math.round((result.currentWeeks / 40) * 100))}% del embarazo completado
+                    <div className="flex justify-between items-center gap-2 text-xs font-bold text-[#9A7B6C] mb-2">
+                      <span className="whitespace-nowrap">Semana 1</span>
+                      <span className="text-[#4A3A33] font-black text-center">
+                        {Math.min(100, Math.round((result.currentWeeks / 40) * 100))}% <span className="hidden sm:inline">del embarazo </span>completado
                       </span>
-                      <span>Semana 40</span>
+                      <span className="whitespace-nowrap">Semana 40</span>
                     </div>
                     <div className="w-full h-3 bg-[#E6D9C8] rounded-full overflow-hidden p-0.5">
                       <motion.div

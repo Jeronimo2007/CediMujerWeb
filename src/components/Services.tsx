@@ -27,8 +27,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
     offset: ["start end", "end start"],
   });
 
-  const gridScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.94, 1.0, 0.96]);
-  const imageZoom = useTransform(scrollYProgress, [0, 0.5, 1], [1.2, 1.0, 1.15]);
+  const imageZoom = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.0, 1.08]);
 
   const serviceList = [
     {
@@ -106,7 +105,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   ];
 
   return (
-    <section ref={containerRef} id="servicios" className="py-24 bg-[#F7F2EC] text-[#4A3A33] relative">
+    <section ref={containerRef} id="servicios" className="scroll-mt-20 py-16 sm:py-24 bg-[#F7F2EC] text-[#4A3A33] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
@@ -142,46 +141,48 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
         </div>
 
         {/* Services Cards Grid */}
-        <motion.div style={{ scale: gridScale }} className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 origin-center">
+        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {serviceList.map((service, index) => {
             const IconComponent = service.icon;
             return (
               <motion.div
                 key={service.id}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
                 className={`group relative ${service.bgColor} rounded-3xl overflow-hidden border ${service.borderColor} hover:border-[#8FC1BB] shadow-md hover:shadow-lg transition-all duration-300 flex flex-col justify-between`}
               >
                 <div>
-                  {/* Card Banner Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <motion.div style={{ scale: imageZoom }} className="w-full h-full relative">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        decoding="async"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover filter brightness-95 transition-all duration-300"
-                      />
-                    </motion.div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/50 via-transparent to-transparent pointer-events-none" />
-                    
-                    {/* Category Tag */}
-                    <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#F7F2EC] md:bg-[#F7F2EC]/90 text-[11px] font-bold text-[#4A3A33] border border-[#E6D9C8]">
-                      {service.category}
-                    </span>
+                  {/* Card Banner Image Wrapper (allows icon badge to overlap bottom edge cleanly) */}
+                  <div className="relative">
+                    <div className="relative h-48 overflow-hidden">
+                      <motion.div style={{ scale: imageZoom }} className="w-full h-full relative">
+                        <Image
+                          src={service.image}
+                          alt={service.title}
+                          fill
+                          decoding="async"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover filter brightness-95 transition-all duration-300"
+                        />
+                      </motion.div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/50 via-transparent to-transparent pointer-events-none" />
+                      
+                      {/* Category Tag */}
+                      <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#F7F2EC]/95 text-[11px] font-bold text-[#4A3A33] border border-[#E6D9C8] shadow-sm">
+                        {service.category}
+                      </span>
+                    </div>
 
-                    {/* Icon Badge */}
-                    <div className="absolute -bottom-5 right-6 w-12 h-12 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md group-hover:scale-110 transition-transform border border-[#8FC1BB]">
+                    {/* Icon Badge (Positioned outside overflow-hidden so it is never clipped) */}
+                    <div className="absolute -bottom-5 right-6 z-10 w-12 h-12 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md group-hover:scale-110 transition-transform border-2 border-[#F7F2EC]">
                       <IconComponent className="w-6 h-6" />
                     </div>
                   </div>
 
                   {/* Card Content */}
-                  <div className="p-6 sm:p-8">
+                  <div className="p-6 sm:p-8 pt-8 sm:pt-9">
                     <h3 className="text-xl font-bold text-[#4A3A33] group-hover:text-[#8FC1BB] transition-colors">
                       {service.title}
                     </h3>
@@ -216,7 +217,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

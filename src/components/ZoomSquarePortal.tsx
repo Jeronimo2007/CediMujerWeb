@@ -25,12 +25,11 @@ export const ZoomSquarePortal: React.FC<ZoomSquarePortalProps> = ({
     offset: ["start end", "end start"],
   });
 
-  const squareScale = useTransform(scrollYProgress, [0, 0.4, 0.7, 1], [0.94, 1.0, 1.02, 0.96]);
-  const squareRadius = useTransform(scrollYProgress, [0, 0.4, 0.7, 1], ["32px", "20px", "0px", "24px"]);
-  const innerZoom = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.96, 1.0, 1.02, 0.97]);
+  const squareScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.985, 1.0, 1.0, 0.99]);
+  const squareRadius = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], ["28px", "24px", "24px", "28px"]);
 
   return (
-    <section ref={sectionRef} id={id} className={`relative py-8 overflow-hidden ${className}`}>
+    <div ref={sectionRef} id={id} className={`relative py-4 sm:py-8 px-2 sm:px-4 overflow-hidden ${className}`}>
       {/* Background Color Shift Portal Container */}
       <motion.div
         style={{
@@ -48,16 +47,16 @@ export const ZoomSquarePortal: React.FC<ZoomSquarePortalProps> = ({
         />
 
         {/* Square Portal Glow Ring Effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#CFE6E2]/35 [filter:blur(36px)] pointer-events-none z-0" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[500px] h-[320px] sm:h-[500px] rounded-full bg-[#CFE6E2]/35 [filter:blur(36px)] pointer-events-none z-0" />
 
         {/* Square Frame Decorative Border Line */}
         <div className="absolute inset-0 border border-[#8FC1BB]/30 rounded-[inherit] pointer-events-none z-10" />
 
-        {/* Inner Content Zooming with Camera Progress */}
-        <motion.div style={{ scale: innerZoom }} className="relative z-10 w-full origin-center">
+        {/* Inner Content */}
+        <div className="relative z-10 w-full">
           {children}
-        </motion.div>
+        </div>
       </motion.div>
-    </section>
+    </div>
   );
 };
