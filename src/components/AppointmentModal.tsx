@@ -3,8 +3,23 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, User, Mail, Phone, CheckCircle2, Server } from "lucide-react";
+import {
+  X,
+  Calendar,
+  User,
+  Mail,
+  Phone,
+  CheckCircle2,
+  MessageCircle,
+  MapPin,
+} from "lucide-react";
 import { ASSETS } from "@/config/assets";
+import {
+  CONTACT_INFO,
+  EMBARAZO_SERVICES,
+  GINECOLOGIA_SERVICES,
+  TELEMEDICINA_SERVICES,
+} from "@/config/cedimujerContent";
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -15,7 +30,7 @@ interface AppointmentModalProps {
 export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   isOpen,
   onClose,
-  initialService = "Ginecología Integral",
+  initialService = "Consulta Ginecológica",
 }) => {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -27,21 +42,13 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [backendStatus, setBackendStatus] = useState<string | null>(null);
-  const [loadingBackend, setLoadingBackend] = useState(false);
 
-  // Sync selected service when modal opens from a specific service card or calculator
   useEffect(() => {
     if (initialService) {
-      const normalized =
-        initialService === "Ecografía Obstétrica 3D / 4D"
-          ? "Ecografía 3D / 4D HD"
-          : initialService;
-      setFormData((prev) => ({ ...prev, servicio: normalized }));
+      setFormData((prev) => ({ ...prev, servicio: initialService }));
     }
   }, [initialService, isOpen]);
 
-  // Close on Escape key & prevent background scroll when open
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -61,21 +68,52 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
     setSubmitted(true);
   };
 
-  const testBackendConnection = async () => {
-    setLoadingBackend(true);
-    setBackendStatus(null);
-    try {
-      const res = await fetch("http://localhost:8000/api/health");
-      const data = await res.json();
-      setBackendStatus(`🟢 ${data.message} (${data.clinic})`);
-    } catch {
-      setBackendStatus("🔴 Error al conectar con el backend (Asegúrate de ejecutar FastAPI en el puerto 8000)");
-    } finally {
-      setLoadingBackend(false);
-    }
-  };
-
   if (!isOpen) return null;
+
+  const allServicesGrouped = [
+    {
+      group: "Embarazo - Consultas y Bienestar Fetal",
+      items: [
+        ...EMBARAZO_SERVICES.consultas.map((s) => s.title),
+        ...EMBARAZO_SERVICES.bienestarFetal.map((s) => s.title),
+        ...EMBARAZO_SERVICES.ecografias.map((s) => s.title),
+      ],
+    },
+    {
+      group: "Ginecología - Ecografías",
+      items: GINECOLOGIA_SERVICES.ecografias.map((s) => s.title),
+    },
+    {
+      group: "Ginecología - Consultas",
+      items: GINECOLOGIA_SERVICES.consultas.map((s) => s.title),
+    },
+    {
+      group: "Ginecología - Tamizajes Preventivos",
+      items: GINECOLOGIA_SERVICES.tamizajes.map((s) => s.title),
+    },
+    {
+      group: "Ginecología - Procedimientos",
+      items: GINECOLOGIA_SERVICES.procedimientos.map((s) => s.title),
+    },
+    {
+      group: "Telemedicina",
+      items: TELEMEDICINA_SERVICES.map((s) => s.title),
+    },
+  ];
+
+  const flatServiceTitles = allServicesGrouped.flatMap((g) => g.items);
+  const isCustomService =
+    formData.servicio && !flatServiceTitles.includes(formData.servicio);
+
+  const whatsappDirectBookingUrl = `https://wa.me/${
+    CONTACT_INFO.whatsappRaw
+  }?text=${encodeURIComponent(
+    `Hola CediMujer, mi nombre es ${
+      formData.nombre || "[Nombre]"
+    }. Deseo agendar una cita para: ${formData.servicio}${
+      formData.fecha ? ` (Fecha preferida: ${formData.fecha})` : ""
+    }.`
+  )}`;
 
   return (
     <AnimatePresence>
@@ -119,8 +157,13 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                   <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-[#4A3A33]">Agendar Cita Médica</h3>
-                  <p className="text-xs text-[#9A7B6C] font-semibold">Selecciona tu servicio y horario preferido</p>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-[#4A3A33]">
+                    Agendar Cita en CediMujer
+                  </h3>
+                  <p className="text-xs text-[#9A7B6C] font-semibold flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#8FC1BB]" />
+                    <span>{CONTACT_INFO.addressShort} · C.C. Aves María</span>
+                  </p>
                 </div>
               </div>
 
@@ -137,7 +180,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                       required
                       placeholder="Ej. María González"
                       value={formData.nombre}
-                      onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, nombre: e.target.value })
+                      }
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
                     />
                   </div>
@@ -155,7 +200,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                         required
                         placeholder="maria@ejemplo.com"
                         value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
                       />
                     </div>
@@ -170,9 +217,11 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                       <input
                         type="tel"
                         required
-                        placeholder="+57 300 123 4567"
+                        placeholder="+57 311 000 0000"
                         value={formData.telefono}
-                        onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, telefono: e.target.value })
+                        }
                         className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
                       />
                     </div>
@@ -182,19 +231,29 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
-                      Servicio de Interés
+                      Servicio o Procedimiento
                     </label>
                     <select
                       value={formData.servicio}
-                      onChange={(e) => setFormData({ ...formData, servicio: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
+                      onChange={(e) =>
+                        setFormData({ ...formData, servicio: e.target.value })
+                      }
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] focus:outline-none focus:border-[#8FC1BB] text-xs sm:text-sm font-semibold"
                     >
-                      <option value="Ginecología Integral">Ginecología Integral</option>
-                      <option value="Obstetricia & Control Prenatal">Obstetricia & Control Prenatal</option>
-                      <option value="Ecografía 3D / 4D HD">Ecografía 3D / 4D HD</option>
-                      <option value="Mastología & Salud Mamaria">Mastología & Salud Mamaria</option>
-                      <option value="Endocrinología Femenina">Endocrinología Femenina</option>
-                      <option value="Cirugía Ginecológica Avanzada">Cirugía Ginecológica Avanzada</option>
+                      {isCustomService && (
+                        <option value={formData.servicio}>
+                          {formData.servicio}
+                        </option>
+                      )}
+                      {allServicesGrouped.map((grp) => (
+                        <optgroup key={grp.group} label={grp.group}>
+                          {grp.items.map((srv) => (
+                            <option key={srv} value={srv}>
+                              {srv}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
                     </select>
                   </div>
 
@@ -206,7 +265,9 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                       type="date"
                       required
                       value={formData.fecha}
-                      onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, fecha: e.target.value })
+                      }
                       className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
                     />
                   </div>
@@ -214,15 +275,17 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
-                    Observaciones o Síntomas (Opcional)
+                    Observaciones o Semana Gestacional (Opcional)
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Describe brevemente el motivo de tu consulta..."
+                    placeholder="Indica motivo de consulta, semanas de embarazo o especialista de preferencia..."
                     value={formData.mensaje}
-                    onChange={(e) => setFormData({ ...formData, mensaje: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, mensaje: e.target.value })
+                    }
                     className="w-full px-4 py-2 rounded-xl bg-white border border-[#E6D9C8] text-[#4A3A33] placeholder-[#9A7B6C] focus:outline-none focus:border-[#8FC1BB] text-sm font-semibold"
-                  ></textarea>
+                  />
                 </div>
 
                 {/* Submit Action */}
@@ -234,43 +297,60 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
                 </button>
               </form>
 
-              {/* Backend Test Connection */}
-              <div className="mt-4 pt-3.5 border-t border-[#E6D9C8] flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={testBackendConnection}
-                  disabled={loadingBackend}
-                  className="w-full py-2 px-3 rounded-xl bg-[#E6D9C8] hover:bg-[#EBCFC6] text-xs font-mono text-[#4A3A33] font-bold flex items-center justify-center gap-2 border border-[#E6D9C8]"
+              {/* Direct WhatsApp & PBX Contact Bar */}
+              <div className="mt-4 pt-3.5 border-t border-[#E6D9C8] flex flex-col sm:flex-row gap-2">
+                <a
+                  href={whatsappDirectBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-xs text-[#F7F2EC] font-bold flex items-center justify-center gap-2"
                 >
-                  <Server className="w-3.5 h-3.5 text-[#8FC1BB]" />
-                  <span>{loadingBackend ? "Probando conexión con FastAPI..." : "Probar Conexión con Backend FastAPI"}</span>
-                </button>
-
-                {backendStatus && (
-                  <p className="text-xs font-mono text-center p-2 rounded-lg bg-white border border-[#E6D9C8] text-[#4A3A33] font-semibold">
-                    {backendStatus}
-                  </p>
-                )}
+                  <MessageCircle className="w-4 h-4 text-[#8FC1BB]" />
+                  <span>Agendar por WhatsApp ({CONTACT_INFO.whatsappDisplay})</span>
+                </a>
+                <a
+                  href={CONTACT_INFO.pbxTel}
+                  className="py-2.5 px-3 rounded-xl bg-[#E6D9C8] hover:bg-[#EBCFC6] text-xs text-[#4A3A33] font-bold flex items-center justify-center gap-1.5"
+                >
+                  <Phone className="w-3.5 h-3.5 text-[#4A3A33]" />
+                  <span>PBX: {CONTACT_INFO.pbxDisplay}</span>
+                </a>
               </div>
             </div>
           ) : (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-[#CFE6E2] text-[#8FC1BB] flex items-center justify-center mx-auto mb-4 border border-[#8FC1BB]">
+            <div className="text-center py-8 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-[#CFE6E2] text-[#8FC1BB] flex items-center justify-center mx-auto mb-2 border border-[#8FC1BB]">
                 <CheckCircle2 className="w-10 h-10 text-[#8FC1BB]" />
               </div>
-              <h3 className="text-2xl font-extrabold text-[#4A3A33]">¡Solicitud Recibida!</h3>
-              <p className="mt-2 text-sm text-[#9A7B6C] font-semibold max-w-md mx-auto">
-                Gracias, <strong className="text-[#4A3A33]">{formData.nombre}</strong>. Nuestro equipo de admisiones revisará tu solicitud para el servicio de <strong className="text-[#8FC1BB]">{formData.servicio}</strong> y te confirmaremos vía WhatsApp/correo a la brevedad.
+              <h3 className="text-2xl font-extrabold text-[#4A3A33]">
+                ¡Solicitud de Cita Lista!
+              </h3>
+              <p className="text-sm text-[#9A7B6C] font-semibold max-w-md mx-auto">
+                Gracias, <strong className="text-[#4A3A33]">{formData.nombre}</strong>. Hemos registrado tu solicitud para{" "}
+                <strong className="text-[#4A3A33]">{formData.servicio}</strong>. También puedes enviarla directamente a nuestra línea de Asesoría por WhatsApp para confirmación inmediata:
               </p>
-              <button
-                onClick={() => {
-                  setSubmitted(false);
-                  onClose();
-                }}
-                className="mt-6 px-6 py-2.5 rounded-xl bg-[#8FC1BB] text-[#4A3A33] font-extrabold text-xs uppercase tracking-wider hover:bg-[#8FC1BB]/90 shadow-md"
-              >
-                Cerrar Ventana
-              </button>
+
+              <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+                <a
+                  href={whatsappDirectBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3 rounded-xl bg-[#8FC1BB] text-[#4A3A33] font-extrabold text-xs uppercase tracking-wider hover:bg-[#8FC1BB]/90 shadow-md inline-flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Confirmar por WhatsApp ({CONTACT_INFO.whatsappDisplay})</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmitted(false);
+                    onClose();
+                  }}
+                  className="px-6 py-3 rounded-xl bg-[#E6D9C8] text-[#4A3A33] font-extrabold text-xs uppercase tracking-wider hover:bg-[#EBCFC6]"
+                >
+                  Cerrar Ventana
+                </button>
+              </div>
             </div>
           )}
         </motion.div>

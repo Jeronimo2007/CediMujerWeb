@@ -69,6 +69,6 @@ export const ASSETS = {
     tiktok: "https://www.tiktok.com/@cedimujer_?is_from_webapp=1&sender_device=pc",
     facebook: "https://www.facebook.com/CEDIMUJERSABANETA/?locale=es_LA",
     youtube: "https://www.youtube.com/@cedimujer",
-    whatsapp: "https://wa.me/573009876543",
+    whatsapp: "https://wa.me/573113979905",
   }
 };

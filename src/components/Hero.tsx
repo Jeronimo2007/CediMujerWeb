@@ -134,7 +134,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
               </div>
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#4A3A33]/90 text-[#F7F2EC] text-[10px] font-semibold shrink-0">
                 <MapPin className="w-2.5 h-2.5 text-[#8FC1BB]" />
-                Sabaneta
+                C.C. Aves María · Sabaneta
               </span>
             </div>
           </div>
@@ -184,7 +184,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenAppointment, onOpenCalculator 
                 )}
 
                 <a
-                  href="#servicios"
+                  href="#embarazo"
                   className="justify-center px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-full text-xs sm:text-base font-bold text-[#4A3A33] bg-[#E6D9C8] hover:bg-[#EBCFC6] border border-[#9A7B6C]/30 transition-all duration-300 flex items-center gap-1.5"
                 >
                   <span>Servicios</span>

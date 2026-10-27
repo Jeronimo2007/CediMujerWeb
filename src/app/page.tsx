@@ -8,6 +8,7 @@ import { About } from "@/components/About";
 import { CertificationsMarquee } from "@/components/CertificationsMarquee";
 import { Services } from "@/components/Services";
 import { ImpactStats } from "@/components/ImpactStats";
+import { BlogAndFaq } from "@/components/BlogAndFaq";
 import { Testimonials } from "@/components/Testimonials";
 import { FacilitiesGallery } from "@/components/FacilitiesGallery";
 import { LocationMap } from "@/components/LocationMap";
@@ -22,7 +23,7 @@ import { ChatBot } from "@/components/ChatBot";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState("Ginecología Integral");
+  const [selectedService, setSelectedService] = useState("Consulta Ginecológica");
   const [currentView, setCurrentView] = useState<"home" | "calculator">("home");
 
   const handleOpenAppointment = (serviceName?: string) => {
@@ -33,7 +34,6 @@ export default function Home() {
   };
 
   const handleOpenCalculator = () => {
-    // Scroll smoothly to top and transition seamless view
     window.scrollTo({ top: 0, behavior: "smooth" });
     setCurrentView("calculator");
   };
@@ -57,9 +57,9 @@ export default function Home() {
       {/* Cinematic Curtain Preloader Opening Effect */}
       <CurtainPreloader />
 
-      {/* Header Navbar with hide-on-scroll-down */}
+      {/* Header Navbar with Mega-Menu Dropdowns */}
       <Navbar
-        onOpenAppointment={() => handleOpenAppointment()}
+        onOpenAppointment={(srv) => handleOpenAppointment(srv)}
         onOpenCalculator={handleOpenCalculator}
         onNavigateHome={handleNavigateHome}
       />
@@ -99,9 +99,9 @@ export default function Home() {
             <div className="relative z-20 bg-[#F7F2EC] rounded-t-[2rem] sm:rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(74,58,51,0.12)]">
               {/* Expanding Square Portal Divider #1 */}
               <SquareTransitionPortal
-                badge="Acreditación Internacional"
-                title="Respaldados por los Mejores Estándares Médicos"
-                subtitle="Nuestros procesos de diagnóstico cuentan con certificación de calidad internacional ISO 9001."
+                badge="Centro de Diagnóstico Especializado"
+                title="Calidad Humana y Rigor Científico desde 2008"
+                subtitle="Acompañamos a la mujer en cada etapa de su vida en nuestra sede del C.C. Aves María en Sabaneta."
                 fromColor="#F7F2EC"
                 toColor="#EBCFC6"
               />
@@ -109,23 +109,26 @@ export default function Home() {
               {/* Certifications Infinite Scroll Marquee */}
               <CertificationsMarquee />
 
-              {/* Sobre CediMujer wrapped in Zoom Square Portal */}
+              {/* Quiénes Somos: Nuestra Institución, Nuestra Sede, Especialistas y Asociación de Usuarios */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-                <About />
+                <About onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
               </ZoomSquarePortal>
 
               {/* Expanding Square Portal Divider #2 */}
               <SquareTransitionPortal
-                badge="Tecnología de Vanguardia"
-                title="Ultrasonografía 3D / 4D en Alta Definición"
-                subtitle="Imágenes nítidas en tiempo real para el seguimiento morfológico del bebé y la prevención ginecológica."
+                badge="Embarazo · Ginecología · Telemedicina"
+                title="Ecografías 3D / 4D HD Live, Consultas, Tamizajes y Procedimientos"
+                subtitle="Conoce en detalle cada uno de nuestros servicios médicos, qué son y cómo los realiza el equipo de CediMujer."
                 fromColor="#E6D9C8"
                 toColor="#CFE6E2"
               />
 
-              {/* Grid de Servicios Médicos wrapped in Zoom Square Portal */}
+              {/* Menú Completo de Servicios: Embarazo, Ginecología y Telemedicina */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
-                <Services onSelectService={(serviceName) => handleOpenAppointment(serviceName)} />
+                <Services
+                  onSelectService={(serviceName) => handleOpenAppointment(serviceName)}
+                  onOpenCalculator={handleOpenCalculator}
+                />
               </ZoomSquarePortal>
 
               {/* Galería de Salas & Equipos Clínicos */}
@@ -133,7 +136,7 @@ export default function Home() {
                 <FacilitiesGallery />
               </ZoomSquarePortal>
 
-              {/* Cifras / Impacto Stats Reveal wrapped in Zoom Square Portal */}
+              {/* Métricas Oficiales de CediMujer (+36.000 Citas, +30.000 Ecografías, +13.000 Mamás Gestantes) */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
                 <ImpactStats />
               </ZoomSquarePortal>
@@ -143,10 +146,10 @@ export default function Home() {
                 <div className="relative rounded-3xl bg-gradient-to-r from-[#CFE6E2] via-[#EBCFC6] to-[#E6D9C8] p-6 sm:p-12 border border-[#8FC1BB]/40 shadow-xl overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
                   <div className="max-w-xl text-center md:text-left">
                     <span className="inline-block px-3 py-1 rounded-full bg-white/75 text-xs font-black text-[#4A3A33] uppercase tracking-wider mb-3">
-                      Herramienta Especializada
+                      Herramienta Especializada de Embarazo
                     </span>
                     <h3 className="text-2xl sm:text-4xl font-black text-[#4A3A33] tracking-tight">
-                      ¿Estás en la dulce espera? Calcula tus semanas de gestación
+                      ¿Estás en embarazo? Calcula tus semanas de gestación
                     </h3>
                     <p className="mt-3 text-sm sm:text-base text-[#4A3A33] font-semibold leading-relaxed">
                       Accede a nuestra calculadora obstétrica para conocer tu fecha probable de parto, evolución semana a semana y las ecografías recomendadas por CediMujer.
@@ -161,21 +164,26 @@ export default function Home() {
                 </div>
               </section>
 
-              {/* Testimonios Reales wrapped in Zoom Square Portal */}
+              {/* Información, Blog (7 Artículos Oficiales) y Preguntas Frecuentes */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
+                <BlogAndFaq onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
+              </ZoomSquarePortal>
+
+              {/* Testimonios Literales Reales de CediMujer */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#EBCFC6">
                 <Testimonials />
               </ZoomSquarePortal>
 
               {/* Expanding Square Portal Divider #3 */}
               <SquareTransitionPortal
-                badge="Fácil Acceso & Parqueadero"
-                title="Visita Nuestra Sede en la Zona Médica"
-                subtitle="Instalaciones modernas diseñadas para brindarte máxima comodidad, privacidad y atención inmediata."
+                badge="C.C. Aves María · Local 341-342 (Sabaneta)"
+                title="Contacto, Ubicación y Atención al Cliente"
+                subtitle="Visítanos en la Calle 75 sur No. 43 A -202 o comunícate al WhatsApp +57 311 397 9905 y PBX +604 357 3010."
                 fromColor="#EBCFC6"
                 toColor="#CFE6E2"
               />
 
-              {/* Location Map Section wrapped in Zoom Square Portal */}
+              {/* Location Map & Customer Service Form (5 Official Contact Options) */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
                 <LocationMap />
               </ZoomSquarePortal>
