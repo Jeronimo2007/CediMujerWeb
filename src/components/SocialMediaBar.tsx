@@ -83,8 +83,8 @@ export const SocialMediaBar: React.FC = () => {
         ))}
       </aside>
 
-      {/* Floating Action Button for Mobile/Tablet screens (Bottom-right so it never blocks left-aligned text) */}
-      <div className="xl:hidden fixed bottom-4 right-4 z-30">
+      {/* Floating Action Button for Mobile/Tablet screens (Bottom-left so it complements the AI Chatbot on bottom-right) */}
+      <div className="xl:hidden fixed bottom-4 left-4 z-30">
         <a
           href={ASSETS.socialLinks.instagram}
           target="_blank"

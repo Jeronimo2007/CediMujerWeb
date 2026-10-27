@@ -18,6 +18,7 @@ import { SquareTransitionPortal } from "@/components/SquareTransitionPortal";
 import { GestationalCalculator } from "@/components/GestationalCalculator";
 import { CurtainPreloader } from "@/components/CurtainPreloader";
 import { SocialMediaBar } from "@/components/SocialMediaBar";
+import { ChatBot } from "@/components/ChatBot";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -194,6 +195,12 @@ export default function Home() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialService={selectedService}
+      />
+
+      {/* Ephemeral AI Assistant Chatbot (OpenRouter - Gemini 2.5 Flash Lite) */}
+      <ChatBot
+        onOpenAppointment={(srv) => handleOpenAppointment(srv)}
+        onOpenCalculator={handleOpenCalculator}
       />
     </main>
   );
