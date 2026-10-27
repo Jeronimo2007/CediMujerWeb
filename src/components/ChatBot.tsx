@@ -174,9 +174,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({
     }
     setIsLoading(true);
 
-    const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY?.trim();
+    const apiKey = process.env.NEXT_OPENROUTER_API_KEY?.trim();
     const model =
-      process.env.NEXT_PUBLIC_OPENROUTER_MODEL?.trim() ||
+      process.env.NEXT_OPENROUTER_MODEL?.trim() ||
       "google/gemini-2.5-flash-lite";
 
     if (!apiKey) {
@@ -188,7 +188,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
           role: "assistant",
           timestamp: getCurrentTime(),
           content:
-            "⚙️ **Configuración pendiente:** Aún no se ha detectado la API Key de OpenRouter.\n\nPor favor abre el archivo `frontend/.env`, pega tu clave en `NEXT_PUBLIC_OPENROUTER_API_KEY=tu_clave_aqui` y reinicia el servidor (`npm run dev`).\n\nMientras tanto, recuerda que puedes **Agendar tu Cita** directamente o usar nuestra **Calculadora Gestacional** con los botones de abajo.",
+            "⚙️ **Configuración pendiente:** Aún no se ha detectado la API Key de OpenRouter.\n\nPor favor abre el archivo `frontend/.env` (o las variables de entorno en Vercel), pega tu clave en `NEXT_OPENROUTER_API_KEY=tu_clave_aqui` y reinicia el servidor (`npm run dev`).\n\nMientras tanto, recuerda que puedes **Agendar tu Cita** directamente o usar nuestra **Calculadora Gestacional** con los botones de abajo.",
         },
       ]);
       return;
