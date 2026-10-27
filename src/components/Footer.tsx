@@ -5,15 +5,22 @@ import Image from "next/image";
 import { Phone, Mail, MapPin, ArrowRight, MessageCircle } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 import { CONTACT_INFO } from "@/config/cedimujerContent";
+import type { AppSectionView } from "@/components/SectionPageView";
 
 interface FooterProps {
   onNavigateHome?: (targetHash?: string) => void;
   onOpenCalculator?: () => void;
+  onSelectSection?: (
+    view: AppSectionView,
+    subKey?: string,
+    itemId?: string
+  ) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onNavigateHome,
   onOpenCalculator,
+  onSelectSection,
 }) => {
   const [newsletterSubscribed, setNewsletterSubscribed] = React.useState(false);
 
@@ -23,6 +30,32 @@ export const Footer: React.FC<FooterProps> = ({
     subKey?: string
   ) => {
     e.preventDefault();
+    if (onSelectSection) {
+      if (href === "#embarazo") {
+        onSelectSection("embarazo", subKey);
+        return;
+      }
+      if (href === "#ginecologia") {
+        onSelectSection("ginecologia", subKey);
+        return;
+      }
+      if (href === "#telemedicina") {
+        onSelectSection("telemedicina", subKey);
+        return;
+      }
+      if (href === "#nosotros") {
+        onSelectSection("quienes-somos", subKey);
+        return;
+      }
+      if (href === "#blog-faq") {
+        onSelectSection("blog", subKey);
+        return;
+      }
+      if (href === "#atencion-cliente" || href === "#ubicacion") {
+        onSelectSection("contacto", subKey);
+        return;
+      }
+    }
     if (onNavigateHome) {
       onNavigateHome(href);
     }

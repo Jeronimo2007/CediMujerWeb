@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
@@ -20,11 +20,14 @@ import { GestationalCalculator } from "@/components/GestationalCalculator";
 import { CurtainPreloader } from "@/components/CurtainPreloader";
 import { SocialMediaBar } from "@/components/SocialMediaBar";
 import { ChatBot } from "@/components/ChatBot";
+import { SectionPageView, type AppSectionView } from "@/components/SectionPageView";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("Consulta Ginecológica");
-  const [currentView, setCurrentView] = useState<"home" | "calculator">("home");
+  const [currentView, setCurrentView] = useState<AppSectionView>("home");
+  const [sectionSubKey, setSectionSubKey] = useState<string | undefined>(undefined);
+  const [sectionItemId, setSectionItemId] = useState<string | undefined>(undefined);
 
   const handleOpenAppointment = (serviceName?: string) => {
     if (serviceName) {
@@ -33,13 +36,25 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
-  const handleOpenCalculator = () => {
+  const handleSelectSection = (
+    view: AppSectionView,
+    subKey?: string,
+    itemId?: string
+  ) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setCurrentView("calculator");
+    setCurrentView(view);
+    setSectionSubKey(subKey);
+    setSectionItemId(itemId);
+  };
+
+  const handleOpenCalculator = () => {
+    handleSelectSection("calculator");
   };
 
   const handleNavigateHome = (targetHash?: string) => {
     setCurrentView("home");
+    setSectionSubKey(undefined);
+    setSectionItemId(undefined);
     setTimeout(() => {
       if (targetHash && targetHash !== "#inicio") {
         const el = document.querySelector(targetHash);
@@ -52,15 +67,50 @@ export default function Home() {
     }, 80);
   };
 
+  // Listen to custom navigation events (e.g. "Depositar un testimonio" button in Testimonials)
+  useEffect(() => {
+    const handleCustomNavigate = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        href?: string;
+        subKey?: string;
+        itemId?: string;
+      }>;
+      const href = customEvent.detail?.href;
+      const subKey = customEvent.detail?.subKey;
+      const itemId = customEvent.detail?.itemId;
+
+      if (href === "#atencion-cliente" || href === "#ubicacion") {
+        handleSelectSection("contacto", subKey, itemId);
+      } else if (href === "#embarazo") {
+        handleSelectSection("embarazo", subKey, itemId);
+      } else if (href === "#ginecologia") {
+        handleSelectSection("ginecologia", subKey, itemId);
+      } else if (href === "#telemedicina") {
+        handleSelectSection("telemedicina", subKey, itemId);
+      } else if (href === "#nosotros") {
+        handleSelectSection("quienes-somos", subKey, itemId);
+      } else if (href === "#blog-faq") {
+        handleSelectSection("blog", subKey, itemId);
+      }
+    };
+
+    window.addEventListener("cedimujer:navigate", handleCustomNavigate);
+    return () => {
+      window.removeEventListener("cedimujer:navigate", handleCustomNavigate);
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#F7F2EC] text-[#4A3A33] overflow-x-clip">
       {/* Cinematic Curtain Preloader Opening Effect */}
       <CurtainPreloader />
 
-      {/* Header Navbar with Mega-Menu Dropdowns */}
+      {/* Header Navbar with Full-Page Section Navigation & Mega-Menu Dropdowns */}
       <Navbar
+        currentView={currentView}
         onOpenAppointment={(srv) => handleOpenAppointment(srv)}
         onOpenCalculator={handleOpenCalculator}
+        onSelectSection={handleSelectSection}
         onNavigateHome={handleNavigateHome}
       />
 
@@ -80,6 +130,27 @@ export default function Home() {
             <GestationalCalculator
               onOpenAppointment={(srv) => handleOpenAppointment(srv)}
               onBackToHome={() => handleNavigateHome("#inicio")}
+            />
+          </motion.div>
+        ) : currentView !== "home" ? (
+          <motion.div
+            key={`section-view-${currentView}`}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="min-h-screen"
+          >
+            <SectionPageView
+              view={currentView}
+              initialSubKey={sectionSubKey}
+              initialItemId={sectionItemId}
+              onBackToHome={() => handleNavigateHome("#inicio")}
+              onChangeView={(sec, subKey, itemId) =>
+                handleSelectSection(sec, subKey, itemId)
+              }
+              onOpenAppointment={(srv) => handleOpenAppointment(srv)}
+              onOpenCalculator={handleOpenCalculator}
             />
           </motion.div>
         ) : (
@@ -109,26 +180,27 @@ export default function Home() {
               {/* Certifications Infinite Scroll Marquee */}
               <CertificationsMarquee />
 
-              {/* Quiénes Somos: Nuestra Institución, Nuestra Sede, Especialistas y Asociación de Usuarios */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-                <About onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
-              </ZoomSquarePortal>
-
-              {/* Expanding Square Portal Divider #2 */}
-              <SquareTransitionPortal
-                badge="Embarazo · Ginecología · Telemedicina"
-                title="Ecografías 3D / 4D HD Live, Consultas, Tamizajes y Procedimientos"
-                subtitle="Conoce en detalle cada uno de nuestros servicios médicos, qué son y cómo los realiza el equipo de CediMujer."
-                fromColor="#E6D9C8"
-                toColor="#CFE6E2"
-              />
-
-              {/* Menú Completo de Servicios: Embarazo, Ginecología y Telemedicina */}
+              {/* Portal de Secciones Independientes: Embarazo, Ginecología, Telemedicina, Quiénes Somos, Blog y Contacto */}
               <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
                 <Services
                   onSelectService={(serviceName) => handleOpenAppointment(serviceName)}
                   onOpenCalculator={handleOpenCalculator}
+                  onOpenSection={handleSelectSection}
                 />
+              </ZoomSquarePortal>
+
+              {/* Expanding Square Portal Divider #2 */}
+              <SquareTransitionPortal
+                badge="Nuestra Institución · Especialistas"
+                title="Equipo Médico Especializado y Tecnología HD Live"
+                subtitle="Conoce nuestra sede en el C.C. Aves María y a los especialistas de CediMujer."
+                fromColor="#CFE6E2"
+                toColor="#E6D9C8"
+              />
+
+              {/* Quiénes Somos: Nuestra Institución, Nuestra Sede, Especialistas y Asociación de Usuarios */}
+              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+                <About onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
               </ZoomSquarePortal>
 
               {/* Galería de Salas & Equipos Clínicos */}
@@ -196,6 +268,7 @@ export default function Home() {
       <Footer
         onNavigateHome={handleNavigateHome}
         onOpenCalculator={handleOpenCalculator}
+        onSelectSection={handleSelectSection}
       />
 
       {/* Interactive Appointment Modal */}

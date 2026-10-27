@@ -16,11 +16,19 @@ import {
   BookOpen,
   MessageSquareHeart,
   Calculator,
+  Home,
 } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 import { CONTACT_INFO } from "@/config/cedimujerContent";
+import type { AppSectionView } from "@/components/SectionPageView";
 
 interface NavbarProps {
+  currentView?: AppSectionView;
+  onSelectSection?: (
+    view: AppSectionView,
+    subKey?: string,
+    itemId?: string
+  ) => void;
   onOpenAppointment?: (serviceName?: string) => void;
   onOpenCalculator?: () => void;
   onNavigateHome?: (targetHash?: string) => void;
@@ -28,7 +36,7 @@ interface NavbarProps {
 
 interface SubMenuItem {
   label: string;
-  href: string;
+  viewId: AppSectionView;
   subKey?: string;
   itemId?: string;
   isCalculator?: boolean;
@@ -37,7 +45,7 @@ interface SubMenuItem {
 
 interface MenuGroup {
   name: string;
-  href: string;
+  viewId: AppSectionView;
   icon: React.ElementType;
   columns?: {
     heading: string;
@@ -46,6 +54,8 @@ interface MenuGroup {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
+  currentView = "home",
+  onSelectSection,
   onOpenAppointment,
   onOpenCalculator,
   onNavigateHome,
@@ -53,8 +63,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(null);
-  const [openMobileAccordion, setOpenMobileAccordion] = useState<string | null>("Embarazo");
+  const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(
+    null
+  );
+  const [openMobileAccordion, setOpenMobileAccordion] = useState<string | null>(
+    "Embarazo"
+  );
   const lastScrollYRef = useRef(0);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -70,10 +84,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           const scrolled = currentScrollY > 30;
           setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
 
-          if (currentScrollY > 120 && currentScrollY - prevScrollY > 20 && !mobileMenuOpen) {
+          if (
+            currentScrollY > 120 &&
+            currentScrollY - prevScrollY > 20 &&
+            !mobileMenuOpen
+          ) {
             setIsVisible(false);
             setOpenDesktopDropdown(null);
-          } else if (prevScrollY - currentScrollY > 10 || currentScrollY <= 80) {
+          } else if (
+            prevScrollY - currentScrollY > 10 ||
+            currentScrollY <= 80
+          ) {
             setIsVisible(true);
           }
 
@@ -91,7 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const menuGroups: MenuGroup[] = [
     {
       name: "Embarazo",
-      href: "#embarazo",
+      viewId: "embarazo",
       icon: Baby,
       columns: [
         {
@@ -99,19 +120,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Consulta preconcepcional",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-consultas",
               itemId: "emb-consulta-preconcepcional",
             },
             {
               label: "Consulta de control prenatal - Control de embarazo",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-consultas",
               itemId: "emb-control-prenatal",
             },
             {
               label: "Anticoncepción posparto",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-consultas",
               itemId: "emb-anticoncepcion-posparto",
             },
@@ -122,19 +143,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Perfil biofísico fetal",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-bienestar",
               itemId: "emb-perfil-biofisico",
             },
             {
               label: "Doppler fetal",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-bienestar",
               itemId: "emb-doppler-fetal",
             },
             {
               label: "Monitoreo fetal electrónico",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-bienestar",
               itemId: "emb-monitoreo-fetal",
             },
@@ -145,13 +166,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Ecografías (3D/4D HD Live, Detalle Anatómico, Genética)",
-              href: "#embarazo",
+              viewId: "embarazo",
               subKey: "embarazo-ecografias",
               badge: "HD Live",
             },
             {
               label: "Calculadora gestacional",
-              href: "#calculadora",
+              viewId: "calculator",
               isCalculator: true,
               badge: "Interactivo",
             },
@@ -161,7 +182,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       name: "Ginecología",
-      href: "#ginecologia",
+      viewId: "ginecologia",
       icon: Stethoscope,
       columns: [
         {
@@ -169,31 +190,31 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Ecografía pélvica transvaginal",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-ecografias",
               itemId: "gin-eco-transvaginal",
             },
             {
               label: "Ecografía pélvica suprapúbica",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-ecografias",
               itemId: "gin-eco-suprapubica",
             },
             {
               label: "Ecografía de piso pélvico",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-ecografias",
               itemId: "gin-eco-piso-pelvico",
             },
             {
               label: "Monitoreo de folículo",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-ecografias",
               itemId: "gin-monitoreo-foliculo",
             },
             {
               label: "Ecografía de mama o de seno",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-ecografias",
               itemId: "gin-eco-mama",
             },
@@ -204,51 +225,51 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Consulta Preconcepcional",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-consultas",
               itemId: "gin-consulta-preconcepcional",
             },
             {
               label: "Consulta Ginecológica",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-consultas",
               itemId: "gin-consulta-ginecologica",
             },
             {
               label: "Consulta de Planificación Familiar",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-consultas",
               itemId: "gin-consulta-planificacion",
             },
             {
               label: "Infertilidad",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-consultas",
               itemId: "gin-consulta-infertilidad",
             },
             {
               label: "Consulta de mama",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-consultas",
               itemId: "gin-consulta-mama",
             },
             {
               label: "Tamizaje Ginecológico Básico",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-tamizajes",
               itemId: "gin-tamizaje-basico",
               badge: "Paquete",
             },
             {
               label: "Tamizaje de mama",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-tamizajes",
               itemId: "gin-tamizaje-mama",
               badge: "Paquete",
             },
             {
               label: "Tamizaje Ginecológico Completo",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-tamizajes",
               itemId: "gin-tamizaje-completo",
               badge: "4 en 1",
@@ -260,37 +281,37 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Colposcopia",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-colposcopia",
             },
             {
               label: "Toma de citología",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-citologia",
             },
             {
               label: "Test de VPH o Papiloma virus",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-test-vph",
             },
             {
               label: "Colocación o retiro de dispositivo intrauterino",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-diu",
             },
             {
               label: "Colocación o retiro de implantes subdérmicos",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-implante-subdermico",
             },
             {
               label: "Topicaciones",
-              href: "#ginecologia",
+              viewId: "ginecologia",
               subKey: "ginecologia-procedimientos",
               itemId: "gin-proc-topicaciones",
             },
@@ -300,7 +321,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       name: "Telemedicina",
-      href: "#telemedicina",
+      viewId: "telemedicina",
       icon: Video,
       columns: [
         {
@@ -308,19 +329,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Teleconsulta con especialista en Ginecología",
-              href: "#telemedicina",
+              viewId: "telemedicina",
               subKey: "telemedicina",
               itemId: "tele-ginecologia",
             },
             {
               label: "Teleconsulta de planificación familiar",
-              href: "#telemedicina",
+              viewId: "telemedicina",
               subKey: "telemedicina",
               itemId: "tele-planificacion",
             },
             {
               label: "Teleconsulta de Infertilidad",
-              href: "#telemedicina",
+              viewId: "telemedicina",
               subKey: "telemedicina",
               itemId: "tele-infertilidad",
             },
@@ -330,7 +351,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       name: "Quiénes Somos",
-      href: "#nosotros",
+      viewId: "quienes-somos",
       icon: Building2,
       columns: [
         {
@@ -338,22 +359,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           items: [
             {
               label: "Nuestra Sede (C.C. Aves María, Sabaneta)",
-              href: "#nosotros",
+              viewId: "quienes-somos",
               subKey: "nuestra-sede",
             },
             {
               label: "Nuestra Institución (Misión, Visión y Valores)",
-              href: "#nosotros",
+              viewId: "quienes-somos",
               subKey: "nuestra-institucion",
             },
             {
               label: "Especialistas (Equipo Médico CediMujer)",
-              href: "#nosotros",
+              viewId: "quienes-somos",
               subKey: "especialistas",
             },
             {
               label: "Asociación de usuarios",
-              href: "#nosotros",
+              viewId: "quienes-somos",
               subKey: "asociacion-usuarios",
             },
           ],
@@ -362,78 +383,112 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       name: "Blog y FAQ",
-      href: "#blog-faq",
+      viewId: "blog",
       icon: BookOpen,
       columns: [
         {
           heading: "Artículos Informativos y Preguntas Frecuentes",
           items: [
-            { label: "Colocación de dispositivo intrauterino Mirena", href: "#blog-faq", itemId: "blog-diu-mirena" },
-            { label: "Las Ecografías durante el embarazo", href: "#blog-faq", itemId: "blog-ecografias-embarazo" },
-            { label: "Prolapso genital femenino", href: "#blog-faq", itemId: "blog-prolapso-genital" },
-            { label: "Menopausia", href: "#blog-faq", itemId: "blog-menopausia" },
-            { label: "Cáncer de mama", href: "#blog-faq", itemId: "blog-cancer-mama" },
-            { label: "¿Cómo combatir los cólicos menstruales?", href: "#blog-faq", itemId: "blog-colicos-menstruales" },
-            { label: "Cáncer de Cérvix", href: "#blog-faq", itemId: "blog-cancer-cervix" },
+            {
+              label: "Colocación de dispositivo intrauterino Mirena",
+              viewId: "blog",
+              itemId: "blog-diu-mirena",
+            },
+            {
+              label: "Las Ecografías durante el embarazo",
+              viewId: "blog",
+              itemId: "blog-ecografias-embarazo",
+            },
+            {
+              label: "Prolapso genital femenino",
+              viewId: "blog",
+              itemId: "blog-prolapso-genital",
+            },
+            {
+              label: "Menopausia",
+              viewId: "blog",
+              itemId: "blog-menopausia",
+            },
+            {
+              label: "Cáncer de mama",
+              viewId: "blog",
+              itemId: "blog-cancer-mama",
+            },
+            {
+              label: "¿Cómo combatir los cólicos menstruales?",
+              viewId: "blog",
+              itemId: "blog-colicos-menstruales",
+            },
+            {
+              label: "Cáncer de Cérvix",
+              viewId: "blog",
+              itemId: "blog-cancer-cervix",
+            },
           ],
         },
       ],
     },
     {
       name: "Contacto",
-      href: "#atencion-cliente",
+      viewId: "contacto",
       icon: MessageSquareHeart,
       columns: [
         {
           heading: "Atención al Cliente y Formulario Oficial",
           items: [
-            { label: "Escríbanos mensaje de contacto", href: "#atencion-cliente", subKey: "contacto" },
-            { label: "Recomendar nuestro sistema", href: "#atencion-cliente", subKey: "recomendar" },
-            { label: "Enviar sugerencias", href: "#atencion-cliente", subKey: "sugerencias" },
-            { label: "Depositar un testimonio", href: "#atencion-cliente", subKey: "testimonio" },
-            { label: "Quejas y reclamos", href: "#atencion-cliente", subKey: "reclamos" },
+            {
+              label: "Escríbanos mensaje de contacto",
+              viewId: "contacto",
+              subKey: "contacto",
+            },
+            {
+              label: "Recomendar nuestro sistema",
+              viewId: "contacto",
+              subKey: "recomendar",
+            },
+            {
+              label: "Enviar sugerencias",
+              viewId: "contacto",
+              subKey: "sugerencias",
+            },
+            {
+              label: "Depositar un testimonio",
+              viewId: "contacto",
+              subKey: "testimonio",
+            },
+            {
+              label: "Quejas y reclamos",
+              viewId: "contacto",
+              subKey: "reclamos",
+            },
           ],
         },
       ],
     },
   ];
 
-  const activeGroup = menuGroups.find((g) => g.name === openDesktopDropdown) || null;
+  const activeGroup =
+    menuGroups.find((g) => g.name === openDesktopDropdown) || null;
 
-  const triggerCustomNavigation = (
-    e: React.MouseEvent,
-    item: { href?: string; subKey?: string; itemId?: string; isCalculator?: boolean }
+  const handleSelectPageSection = (
+    viewId: AppSectionView,
+    subKey?: string,
+    itemId?: string,
+    isCalculator?: boolean
   ) => {
-    e.preventDefault();
     setOpenDesktopDropdown(null);
     setMobileMenuOpen(false);
 
-    if (item.isCalculator && onOpenCalculator) {
+    if (isCalculator && onOpenCalculator) {
       onOpenCalculator();
       return;
     }
 
-    if (onNavigateHome) {
-      onNavigateHome(item.href || "#inicio");
+    if (onSelectSection) {
+      onSelectSection(viewId, subKey, itemId);
+    } else if (viewId === "home" && onNavigateHome) {
+      onNavigateHome("#inicio");
     }
-
-    setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent("cedimujer:navigate", {
-          detail: {
-            href: item.href,
-            subKey: item.subKey,
-            itemId: item.itemId,
-          },
-        })
-      );
-      if (item.href) {
-        const targetEl = document.querySelector(item.href);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: "smooth" });
-        }
-      }
-    }, 100);
   };
 
   const handleMouseEnterGroup = (name: string) => {
@@ -450,25 +505,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header
-        className={`fixed top-2 sm:top-3.5 inset-x-0 z-50 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto will-change-transform ${
-          isVisible ? "translate-y-0 opacity-100" : "-translate-y-28 opacity-0 pointer-events-none"
+        className={`fixed top-2 sm:top-3.5 inset-x-0 z-50 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] px-3 sm:px-5 lg:px-6 max-w-[1360px] mx-auto will-change-transform ${
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-28 opacity-0 pointer-events-none"
         }`}
       >
         <div
           onMouseLeave={handleMouseLeaveGroup}
-          className={`relative w-full flex items-center justify-between gap-2 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 rounded-2xl sm:rounded-full transition-shadow duration-300 border border-[#E6D9C8] backdrop-blur-md ${
+          className={`relative w-full flex items-center justify-between gap-2 xl:gap-3 px-3 sm:px-4 lg:px-4 xl:px-5 py-2 sm:py-2.5 rounded-2xl sm:rounded-full transition-shadow duration-300 border border-[#E6D9C8] backdrop-blur-md ${
             isScrolled
               ? "bg-[#F7F2EC]/95 shadow-xl shadow-[#4A3A33]/10"
               : "bg-[#F7F2EC]/95 shadow-lg shadow-[#4A3A33]/5"
           }`}
         >
           {/* Logo Brand */}
-          <a
-            href="#inicio"
-            onClick={(e) => triggerCustomNavigation(e, { href: "#inicio" })}
-            className="flex items-center shrink-0 group"
+          <button
+            type="button"
+            onClick={() => handleSelectPageSection("home")}
+            className="flex items-center shrink-0 group text-left"
           >
-            <div className="relative h-8 w-28 sm:h-9 sm:w-32 xl:h-10 xl:w-36 flex items-center transition-transform duration-300 group-hover:scale-105">
+            <div className="relative h-8 w-24 sm:h-9 sm:w-28 xl:h-9 xl:w-32 flex items-center transition-transform duration-300 group-hover:scale-105">
               <Image
                 src={ASSETS.logo.primary}
                 alt="CediMujer - Centro de Diagnóstico Especializado en Salud para la Mujer"
@@ -479,29 +536,50 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="object-contain object-left"
               />
             </div>
-          </a>
+          </button>
 
           {/* Desktop Navigation (lg and above) */}
-          <nav className="hidden lg:flex items-center gap-0.5 bg-[#E6D9C8]/60 p-1 rounded-full border border-[#E6D9C8]/80 min-w-0">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-[#E6D9C8]/65 p-1 rounded-full border border-[#E6D9C8] shrink-0">
+            <button
+              type="button"
+              onMouseEnter={() => setOpenDesktopDropdown(null)}
+              onClick={() => handleSelectPageSection("home")}
+              className={`inline-flex items-center gap-1 px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                currentView === "home" && !openDesktopDropdown
+                  ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
+                  : "text-[#4A3A33] hover:bg-[#F7F2EC]"
+              }`}
+            >
+              <Home className="w-3 h-3 shrink-0" />
+              <span>Inicio</span>
+            </button>
+
             {menuGroups.map((group) => {
-              const isOpen = openDesktopDropdown === group.name;
+              const isDropdownOpen = openDesktopDropdown === group.name;
+              const isCurrentPage = currentView === group.viewId;
               return (
                 <button
                   key={group.name}
                   type="button"
                   onMouseEnter={() => handleMouseEnterGroup(group.name)}
-                  onClick={(e) => triggerCustomNavigation(e, { href: group.href })}
-                  className={`inline-flex items-center gap-1 px-2.5 xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 whitespace-nowrap ${
-                    isOpen
+                  onClick={() => handleSelectPageSection(group.viewId)}
+                  className={`inline-flex items-center gap-0.5 xl:gap-1 px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                    isDropdownOpen
                       ? "bg-[#8FC1BB] text-[#4A3A33] shadow-xs"
+                      : isCurrentPage
+                      ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
                       : "text-[#4A3A33] hover:bg-[#F7F2EC]"
                   }`}
                 >
                   <span>{group.name}</span>
                   {group.columns && (
                     <ChevronDown
-                      className={`w-3 h-3 transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#4A3A33]" : "text-[#9A7B6C]"
+                      className={`w-3 h-3 shrink-0 transition-transform duration-200 ${
+                        isDropdownOpen
+                          ? "rotate-180 text-[#4A3A33]"
+                          : isCurrentPage
+                          ? "text-[#8FC1BB]"
+                          : "text-[#9A7B6C]"
                       }`}
                     />
                   )}
@@ -513,26 +591,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onMouseEnter={() => setOpenDesktopDropdown(null)}
               onClick={onOpenCalculator}
-              className="ml-0.5 px-2.5 xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8] rounded-full transition-colors duration-150 inline-flex items-center gap-1 whitespace-nowrap"
+              className={`px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 inline-flex items-center gap-1 whitespace-nowrap shrink-0 ${
+                currentView === "calculator"
+                  ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
+                  : "text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8]"
+              }`}
             >
-              <Calculator className="w-3 h-3 text-[#4A3A33] shrink-0" />
+              <Calculator className="w-3 h-3 shrink-0" />
               <span>Calculadora</span>
             </button>
           </nav>
 
           {/* Action Buttons & Mobile/Tablet Menu Toggle */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <a
-              href={CONTACT_INFO.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`WhatsApp Asesoría: ${CONTACT_INFO.whatsappDisplay}`}
-              aria-label="WhatsApp Asesoría"
-              className="hidden xl:inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#E6D9C8]/70 hover:bg-[#CFE6E2] text-[#4A3A33] border border-[#E6D9C8] transition-colors shrink-0"
-            >
-              <Phone className="w-4 h-4 text-[#4A3A33]" />
-            </a>
-
             <button
               type="button"
               onClick={() => {
@@ -540,7 +611,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setOpenDesktopDropdown(null);
                 if (onOpenAppointment) onOpenAppointment();
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl sm:rounded-full text-xs font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-md shadow-[#8FC1BB]/25 hover:scale-[1.02] active:scale-95 transition-all duration-200 border border-[#8FC1BB] whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 xl:px-4 py-2 rounded-xl sm:rounded-full text-[11px] xl:text-xs font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-md shadow-[#8FC1BB]/25 hover:scale-[1.02] active:scale-95 transition-all duration-200 border border-[#8FC1BB] whitespace-nowrap shrink-0"
             >
               <Calendar className="w-3.5 h-3.5 text-[#4A3A33] shrink-0" />
               <span>Agendar Cita</span>
@@ -554,11 +625,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label="Abrir menú de navegación"
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
 
-          {/* Desktop Mega-Dropdown Panel: Absolutely positioned below the pill so it NEVER jumps or shifts layout */}
+          {/* Desktop Mega-Dropdown Panel */}
           <AnimatePresence>
             {activeGroup && (
               <motion.div
@@ -567,7 +642,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 exit={{ opacity: 0, y: 4 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
                 onMouseEnter={() => {
-                  if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+                  if (closeTimeoutRef.current)
+                    clearTimeout(closeTimeoutRef.current);
                 }}
                 onMouseLeave={handleMouseLeaveGroup}
                 className="hidden lg:block absolute left-0 right-0 top-full pt-2.5 z-50"
@@ -580,19 +656,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </div>
                       <div>
                         <h4 className="text-xs xl:text-sm font-black text-[#4A3A33] uppercase tracking-wider">
-                          Sección: {activeGroup.name}
+                          Ir a la página de {activeGroup.name}
                         </h4>
                         <p className="text-[11px] text-[#9A7B6C] font-semibold">
-                          Haz clic en cualquier subsección para ir directamente a su contenido
+                          Selecciona una subsección o procedimiento para abrir su página dedicada
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 text-[11px] font-bold text-[#9A7B6C]">
-                      <span>WhatsApp: {CONTACT_INFO.whatsappDisplay}</span>
-                      <span>•</span>
-                      <span>PBX: {CONTACT_INFO.pbxDisplay}</span>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSelectPageSection(activeGroup.viewId)
+                      }
+                      className="px-3.5 py-1.5 rounded-full bg-[#4A3A33] hover:bg-[#8FC1BB] text-[#F7F2EC] hover:text-[#4A3A33] text-xs font-extrabold transition-colors"
+                    >
+                      Ver toda la sección {activeGroup.name} →
+                    </button>
                   </div>
 
                   <div
@@ -620,7 +700,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                             <li key={item.label}>
                               <button
                                 type="button"
-                                onClick={(e) => triggerCustomNavigation(e, item)}
+                                onClick={() =>
+                                  handleSelectPageSection(
+                                    item.viewId,
+                                    item.subKey,
+                                    item.itemId,
+                                    item.isCalculator
+                                  )
+                                }
                                 className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-[#4A3A33] hover:bg-[#CFE6E2]/65 transition-colors flex items-center justify-between gap-2 group/item"
                               >
                                 <span className="group-hover/item:translate-x-0.5 transition-transform">
@@ -665,6 +752,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="fixed inset-x-3 sm:inset-x-6 top-[68px] sm:top-[76px] z-40 max-w-xl ml-auto bg-[#F7F2EC] border border-[#E6D9C8] rounded-3xl p-4 sm:p-6 lg:hidden shadow-2xl max-h-[calc(100dvh-84px)] overflow-y-auto"
             >
               <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => handleSelectPageSection("home")}
+                  className="w-full px-4 py-3 rounded-2xl border border-[#E6D9C8] bg-white/80 flex items-center gap-2.5 font-extrabold text-sm text-[#4A3A33]"
+                >
+                  <Home className="w-4 h-4 text-[#8FC1BB]" />
+                  <span>Página de Inicio</span>
+                </button>
+
                 {menuGroups.map((group) => {
                   const IconComp = group.icon;
                   const isExpanded = openMobileAccordion === group.name;
@@ -673,25 +769,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                       key={group.name}
                       className="rounded-2xl border border-[#E6D9C8] bg-white/70 overflow-hidden"
                     >
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenMobileAccordion(isExpanded ? null : group.name)
-                        }
-                        className="w-full px-4 py-3 flex items-center justify-between text-left font-extrabold text-sm text-[#4A3A33] hover:bg-[#E6D9C8]/40 transition-colors"
-                      >
-                        <span className="flex items-center gap-2.5">
+                      <div className="flex items-center justify-between px-4 py-2.5">
+                        <button
+                          type="button"
+                          onClick={() => handleSelectPageSection(group.viewId)}
+                          className="flex items-center gap-2.5 text-left font-extrabold text-sm text-[#4A3A33]"
+                        >
                           <span className="p-1.5 rounded-lg bg-[#8FC1BB]/30 text-[#4A3A33]">
                             <IconComp className="w-4 h-4" />
                           </span>
                           <span>{group.name}</span>
-                        </span>
-                        <ChevronDown
-                          className={`w-4 h-4 text-[#9A7B6C] transition-transform ${
-                            isExpanded ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenMobileAccordion(
+                              isExpanded ? null : group.name
+                            )
+                          }
+                          className="p-1.5 rounded-lg bg-[#E6D9C8]/50 text-[#4A3A33]"
+                          aria-label={`Ver subsecciones de ${group.name}`}
+                        >
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+                      </div>
 
                       {isExpanded && group.columns && (
                         <div className="px-4 pb-3 pt-1 space-y-3 border-t border-[#E6D9C8]/60 bg-[#F7F2EC]/60">
@@ -704,7 +809,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 <button
                                   key={item.label}
                                   type="button"
-                                  onClick={(e) => triggerCustomNavigation(e, item)}
+                                  onClick={() =>
+                                    handleSelectPageSection(
+                                      item.viewId,
+                                      item.subKey,
+                                      item.itemId,
+                                      item.isCalculator
+                                    )
+                                  }
                                   className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-[#4A3A33] hover:bg-[#CFE6E2]/60 flex items-center justify-between gap-2"
                                 >
                                   <span>{item.label}</span>
@@ -731,7 +843,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     📍 {CONTACT_INFO.addressFull}
                   </p>
                   <p className="font-bold text-[#9A7B6C]">
-                    📞 WhatsApp: {CONTACT_INFO.whatsappDisplay} • PBX: {CONTACT_INFO.pbxDisplay}
+                    📞 WhatsApp: {CONTACT_INFO.whatsappDisplay} • PBX:{" "}
+                    {CONTACT_INFO.pbxDisplay}
                   </p>
                 </div>
 
