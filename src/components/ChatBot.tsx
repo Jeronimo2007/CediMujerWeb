@@ -133,6 +133,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const activeRequestRef = useRef(0);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -156,6 +157,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   const handleResetChat = () => {
     setIsResetting(true);
     setErrorBanner(null);
+    // Cancel any in-flight retry loop
+    activeRequestRef.current++;
+    setIsLoading(false);
     setTimeout(() => {
       setMessages(createInitialMessages());
       setInputValue("");
@@ -185,7 +189,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
     const apiKey = process.env.NEXT_OPENROUTER_API_KEY?.trim();
     const model =
       process.env.NEXT_OPENROUTER_MODEL?.trim() ||
-      "google/gemini-2.5-flash-lite";
+      "openai/gpt-4.1-mini";
 
     if (!apiKey) {
       setIsLoading(false);
@@ -202,71 +206,118 @@ export const ChatBot: React.FC<ChatBotProps> = ({
       return;
     }
 
-    try {
-      const apiMessages = [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...updatedMessages.map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
-      ];
+    // Each request gets an id; if the chat is reset meanwhile, the loop stops.
+    const requestId = ++activeRequestRef.current;
+    const isCancelled = () => activeRequestRef.current !== requestId;
 
-      const response = await fetch(
-        "https://openrouter.ai/api/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer":
-              typeof window !== "undefined"
-                ? window.location.origin
-                : "https://cedimujer.com",
-            "X-Title": "CediMujer - Orientacion Salud Femenina",
-          },
-          body: JSON.stringify({
-            model,
-            messages: apiMessages,
-            temperature: 0.5,
-            max_tokens: 550,
-            provider: {
-              data_collection: "deny",
+    const apiMessages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...updatedMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    ];
+
+    // Ordered list of models. OpenRouter accepts max 3 per request, so we
+    // rotate through windows of 3 on each attempt (primary + 3 fallbacks).
+    const allModels = [
+      model,
+      "openai/gpt-4o-mini",
+      "google/gemini-2.5-flash-lite",
+      "meta-llama/llama-3.3-70b-instruct",
+    ].filter((m, i, arr) => arr.indexOf(m) === i);
+
+    const getModelsForAttempt = (attempt: number) => {
+      const offset = attempt % allModels.length;
+      const rotated = [...allModels.slice(offset), ...allModels.slice(0, offset)];
+      return rotated.slice(0, 3);
+    };
+
+    const REQUEST_TIMEOUT_MS = 30000;
+    const MAX_BACKOFF_MS = 8000;
+    const MAX_ATTEMPTS = 10;
+    let replyContent: string | null = null;
+    let attempt = 0;
+
+    // Retry up to MAX_ATTEMPTS until a model answers: the user only sees "loading".
+    while (!replyContent && !isCancelled() && attempt < MAX_ATTEMPTS) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      try {
+        const response = await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+            signal: controller.signal,
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              "Content-Type": "application/json",
+              "HTTP-Referer":
+                typeof window !== "undefined"
+                  ? window.location.origin
+                  : "https://cedimujer.com",
+              "X-Title": "CediMujer - Orientacion Salud Femenina",
             },
-          }),
-        }
-      );
+            body: JSON.stringify({
+              models: getModelsForAttempt(attempt),
+              messages: apiMessages,
+              temperature: 0.5,
+              max_tokens: 550,
+              provider: {
+                data_collection: "deny",
+                allow_fallbacks: true,
+              },
+            }),
+          }
+        );
 
-      if (!response.ok) {
-        const errData = await response.json().catch(() => null);
-        const errMsg =
-          errData?.error?.message ||
-          `Error de conexión con OpenRouter (código ${response.status})`;
-        throw new Error(errMsg);
+        if (response.ok) {
+          const data = await response.json();
+          const content = data?.choices?.[0]?.message?.content?.trim();
+          if (content) {
+            replyContent = content;
+          } else {
+            console.warn("OpenRouter: respuesta vacía, reintentando...", data);
+          }
+        } else {
+          const errData = await response.json().catch(() => null);
+          console.warn(
+            `OpenRouter error ${response.status} (intento ${attempt + 1}), reintentando...`,
+            errData
+          );
+        }
+      } catch (err) {
+        console.warn(`OpenRouter: fallo de red (intento ${attempt + 1}), reintentando...`, err);
+      } finally {
+        clearTimeout(timeoutId);
       }
 
-      const data = await response.json();
-      const replyContent =
-        data?.choices?.[0]?.message?.content?.trim() ||
-        "Disculpa, no pude procesar tu consulta en este momento. Recuerda que puedes comunicarte directamente con nuestras especialistas o agendar tu cita.";
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `assistant-${Date.now()}`,
-          role: "assistant",
-          content: replyContent,
-          timestamp: getCurrentTime(),
-        },
-      ]);
-    } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "No fue posible conectar con el asistente.";
-      setErrorBanner(message);
-    } finally {
-      setIsLoading(false);
+      if (!replyContent && !isCancelled()) {
+        attempt++;
+        if (attempt >= MAX_ATTEMPTS) break;
+        // Backoff: 1s, 2s, 4s, 8s, 8s... (capped)
+        const delay = Math.min(1000 * 2 ** Math.min(attempt - 1, 3), MAX_BACKOFF_MS);
+        await new Promise((r) => setTimeout(r, delay));
+      }
     }
+
+    if (isCancelled()) return;
+
+    // After all attempts failed, reply with a friendly message (never a raw error).
+    const finalReply =
+      replyContent ??
+      "Disculpa, en este momento tengo muchas consultas y no pude responderte. 🌷\n\nPor favor intenta de nuevo en unos minutos, o comunícate directamente con nuestro equipo:\n• **WhatsApp:** +57 311 397 9905\n• **Teléfono fijo:** +604 357 3010\n\nTambién puedes **Agendar tu Cita** con el botón de abajo.";
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: finalReply,
+        timestamp: getCurrentTime(),
+      },
+    ]);
+    setIsLoading(false);
   };
 
   // Simple lightweight formatter for **bold** and bullet lines
