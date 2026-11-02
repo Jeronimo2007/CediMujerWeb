@@ -19,9 +19,18 @@ import {
 } from "lucide-react";
 import { CONTACT_INFO } from "@/config/cedimujerContent";
 
-export const LocationMap: React.FC = () => {
+interface LocationMapProps {
+  isStandalonePage?: boolean;
+}
+
+export const LocationMap: React.FC<LocationMapProps> = ({
+  isStandalonePage = false,
+}) => {
   const [selectedFormOption, setSelectedFormOption] = useState(
     CONTACT_INFO.contactFormOptions[0].id
+  );
+  const [mobileContactTab, setMobileContactTab] = useState<"sede" | "form">(
+    "sede"
   );
   const [formState, setFormState] = useState({
     nombre: "",
@@ -44,6 +53,7 @@ export const LocationMap: React.FC = () => {
         CONTACT_INFO.contactFormOptions.some((opt) => opt.id === subKey)
       ) {
         setSelectedFormOption(subKey);
+        setMobileContactTab("form");
         setFormSubmitted(false);
       }
     };
@@ -66,19 +76,19 @@ export const LocationMap: React.FC = () => {
   return (
     <section
       id="ubicacion"
-      className="scroll-mt-20 py-16 sm:py-24 bg-[#F7F2EC] text-[#4A3A33] relative overflow-hidden"
+      className={`scroll-mt-20 ${
+        isStandalonePage ? "py-4 sm:py-10" : "py-14 sm:py-24"
+      } bg-[#F7F2EC] text-[#4A3A33] relative overflow-hidden`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-20">
-        {/* =================================================================
-            PARTE 1: UBICACIÓN E INFORMACIÓN DE CONTACTO OFICIAL
-        ================================================================= */}
-        <div>
-          <div className="text-center max-w-3xl mx-auto mb-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-10 sm:space-y-20">
+        {/* Header (Only shown on Home view; hidden when inside SectionPageView) */}
+        {!isStandalonePage && (
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-14">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8FC1BB]/20 border border-[#8FC1BB] text-[#4A3A33] text-xs font-bold uppercase tracking-widest mb-4"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8FC1BB]/20 border border-[#8FC1BB] text-[#4A3A33] text-xs font-bold uppercase tracking-widest mb-3"
             >
               <Compass className="w-4 h-4 text-[#8FC1BB]" />
               <span>Información de Contacto y Sede Sabaneta</span>
@@ -89,7 +99,7 @@ export const LocationMap: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-5xl font-extrabold text-[#4A3A33] tracking-tight"
+              className="text-2xl sm:text-5xl font-extrabold text-[#4A3A33] tracking-tight"
             >
               Visita Nuestra Sede en C.C. Aves María
             </motion.h2>
@@ -99,27 +109,64 @@ export const LocationMap: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="mt-4 text-[#9A7B6C] font-semibold text-base sm:text-lg"
+              className="mt-2.5 text-[#9A7B6C] font-semibold text-xs sm:text-lg"
             >
               {CONTACT_INFO.addressFull}
             </motion.p>
           </div>
+        )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* Mobile Segmented Switcher: Sede y Mapa vs Formulario de Contacto */}
+        <div className="md:hidden grid grid-cols-2 gap-1.5 p-1.5 rounded-2xl bg-white border-2 border-[#E6D9C8] shadow-xs">
+          <button
+            type="button"
+            onClick={() => setMobileContactTab("sede")}
+            className={`py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all ${
+              mobileContactTab === "sede"
+                ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
+                : "text-[#4A3A33]"
+            }`}
+          >
+            <MapPin className="w-3.5 h-3.5 text-[#8FC1BB]" />
+            <span>Sede y Mapa</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileContactTab("form")}
+            className={`py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all ${
+              mobileContactTab === "form"
+                ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
+                : "text-[#4A3A33]"
+            }`}
+          >
+            <MessageSquareHeart className="w-3.5 h-3.5 text-[#8FC1BB]" />
+            <span>Formulario (5)</span>
+          </button>
+        </div>
+
+        {/* =================================================================
+            PARTE 1: UBICACIÓN E INFORMACIÓN DE CONTACTO OFICIAL
+        ================================================================= */}
+        <div
+          className={`${
+            mobileContactTab === "sede" ? "block" : "hidden md:block"
+          }`}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             {/* Left Info Card */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-5 bg-[#E6D9C8]/40 border border-[#E6D9C8] rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md space-y-5"
+              transition={{ duration: 0.45 }}
+              className="lg:col-span-5 bg-[#E6D9C8]/40 border border-[#E6D9C8] rounded-3xl p-5 sm:p-8 shadow-xl backdrop-blur-md space-y-4 sm:space-y-5"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md">
-                  <MapPin className="w-6 h-6 text-[#4A3A33]" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md shrink-0">
+                  <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#4A3A33]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-extrabold text-[#4A3A33]">
+                  <h3 className="text-lg sm:text-xl font-extrabold text-[#4A3A33]">
                     Sede CediMujer Sabaneta
                   </h3>
                   <p className="text-xs text-[#8FC1BB] font-bold">
@@ -129,26 +176,26 @@ export const LocationMap: React.FC = () => {
               </div>
 
               {/* Dirección Oficial */}
-              <div className="p-4 rounded-2xl bg-[#F7F2EC] border border-[#E6D9C8] space-y-1">
-                <span className="text-xs text-[#9A7B6C] font-bold uppercase tracking-wider block">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F7F2EC] border border-[#E6D9C8] space-y-1">
+                <span className="text-[11px] text-[#9A7B6C] font-bold uppercase tracking-wider block">
                   Dirección Oficial
                 </span>
-                <p className="text-sm font-black text-[#4A3A33]">
+                <p className="text-xs sm:text-sm font-black text-[#4A3A33]">
                   {CONTACT_INFO.addressFull}
                 </p>
               </div>
 
               {/* Teléfonos Reales */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <a
                   href={CONTACT_INFO.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-[#F7F2EC] hover:bg-[#CFE6E2]/50 border border-[#8FC1BB]/50 transition-colors space-y-1"
+                  className="p-3.5 sm:p-4 rounded-2xl bg-[#F7F2EC] hover:bg-[#CFE6E2]/50 border border-[#8FC1BB]/50 transition-colors space-y-1"
                 >
                   <span className="text-[11px] text-[#9A7B6C] font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-[#8FC1BB]" />
-                    Asesoría (Celular / WhatsApp)
+                    Asesoría (WhatsApp)
                   </span>
                   <p className="text-sm sm:text-base font-black text-[#4A3A33]">
                     {CONTACT_INFO.whatsappDisplay}
@@ -157,7 +204,7 @@ export const LocationMap: React.FC = () => {
 
                 <a
                   href={CONTACT_INFO.pbxTel}
-                  className="p-4 rounded-2xl bg-[#F7F2EC] hover:bg-[#EBCFC6]/50 border border-[#E6D9C8] transition-colors space-y-1"
+                  className="p-3.5 sm:p-4 rounded-2xl bg-[#F7F2EC] hover:bg-[#EBCFC6]/50 border border-[#E6D9C8] transition-colors space-y-1"
                 >
                   <span className="text-[11px] text-[#9A7B6C] font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-[#D7A7A8]" />
@@ -170,7 +217,7 @@ export const LocationMap: React.FC = () => {
               </div>
 
               {/* Horarios */}
-              <div className="p-4 rounded-2xl bg-[#F7F2EC] border border-[#E6D9C8] space-y-2">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-[#F7F2EC] border border-[#E6D9C8] space-y-2">
                 <div className="flex items-center gap-2 text-xs text-[#9A7B6C] font-bold uppercase tracking-wider">
                   <Clock className="w-4 h-4 text-[#8FC1BB]" />
                   <span>Horarios de Atención</span>
@@ -198,7 +245,7 @@ export const LocationMap: React.FC = () => {
               </div>
 
               {/* Rate Us on Google Banner */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#CFE6E2]/50 via-[#EBCFC6]/40 to-[#E6D9C8]/40 border border-[#8FC1BB]/40 space-y-2">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#CFE6E2]/50 via-[#EBCFC6]/40 to-[#E6D9C8]/40 border border-[#8FC1BB]/40 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-amber-500">
                     {[...Array(5)].map((_, i) => (
@@ -255,11 +302,11 @@ export const LocationMap: React.FC = () => {
 
             {/* Right Map Canvas */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-7 relative h-[360px] sm:h-[480px] lg:h-[580px] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-xl"
+              transition={{ duration: 0.45 }}
+              className="lg:col-span-7 relative h-[320px] sm:h-[480px] lg:h-[580px] rounded-3xl overflow-hidden border border-[#E6D9C8] shadow-xl"
             >
               <iframe
                 title="Ubicación CediMujer C.C. Aves María Sabaneta"
@@ -269,7 +316,7 @@ export const LocationMap: React.FC = () => {
                 allowFullScreen
               />
 
-              <div className="absolute bottom-6 left-6 right-6 sm:right-auto sm:max-w-sm bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-4 rounded-2xl shadow-xl flex items-center gap-3 z-10">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-sm bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] p-3.5 sm:p-4 rounded-2xl shadow-xl flex items-center gap-3 z-10">
                 <div className="w-3 h-3 rounded-full bg-[#8FC1BB] animate-ping shrink-0" />
                 <div className="text-left">
                   <p className="text-xs font-extrabold text-[#4A3A33] flex items-center gap-1">
@@ -290,23 +337,25 @@ export const LocationMap: React.FC = () => {
         ================================================================= */}
         <div
           id="atencion-cliente"
-          className="scroll-mt-24 rounded-[2.25rem] bg-gradient-to-br from-[#E6D9C8]/55 via-[#F7F2EC] to-[#CFE6E2]/45 border-2 border-[#E6D9C8] p-6 sm:p-10 lg:p-12 shadow-xl"
+          className={`${
+            mobileContactTab === "form" ? "block" : "hidden md:block"
+          } scroll-mt-24 rounded-3xl sm:rounded-[2.25rem] bg-gradient-to-br from-[#E6D9C8]/55 via-[#F7F2EC] to-[#CFE6E2]/45 border-2 border-[#E6D9C8] p-4 sm:p-10 lg:p-12 shadow-xl`}
         >
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBCFC6] border border-[#D7A7A8] text-[#4A3A33] text-xs font-black uppercase tracking-wider mb-3">
+          <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBCFC6] border border-[#D7A7A8] text-[#4A3A33] text-xs font-black uppercase tracking-wider mb-2.5">
               <MessageSquareHeart className="w-4 h-4 text-[#4A3A33]" />
-              <span>Atención al Cliente y Participación del Usuario</span>
+              <span>Atención al Cliente y Participación</span>
             </div>
-            <h3 className="text-2xl sm:text-4xl font-black text-[#4A3A33]">
-              Formulario Oficial de Contacto, Sugerencias y Testimonios
+            <h3 className="text-xl sm:text-4xl font-black text-[#4A3A33]">
+              Formulario Oficial de Contacto y Sugerencias
             </h3>
-            <p className="mt-2 text-xs sm:text-base text-[#9A7B6C] font-semibold">
-              Selecciona el tipo de solicitud que deseas realizar. Nuestro equipo administrativo y médico te responderá oportunamente.
+            <p className="mt-1.5 text-xs sm:text-base text-[#9A7B6C] font-semibold">
+              Selecciona el tipo de solicitud que deseas realizar:
             </p>
           </div>
 
-          {/* 5 Official Contact Options Selector */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-2.5 mb-8">
+          {/* 5 Official Contact Options Selector (Horizontal Scroll on Mobile) */}
+          <div className="flex sm:flex-wrap sm:justify-center gap-2 overflow-x-auto no-scrollbar pb-2 sm:pb-0 mb-6 sm:mb-8">
             {CONTACT_INFO.contactFormOptions.map((option) => {
               const isSelected = selectedFormOption === option.id;
               return (
@@ -317,10 +366,10 @@ export const LocationMap: React.FC = () => {
                     setSelectedFormOption(option.id);
                     setFormSubmitted(false);
                   }}
-                  className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition-all border ${
+                  className={`shrink-0 px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition-all border whitespace-nowrap ${
                     isSelected
-                      ? "bg-[#4A3A33] text-[#F7F2EC] border-[#4A3A33] shadow-md scale-[1.02]"
-                      : "bg-white/80 text-[#4A3A33] border-[#E6D9C8] hover:border-[#8FC1BB]"
+                      ? "bg-[#4A3A33] text-[#F7F2EC] border-[#4A3A33] shadow-md"
+                      : "bg-white/85 text-[#4A3A33] border-[#E6D9C8] hover:border-[#8FC1BB]"
                   }`}
                 >
                   {option.label}
@@ -329,10 +378,10 @@ export const LocationMap: React.FC = () => {
             })}
           </div>
 
-          <div className="max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-[#E6D9C8] shadow-md">
+          <div className="max-w-3xl mx-auto bg-white rounded-3xl p-4 sm:p-8 border border-[#E6D9C8] shadow-md">
             {!formSubmitted ? (
               <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div className="p-4 rounded-2xl bg-[#CFE6E2]/35 border border-[#8FC1BB]/40">
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-[#CFE6E2]/35 border border-[#8FC1BB]/40">
                   <p className="text-xs font-black uppercase tracking-wider text-[#4A3A33]">
                     Modalidad seleccionada: {activeOptionObj.label}
                   </p>
@@ -341,7 +390,7 @@ export const LocationMap: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
                   <div>
                     <label className="block text-xs font-bold text-[#4A3A33] uppercase tracking-wider mb-1">
                       Nombre Completo
@@ -441,7 +490,7 @@ export const LocationMap: React.FC = () => {
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                   <p className="text-[11px] text-[#9A7B6C] font-semibold">
-                    También puedes escribirnos directo por WhatsApp al{" "}
+                    También puedes escribirnos al WhatsApp{" "}
                     <strong className="text-[#4A3A33]">
                       {CONTACT_INFO.whatsappDisplay}
                     </strong>{" "}

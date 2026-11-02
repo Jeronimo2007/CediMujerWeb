@@ -69,7 +69,7 @@ const TOPIC_SUGGESTIONS: Record<
   },
 };
 
-const SYSTEM_PROMPT = `Eres "Aura", la asistente virtual orientativa de Inteligencia Artificial de CediMujer (Centro de Diagnóstico Especializado en Salud para la Mujer), ubicado en Sabaneta, Antioquia, Colombia.
+const SYSTEM_PROMPT = `Eres "Ariel", la asistente virtual orientativa de Inteligencia Artificial de CediMujer (Centro de Diagnóstico Especializado en Salud para la Mujer), ubicado en Sabaneta, Antioquia, Colombia.
 
 INFORMACIÓN OFICIAL Y REAL DE CEDIMUJER (cedimujer.com):
 - Ubicación: Calle 75 sur No. 43 A -202 / CC. AVES MARÍA / local 341-342 (Sabaneta, Antioquia).
@@ -357,7 +357,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                   ¿Tienes dudas sobre tu salud o ecografías?
                 </p>
                 <p className="text-[11px] text-[#9A7B6C] font-semibold leading-tight">
-                  Pregúntale a <strong className="text-[#4A3A33]">Aura IA</strong>. No guardamos ni compartimos tus preguntas.
+                  Pregúntale a <strong className="text-[#4A3A33]">Ariel IA</strong>. No guardamos ni compartimos tus preguntas.
                 </p>
               </div>
             </motion.div>
@@ -394,7 +394,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
           <div className="relative text-left pr-0.5">
             <div className="flex items-center gap-1.5">
               <span className="text-xs sm:text-sm font-black tracking-tight text-[#F7F2EC] font-title">
-                Aura · CediMujer IA
+                Ariel · CediMujer IA
               </span>
               <Sparkles className="w-3.5 h-3.5 text-[#8FC1BB]" />
             </div>
@@ -413,7 +413,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.95 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            aria-label="Ventana de Asistente Virtual Aura IA"
+            aria-label="Ventana de Asistente Virtual Ariel IA"
             className="fixed bottom-20 right-3 left-3 sm:left-auto sm:right-6 sm:bottom-24 z-50 sm:w-[430px] max-h-[82dvh] flex flex-col rounded-[2rem] bg-[#F7F2EC] border-2 border-[#E6D9C8] shadow-[0_25px_70px_rgba(74,58,51,0.28)] overflow-hidden"
           >
             {/* Top Header */}
@@ -441,7 +441,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h3 className="text-base sm:text-lg font-black text-[#F7F2EC] tracking-tight">
-                        Aura · Asistente CediMujer
+                        Ariel · Asistente CediMujer
                       </h3>
                       <span className="px-2 py-0.5 rounded-full bg-[#8FC1BB]/20 border border-[#8FC1BB]/50 text-[#CFE6E2] text-[10px] font-extrabold uppercase tracking-wider">
                         IA
@@ -532,7 +532,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                         <div className="flex items-center justify-between gap-2 mb-1.5 pb-1 border-b border-[#E6D9C8]/60">
                           <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#9A7B6C]">
                             <Sparkles className="w-3 h-3 text-[#8FC1BB]" />
-                            Aura IA · Orientación CediMujer
+                            Ariel IA · Orientación CediMujer
                           </span>
                           <span className="text-[10px] font-bold text-[#9A7B6C]">
                             {msg.timestamp}
@@ -636,7 +636,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                       <span className="w-2 h-2 rounded-full bg-[#9A7B6C] animate-bounce" />
                     </div>
                     <span className="text-[11px] font-bold text-[#9A7B6C]">
-                      Aura está redactando orientación...
+                      Ariel está redactando orientación...
                     </span>
                   </div>
                 </motion.div>
