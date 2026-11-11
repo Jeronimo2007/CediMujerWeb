@@ -377,7 +377,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.92 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative max-w-[260px] sm:max-w-[290px] bg-[#F7F2EC]/95 backdrop-blur-md border border-[#8FC1BB] rounded-2xl rounded-br-sm p-3.5 shadow-xl shadow-[#4A3A33]/15 text-[#4A3A33]"
+              className="relative max-w-[250px] sm:max-w-[275px] bg-[#FAF7F2]/95 backdrop-blur-md border border-[#E6D9C8] rounded-2xl rounded-br-sm p-3.5 shadow-[0_12px_35px_-12px_rgba(74,58,51,0.12)] text-[#4A3A33]"
             >
               <button
                 type="button"
@@ -386,29 +386,26 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                   setShowFloatingHint(false);
                 }}
                 aria-label="Cerrar aviso"
-                className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-[#E6D9C8] text-[#4A3A33] hover:bg-[#EBCFC6] flex items-center justify-center shadow-sm border border-[#F7F2EC] transition-colors"
+                className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-white text-[#4A3A33] hover:bg-[#E6D9C8]/50 flex items-center justify-center shadow-xs border border-[#E6D9C8] transition-colors"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3 h-3" />
               </button>
 
               <div
                 onClick={() => setIsOpen(true)}
-                className="cursor-pointer space-y-1.5"
+                className="cursor-pointer space-y-1"
               >
                 <div className="flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#CFE6E2] text-[#4A3A33] text-[10px] font-black uppercase tracking-wider">
-                    <Lock className="w-2.5 h-2.5 text-[#4A3A33]" />
-                    Chat 100% Anónimo
-                  </span>
-                  <span className="text-[10px] font-bold text-[#9A7B6C]">
-                    • IA
+                  <span className="inline-flex items-center gap-1 text-[#9A7B6C] text-[10px] font-medium uppercase tracking-wider">
+                    <Lock className="w-2.5 h-2.5 text-[#8FC1BB]" />
+                    Chat 100% Anónimo · IA
                   </span>
                 </div>
-                <p className="text-xs font-extrabold text-[#4A3A33] leading-snug">
+                <p className="font-serif text-sm font-normal text-[#4A3A33] leading-snug">
                   ¿Tienes dudas sobre tu salud o ecografías?
                 </p>
-                <p className="text-[11px] text-[#9A7B6C] font-semibold leading-tight">
-                  Pregúntale a <strong className="text-[#4A3A33]">Ariel IA</strong>. No guardamos ni compartimos tus preguntas.
+                <p className="text-[11px] text-[#9A7B6C] font-normal leading-tight">
+                  Pregúntale a <strong className="font-medium text-[#4A3A33]">Ariel IA</strong> sin registro.
                 </p>
               </div>
             </motion.div>
@@ -419,38 +416,32 @@ export const ChatBot: React.FC<ChatBotProps> = ({
         <motion.button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
           aria-label={
             isOpen
               ? "Cerrar asistente virtual CediMujer"
               : "Abrir asistente virtual CediMujer"
           }
-          className="group relative flex items-center gap-3 pl-3.5 pr-4 py-3 rounded-full bg-gradient-to-r from-[#4A3A33] via-[#5c483f] to-[#4A3A33] text-[#F7F2EC] shadow-2xl shadow-[#4A3A33]/35 border-2 border-[#8FC1BB] transition-all duration-300"
+          className="group relative flex items-center gap-2.5 sm:gap-3 pl-3 pr-3.5 sm:pl-3.5 sm:pr-4 py-2 sm:py-2.5 rounded-full bg-[#4A3A33] text-[#FAF7F2] shadow-[0_12px_35px_-10px_rgba(74,58,51,0.3)] border border-[#E6D9C8]/30 transition-all duration-300"
         >
-          {/* Subtle Breathing Aura */}
-          <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#8FC1BB]/40 via-[#EBCFC6]/30 to-[#8FC1BB]/40 blur-md opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[#8FC1BB] to-[#CFE6E2] text-[#4A3A33] shadow-inner shrink-0">
+          <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#CFE6E2]/90 text-[#4A3A33] shrink-0">
             {isOpen ? (
-              <X className="w-5 h-5 stroke-[2.5]" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2]" />
             ) : (
-              <MessageCircleHeart className="w-5 h-5 stroke-[2.2]" />
-            )}
-            {!isOpen && (
-              <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#D7A7A8] border-2 border-[#4A3A33] animate-pulse" />
+              <MessageCircleHeart className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[1.75]" />
             )}
           </div>
 
           <div className="relative text-left pr-0.5">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs sm:text-sm font-black tracking-tight text-[#F7F2EC] font-title">
+              <span className="font-serif text-xs sm:text-sm font-normal tracking-tight text-[#FAF7F2]">
                 Ariel · CediMujer IA
               </span>
-              <Sparkles className="w-3.5 h-3.5 text-[#8FC1BB]" />
+              <Sparkles className="w-3 h-3 text-[#8FC1BB]" />
             </div>
-            <span className="block text-[10px] font-bold text-[#CFE6E2] tracking-wide">
-              {isOpen ? "Cerrar orientación" : "Consulta privada • Sin registro"}
+            <span className="block text-[9.5px] sm:text-[10px] font-normal text-[#E6D9C8] tracking-wide">
+              {isOpen ? "Cerrar orientación" : "Orientación privada"}
             </span>
           </div>
         </motion.button>
@@ -465,7 +456,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
             exit={{ opacity: 0, y: 24, scale: 0.95 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             aria-label="Ventana de Asistente Virtual Ariel IA"
-            className="fixed bottom-20 right-3 left-3 sm:left-auto sm:right-6 sm:bottom-24 z-50 sm:w-[430px] max-h-[82dvh] flex flex-col rounded-[2rem] bg-[#F7F2EC] border-2 border-[#E6D9C8] shadow-[0_25px_70px_rgba(74,58,51,0.28)] overflow-hidden"
+            className="fixed bottom-20 right-2.5 left-2.5 sm:left-auto sm:right-6 sm:bottom-24 z-50 sm:w-[430px] max-h-[calc(100dvh-5.5rem)] sm:max-h-[82dvh] flex flex-col rounded-[2rem] bg-[#F7F2EC] border-2 border-[#E6D9C8] shadow-[0_25px_70px_rgba(74,58,51,0.28)] overflow-hidden"
           >
             {/* Top Header */}
             <div className="relative bg-gradient-to-r from-[#4A3A33] via-[#59463E] to-[#4A3A33] text-[#F7F2EC] px-5 pt-4 pb-3.5 border-b border-[#9A7B6C]/40">

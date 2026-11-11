@@ -16,13 +16,13 @@ interface CounterProps {
 const CountUpNumber: React.FC<CounterProps> = ({
   from = 0,
   to,
-  duration = 2.2,
+  duration = 2.0,
   suffix = "",
   prefix = "",
 }) => {
   const [count, setCount] = useState(from);
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   useEffect(() => {
     if (!isInView) return;
@@ -45,7 +45,7 @@ const CountUpNumber: React.FC<CounterProps> = ({
   }, [isInView, from, to, duration]);
 
   return (
-    <span ref={ref} className="font-extrabold tracking-tight">
+    <span ref={ref} className="font-serif font-normal tracking-tight">
       {prefix}
       {count.toLocaleString("es-CO")}
       {suffix}
@@ -55,86 +55,48 @@ const CountUpNumber: React.FC<CounterProps> = ({
 
 export const ImpactStats: React.FC = () => {
   const icons = [CalendarCheck2, Activity, Baby];
-  const cardStyles = [
-    { bgColor: "bg-[#CFE6E2]/45", borderColor: "border-[#8FC1BB]/50" },
-    { bgColor: "bg-[#EBCFC6]/45", borderColor: "border-[#D7A7A8]/50" },
-    { bgColor: "bg-[#E6D9C8]/55", borderColor: "border-[#9A7B6C]/40" },
-  ];
 
   return (
     <section
       id="impacto"
-      className="scroll-mt-20 py-16 sm:py-24 bg-[#E6D9C8]/40 text-[#4A3A33] relative"
+      className="scroll-mt-20 pt-6 pb-4 sm:pt-10 sm:pb-8 text-[#4A3A33] relative"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8FC1BB]/20 border border-[#8FC1BB] text-[#4A3A33] text-xs font-bold uppercase tracking-widest mb-4"
-          >
-            <span>Nuestra Trayectoria Real en Cifras</span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-5xl font-extrabold text-[#4A3A33] tracking-tight"
-          >
-            La Confianza de Miles de Mujeres y Familias en Sabaneta
-          </motion.h2>
-        </div>
-
-        {/* 3 Official Counters Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.45 }}
+          className="rounded-[2rem] bg-gradient-to-r from-[#EBCFC6]/55 via-[#F7F6F4] to-[#EBCFC6]/55 border border-[#D7A7A8]/60 shadow-[0_12px_36px_-18px_rgba(74,58,51,0.1)] grid grid-cols-3 divide-x divide-[#D7A7A8]/45 overflow-hidden"
+        >
           {OFFICIAL_METRICS.map((stat, idx) => {
             const IconComp = icons[idx % icons.length];
-            const style = cardStyles[idx % cardStyles.length];
             return (
-              <motion.div
+              <div
                 key={stat.id}
-                initial={{ opacity: 0, scale: 0.92, y: 25 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`relative p-8 sm:p-10 rounded-3xl ${style.bgColor} border-2 ${style.borderColor} hover:border-[#8FC1BB] shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between`}
+                className="py-5 px-2 sm:p-7 flex flex-col items-center text-center justify-center"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center font-bold shadow-md">
-                    <IconComp className="w-7 h-7" />
-                  </div>
-                  <span className="text-xs font-black text-[#9A7B6C] uppercase tracking-widest">
-                    CediMujer 0{stat.id}
-                  </span>
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#EBCFC6]/75 text-[#4A3A33] flex items-center justify-center mb-2">
+                  <IconComp className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[1.75] text-[#4A3A33]" />
                 </div>
 
-                <div>
-                  <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#4A3A33]">
-                    <CountUpNumber
-                      from={0}
-                      to={stat.number}
-                      prefix={stat.prefix}
-                      suffix={stat.suffix}
-                      duration={2.4}
-                    />
-                  </div>
-
-                  <h3 className="mt-3 text-xl font-black text-[#4A3A33]">
-                    {stat.label}
-                  </h3>
-
-                  <p className="mt-2 text-xs sm:text-sm text-[#9A7B6C] font-semibold leading-relaxed">
-                    {stat.description}
-                  </p>
+                <div className="text-xl sm:text-4xl lg:text-[2.75rem] text-[#4A3A33] leading-none">
+                  <CountUpNumber
+                    from={0}
+                    to={stat.number}
+                    prefix={stat.prefix}
+                    suffix={stat.suffix}
+                    duration={2.2}
+                  />
                 </div>
-              </motion.div>
+
+                <h3 className="mt-1.5 sm:mt-2 font-sans text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[#9A7B6C]">
+                  {stat.label}
+                </h3>
+              </div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

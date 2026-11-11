@@ -15,7 +15,6 @@ import { LocationMap } from "@/components/LocationMap";
 import { Footer } from "@/components/Footer";
 import { AppointmentModal } from "@/components/AppointmentModal";
 import { ZoomSquarePortal } from "@/components/ZoomSquarePortal";
-import { SquareTransitionPortal } from "@/components/SquareTransitionPortal";
 import { GestationalCalculator } from "@/components/GestationalCalculator";
 import { CurtainPreloader } from "@/components/CurtainPreloader";
 import { SocialMediaBar } from "@/components/SocialMediaBar";
@@ -67,7 +66,6 @@ export default function Home() {
     }, 80);
   };
 
-  // Listen to custom navigation events (e.g. "Depositar un testimonio" button in Testimonials)
   useEffect(() => {
     const handleCustomNavigate = (event: Event) => {
       const customEvent = event as CustomEvent<{
@@ -101,11 +99,11 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#F7F2EC] text-[#4A3A33] overflow-x-clip">
-      {/* Cinematic Curtain Preloader Opening Effect */}
+    <main className="min-h-screen bg-[#FDF6F6] text-[#4A3A33] overflow-x-clip font-sans">
+      {/* Editorial Pastel Pink Preloader */}
       <CurtainPreloader />
 
-      {/* Header Navbar with Full-Page Section Navigation & Mega-Menu Dropdowns */}
+      {/* Header Navbar */}
       <Navbar
         currentView={currentView}
         onOpenAppointment={(srv) => handleOpenAppointment(srv)}
@@ -114,7 +112,7 @@ export default function Home() {
         onNavigateHome={handleNavigateHome}
       />
 
-      {/* Floating Social Media Access (Instagram, TikTok, Facebook, YouTube) */}
+      {/* Floating Social Media Access */}
       <SocialMediaBar />
 
       <AnimatePresence mode="wait">
@@ -161,27 +159,21 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            {/* Hero Section */}
+            {/* Minimalist Full-Bleed Hero Section */}
             <Hero
               onOpenAppointment={() => handleOpenAppointment()}
               onOpenCalculator={handleOpenCalculator}
             />
 
-            <div className="relative z-20 bg-[#F7F2EC] rounded-t-[2rem] sm:rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(74,58,51,0.12)]">
-              {/* Expanding Square Portal Divider #1 */}
-              <SquareTransitionPortal
-                badge="Centro de Diagnóstico Especializado"
-                title="Calidad Humana y Rigor Científico desde 2008"
-                subtitle="Acompañamos a la mujer en cada etapa de su vida en nuestra sede del C.C. Aves María en Sabaneta."
-                fromColor="#F7F2EC"
-                toColor="#EBCFC6"
-              />
-
-              {/* Certifications Infinite Scroll Marquee */}
+            <div className="relative z-20 bg-[#F7F6F4]">
+              {/* Línea móvil de certificaciones justo debajo del Hero */}
               <CertificationsMarquee />
 
-              {/* Portal de Secciones Independientes: Embarazo, Ginecología, Telemedicina, Quiénes Somos, Blog y Contacto */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
+              {/* Métricas Oficiales de CediMujer justo debajo de la línea móvil */}
+              <ImpactStats />
+
+              {/* Unidades y Especialidades */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <Services
                   onSelectService={(serviceName) => handleOpenAppointment(serviceName)}
                   onOpenCalculator={handleOpenCalculator}
@@ -189,74 +181,51 @@ export default function Home() {
                 />
               </ZoomSquarePortal>
 
-              {/* Expanding Square Portal Divider #2 */}
-              <SquareTransitionPortal
-                badge="Nuestra Institución · Especialistas"
-                title="Equipo Médico Especializado y Tecnología HD Live"
-                subtitle="Conoce nuestra sede en el C.C. Aves María y a los especialistas de CediMujer."
-                fromColor="#CFE6E2"
-                toColor="#E6D9C8"
-              />
-
-              {/* Quiénes Somos: Nuestra Institución, Nuestra Sede, Especialistas y Asociación de Usuarios */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+              {/* Quiénes Somos: Institución, Sede, Especialistas y Asociación */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <About onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
               </ZoomSquarePortal>
 
-              {/* Galería de Salas & Equipos Clínicos */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+              {/* Galería de Salas & Equipos Clínicos (Abre Carrusel Fullscreen) */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#E6D9C8">
                 <FacilitiesGallery />
               </ZoomSquarePortal>
 
-              {/* Métricas Oficiales de CediMujer (+36.000 Citas, +30.000 Ecografías, +13.000 Mamás Gestantes) */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
-                <ImpactStats />
-              </ZoomSquarePortal>
-
-              {/* Banner Call-To-Action to Gestational Calculator right in the page flow */}
-              <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                <div className="relative rounded-3xl bg-gradient-to-r from-[#CFE6E2] via-[#EBCFC6] to-[#E6D9C8] p-6 sm:p-12 border border-[#8FC1BB]/40 shadow-xl overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
-                  <div className="max-w-xl text-center md:text-left">
-                    <span className="inline-block px-3 py-1 rounded-full bg-white/75 text-xs font-black text-[#4A3A33] uppercase tracking-wider mb-3">
-                      Herramienta Especializada de Embarazo
+              {/* Compact Pastel Pink Call-To-Action to Gestational Calculator */}
+              <section className="py-8 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+                <div className="relative rounded-[2rem] bg-gradient-to-r from-[#EBCFC6]/70 via-[#F7F6F4] to-[#EBCFC6]/85 p-6 sm:p-10 border border-[#D7A7A8]/65 shadow-[0_12px_36px_-18px_rgba(154,123,108,0.12)] flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+                  <div>
+                    <span className="inline-block text-[10px] font-medium text-[#9A7B6C] uppercase tracking-[0.2em] mb-1">
+                      Herramienta Obstétrica
                     </span>
-                    <h3 className="text-2xl sm:text-4xl font-black text-[#4A3A33] tracking-tight">
-                      ¿Estás en embarazo? Calcula tus semanas de gestación
+                    <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3A33] leading-snug">
+                      ¿Estás en embarazo?{" "}
+                      <span className="italic text-[#D7A7A8]">
+                        Calcula tus semanas hoy
+                      </span>
                     </h3>
-                    <p className="mt-3 text-sm sm:text-base text-[#4A3A33] font-semibold leading-relaxed">
-                      Accede a nuestra calculadora obstétrica para conocer tu fecha probable de parto, evolución semana a semana y las ecografías recomendadas por CediMujer.
-                    </p>
                   </div>
                   <button
                     onClick={handleOpenCalculator}
-                    className="w-full md:w-auto px-7 py-4 rounded-full bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-[#F7F2EC] font-black text-sm sm:text-base shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 shrink-0 border border-[#4A3A33]"
+                    className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-[#F7F6F4] font-medium text-xs sm:text-sm tracking-wide transition-all shrink-0"
                   >
-                    Abrir Calculadora Gestacional →
+                    ( Abrir Calculadora )
                   </button>
                 </div>
               </section>
 
-              {/* Información, Blog (7 Artículos Oficiales) y Preguntas Frecuentes */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#CFE6E2">
+              {/* Blog y Preguntas Frecuentes */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <BlogAndFaq onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
               </ZoomSquarePortal>
 
-              {/* Testimonios Literales Reales de CediMujer */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#EBCFC6">
+              {/* Testimonios Reales */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <Testimonials />
               </ZoomSquarePortal>
 
-              {/* Expanding Square Portal Divider #3 */}
-              <SquareTransitionPortal
-                badge="C.C. Aves María · Local 341-342 (Sabaneta)"
-                title="Contacto, Ubicación y Atención al Cliente"
-                subtitle="Visítanos en la Calle 75 sur No. 43 A -202 o comunícate al WhatsApp +57 311 397 9905 y PBX +604 357 3010."
-                fromColor="#EBCFC6"
-                toColor="#CFE6E2"
-              />
-
-              {/* Location Map & Customer Service Form (5 Official Contact Options) */}
-              <ZoomSquarePortal bgGradientFrom="#F7F2EC" bgGradientTo="#E6D9C8">
+              {/* Ubicación y Atención al Usuario */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#E6D9C8">
                 <LocationMap />
               </ZoomSquarePortal>
             </div>
@@ -278,7 +247,7 @@ export default function Home() {
         initialService={selectedService}
       />
 
-      {/* Ephemeral AI Assistant Chatbot (OpenRouter - Gemini 2.5 Flash Lite) */}
+      {/* Ephemeral AI Assistant Chatbot (OpenRouter) */}
       <ChatBot
         onOpenAppointment={(srv) => handleOpenAppointment(srv)}
         onOpenCalculator={handleOpenCalculator}

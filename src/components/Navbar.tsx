@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           const currentScrollY = window.scrollY;
           const prevScrollY = lastScrollYRef.current;
 
-          const scrolled = currentScrollY > 30;
+          const scrolled = currentScrollY > 20;
           setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
 
           if (
@@ -107,6 +107,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
   }, [mobileMenuOpen]);
 
   const menuGroups: MenuGroup[] = [
@@ -499,33 +508,48 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleMouseLeaveGroup = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setOpenDesktopDropdown(null);
-    }, 140);
+    }, 150);
   };
 
   return (
     <>
+      {/* Soft Dim Backdrop when Desktop Mega-Menu is Open */}
+      <AnimatePresence>
+        {activeGroup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setOpenDesktopDropdown(null)}
+            className="hidden lg:block fixed inset-0 z-40 bg-[#4A3A33]/25 backdrop-blur-[2px]"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Open Architectural Full-Width Header Bar (Pastel Pink & Minimalist) */}
       <header
-        className={`fixed top-2 sm:top-3.5 inset-x-0 z-50 transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] px-3 sm:px-5 lg:px-6 max-w-[1360px] mx-auto will-change-transform ${
+        onMouseLeave={handleMouseLeaveGroup}
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
           isVisible
             ? "translate-y-0 opacity-100"
-            : "-translate-y-28 opacity-0 pointer-events-none"
+            : "-translate-y-full opacity-0 pointer-events-none"
+        } ${
+          openDesktopDropdown || mobileMenuOpen
+            ? "bg-[#FDF6F6] border-b border-[#F3D9D9] shadow-[0_4px_24px_rgba(74,58,51,0.06)]"
+            : isScrolled
+            ? "bg-[#FDF6F6]/95 backdrop-blur-xl border-b border-[#F3D9D9] shadow-[0_4px_24px_rgba(74,58,51,0.05)]"
+            : "bg-[#FDF6F6]/90 backdrop-blur-md border-b border-[#F3D9D9]/70"
         }`}
       >
-        <div
-          onMouseLeave={handleMouseLeaveGroup}
-          className={`relative w-full flex items-center justify-between gap-2 xl:gap-3 px-3 sm:px-4 lg:px-4 xl:px-5 py-2 sm:py-2.5 rounded-2xl sm:rounded-full transition-shadow duration-300 border border-[#E6D9C8] backdrop-blur-md ${
-            isScrolled
-              ? "bg-[#F7F2EC]/95 shadow-xl shadow-[#4A3A33]/10"
-              : "bg-[#F7F2EC]/95 shadow-lg shadow-[#4A3A33]/5"
-          }`}
-        >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
           {/* Logo Brand */}
           <button
             type="button"
             onClick={() => handleSelectPageSection("home")}
             className="flex items-center shrink-0 group text-left"
           >
-            <div className="relative h-8 w-24 sm:h-9 sm:w-28 xl:h-9 xl:w-32 flex items-center transition-transform duration-300 group-hover:scale-105">
+            <div className="relative h-8 w-28 sm:h-10 sm:w-36 flex items-center transition-opacity duration-300 group-hover:opacity-85">
               <Image
                 src={ASSETS.logo.primary}
                 alt="CediMujer - Centro de Diagnóstico Especializado en Salud para la Mujer"
@@ -538,20 +562,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </button>
 
-          {/* Desktop Navigation (lg and above) */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-[#E6D9C8]/65 p-1 rounded-full border border-[#E6D9C8] shrink-0">
+          {/* Desktop Navigation (Delicate Underline Links, No Boxes) */}
+          <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 shrink-0">
             <button
               type="button"
               onMouseEnter={() => setOpenDesktopDropdown(null)}
               onClick={() => handleSelectPageSection("home")}
-              className={`inline-flex items-center gap-1 px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 whitespace-nowrap shrink-0 ${
+              className={`relative py-2 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
                 currentView === "home" && !openDesktopDropdown
-                  ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
-                  : "text-[#4A3A33] hover:bg-[#F7F2EC]"
+                  ? "text-[#4A3A33] font-medium"
+                  : "text-[#4A3A33]/75 hover:text-[#4A3A33]"
               }`}
             >
-              <Home className="w-3 h-3 shrink-0" />
               <span>Inicio</span>
+              {currentView === "home" && !openDesktopDropdown && (
+                <span className="absolute bottom-0 inset-x-0 h-[1.5px] bg-[#8FC1BB] rounded-full" />
+              )}
             </button>
 
             {menuGroups.map((group) => {
@@ -563,12 +589,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   type="button"
                   onMouseEnter={() => handleMouseEnterGroup(group.name)}
                   onClick={() => handleSelectPageSection(group.viewId)}
-                  className={`inline-flex items-center gap-0.5 xl:gap-1 px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 whitespace-nowrap shrink-0 ${
-                    isDropdownOpen
-                      ? "bg-[#8FC1BB] text-[#4A3A33] shadow-xs"
-                      : isCurrentPage
-                      ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
-                      : "text-[#4A3A33] hover:bg-[#F7F2EC]"
+                  className={`relative py-2 inline-flex items-center gap-1 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
+                    isDropdownOpen || isCurrentPage
+                      ? "text-[#4A3A33] font-medium"
+                      : "text-[#4A3A33]/75 hover:text-[#4A3A33]"
                   }`}
                 >
                   <span>{group.name}</span>
@@ -576,12 +600,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <ChevronDown
                       className={`w-3 h-3 shrink-0 transition-transform duration-200 ${
                         isDropdownOpen
-                          ? "rotate-180 text-[#4A3A33]"
-                          : isCurrentPage
-                          ? "text-[#8FC1BB]"
-                          : "text-[#9A7B6C]"
+                          ? "rotate-180 text-[#8FC1BB]"
+                          : "text-[#9A7B6C]/70"
                       }`}
                     />
+                  )}
+                  {(isDropdownOpen || isCurrentPage) && (
+                    <span className="absolute bottom-0 inset-x-0 h-[1.5px] bg-[#8FC1BB] rounded-full" />
                   )}
                 </button>
               );
@@ -591,19 +616,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onMouseEnter={() => setOpenDesktopDropdown(null)}
               onClick={onOpenCalculator}
-              className={`px-2 xl:px-2.5 2xl:px-3 py-1.5 text-[11px] xl:text-xs font-extrabold rounded-full transition-colors duration-150 inline-flex items-center gap-1 whitespace-nowrap shrink-0 ${
+              className={`relative py-2 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 inline-flex items-center gap-1.5 whitespace-nowrap ${
                 currentView === "calculator"
-                  ? "bg-[#4A3A33] text-[#F7F2EC] shadow-xs"
-                  : "text-[#4A3A33] bg-[#EBCFC6] hover:bg-[#D7A7A8]"
+                  ? "text-[#4A3A33] font-medium"
+                  : "text-[#9A7B6C] hover:text-[#4A3A33]"
               }`}
             >
-              <Calculator className="w-3 h-3 shrink-0" />
+              <Calculator className="w-3.5 h-3.5 text-[#8FC1BB] shrink-0 stroke-[1.75]" />
               <span>Calculadora</span>
+              {currentView === "calculator" && (
+                <span className="absolute bottom-0 inset-x-0 h-[1.5px] bg-[#8FC1BB] rounded-full" />
+              )}
             </button>
           </nav>
 
-          {/* Action Buttons & Mobile/Tablet Menu Toggle */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Right Actions */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={() => {
@@ -611,125 +639,121 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setOpenDesktopDropdown(null);
                 if (onOpenAppointment) onOpenAppointment();
               }}
-              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 xl:px-4 py-2 rounded-xl sm:rounded-full text-[11px] xl:text-xs font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-md shadow-[#8FC1BB]/25 hover:scale-[1.02] active:scale-95 transition-all duration-200 border border-[#8FC1BB] whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-medium text-[#4A3A33] bg-[#F7E0E0] hover:bg-[#4A3A33] hover:text-[#FDF6F6] border border-[#EBC5C5] transition-all duration-200 whitespace-nowrap shrink-0"
             >
-              <Calendar className="w-3.5 h-3.5 text-[#4A3A33] shrink-0" />
+              <span className="text-[#9A7B6C] group-hover:text-[#F7E0E0]">(</span>
               <span>Agendar Cita</span>
+              <span className="text-[#9A7B6C] group-hover:text-[#F7E0E0]">)</span>
             </button>
 
             {/* Menu Button for Mobile & Tablet (< lg) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl sm:rounded-full bg-[#E6D9C8] text-[#4A3A33] hover:bg-[#EBCFC6] transition-colors shrink-0"
+              className="lg:hidden p-2 rounded-full text-[#4A3A33] hover:bg-[#F7E0E0]/60 transition-colors shrink-0"
               aria-label="Abrir menú de navegación"
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 stroke-[1.75]" />
               ) : (
-                <Menu className="w-5 h-5" />
+                <Menu className="w-5 h-5 stroke-[1.75]" />
               )}
             </button>
           </div>
-
-          {/* Desktop Mega-Dropdown Panel */}
-          <AnimatePresence>
-            {activeGroup && (
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                onMouseEnter={() => {
-                  if (closeTimeoutRef.current)
-                    clearTimeout(closeTimeoutRef.current);
-                }}
-                onMouseLeave={handleMouseLeaveGroup}
-                className="hidden lg:block absolute left-0 right-0 top-full pt-2.5 z-50"
-              >
-                <div className="bg-[#F7F2EC] border-2 border-[#E6D9C8] rounded-3xl p-5 xl:p-6 shadow-2xl shadow-[#4A3A33]/20">
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-[#E6D9C8]">
-                    <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
-                        <activeGroup.icon className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs xl:text-sm font-black text-[#4A3A33] uppercase tracking-wider">
-                          Ir a la página de {activeGroup.name}
-                        </h4>
-                        <p className="text-[11px] text-[#9A7B6C] font-semibold">
-                          Selecciona una subsección o procedimiento para abrir su página dedicada
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleSelectPageSection(activeGroup.viewId)
-                      }
-                      className="px-3.5 py-1.5 rounded-full bg-[#4A3A33] hover:bg-[#8FC1BB] text-[#F7F2EC] hover:text-[#4A3A33] text-xs font-extrabold transition-colors"
-                    >
-                      Ver toda la sección {activeGroup.name} →
-                    </button>
-                  </div>
-
-                  <div
-                    className={`grid gap-5 ${
-                      (activeGroup.columns?.length || 1) >= 3
-                        ? "grid-cols-3"
-                        : (activeGroup.columns?.length || 1) === 2
-                        ? "grid-cols-2"
-                        : "grid-cols-1"
-                    }`}
-                  >
-                    {activeGroup.columns?.map((col) => (
-                      <div key={col.heading} className="space-y-2">
-                        <h5 className="text-[11px] font-black uppercase tracking-wider text-[#CFE6E2] bg-[#4A3A33] px-3 py-1 rounded-lg w-fit">
-                          {col.heading}
-                        </h5>
-                        <ul
-                          className={
-                            (activeGroup.columns?.length || 1) === 1
-                              ? "grid grid-cols-2 xl:grid-cols-3 gap-1.5"
-                              : "space-y-1"
-                          }
-                        >
-                          {col.items.map((item) => (
-                            <li key={item.label}>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleSelectPageSection(
-                                    item.viewId,
-                                    item.subKey,
-                                    item.itemId,
-                                    item.isCalculator
-                                  )
-                                }
-                                className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-[#4A3A33] hover:bg-[#CFE6E2]/65 transition-colors flex items-center justify-between gap-2 group/item"
-                              >
-                                <span className="group-hover/item:translate-x-0.5 transition-transform">
-                                  {item.label}
-                                </span>
-                                {item.badge && (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#EBCFC6] text-[#4A3A33] shrink-0">
-                                    {item.badge}
-                                  </span>
-                                )}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
+
+        {/* Seamless Edge-to-Edge Editorial Mega-Menu Panel (100% Solid Pastel Pink Background) */}
+        <AnimatePresence>
+          {activeGroup && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              onMouseEnter={() => {
+                if (closeTimeoutRef.current)
+                  clearTimeout(closeTimeoutRef.current);
+              }}
+              onMouseLeave={handleMouseLeaveGroup}
+              className="hidden lg:block w-full bg-[#FDF6F6] border-b-2 border-[#F3D9D9] shadow-[0_24px_60px_-15px_rgba(74,58,51,0.16)]"
+            >
+              <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 mb-5 border-b border-[#F3D9D9]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#F7E0E0] flex items-center justify-center text-[#4A3A33]">
+                      <activeGroup.icon className="w-4 h-4 stroke-[1.75]" />
+                    </div>
+                    <h4 className="font-serif text-xl font-normal text-[#4A3A33]">
+                      {activeGroup.name}
+                    </h4>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectPageSection(activeGroup.viewId)
+                    }
+                    className="px-4 py-1.5 rounded-full bg-[#F7E0E0] hover:bg-[#4A3A33] text-xs font-medium text-[#4A3A33] hover:text-[#FDF6F6] border border-[#EBC5C5] transition-colors"
+                  >
+                    Explorar {activeGroup.name} →
+                  </button>
+                </div>
+
+                <div
+                  className={`grid gap-8 ${
+                    (activeGroup.columns?.length || 1) >= 3
+                      ? "grid-cols-3"
+                      : (activeGroup.columns?.length || 1) === 2
+                      ? "grid-cols-2"
+                      : "grid-cols-1"
+                  }`}
+                >
+                  {activeGroup.columns?.map((col) => (
+                    <div key={col.heading} className="space-y-2.5">
+                      <h5 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9A7B6C] pb-1.5 border-b border-[#F3D9D9]">
+                        {col.heading}
+                      </h5>
+                      <ul
+                        className={
+                          (activeGroup.columns?.length || 1) === 1
+                            ? "grid grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-1"
+                            : "space-y-1"
+                        }
+                      >
+                        {col.items.map((item) => (
+                          <li key={item.label}>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleSelectPageSection(
+                                  item.viewId,
+                                  item.subKey,
+                                  item.itemId,
+                                  item.isCalculator
+                                )
+                              }
+                              className="w-full text-left px-3 py-2 -mx-3 rounded-xl text-xs font-medium text-[#4A3A33] hover:bg-[#F7E0E0]/75 transition-colors flex items-center justify-between gap-2 group/item"
+                            >
+                              <span className="group-hover/item:translate-x-1 transition-transform">
+                                {item.label}
+                              </span>
+                              {item.badge && (
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-medium bg-[#F4D0D0] text-[#4A3A33] shrink-0">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Mobile & Tablet Drawer Menu */}
@@ -742,42 +766,54 @@ export const Navbar: React.FC<NavbarProps> = ({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 z-40 bg-[#4A3A33]/40 backdrop-blur-[2px] lg:hidden"
+              className="fixed inset-0 z-40 bg-[#4A3A33]/25 backdrop-blur-[2px] lg:hidden"
             />
             <motion.div
-              initial={{ opacity: 0, y: -12 }}
+              initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-x-3 sm:inset-x-6 top-[68px] sm:top-[76px] z-40 max-w-xl ml-auto bg-[#F7F2EC] border border-[#E6D9C8] rounded-3xl p-4 sm:p-6 lg:hidden shadow-2xl max-h-[calc(100dvh-84px)] overflow-y-auto"
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22 }}
+              className="fixed inset-x-0 top-16 sm:top-20 z-40 bg-[#FDF6F6] border-b border-[#F3D9D9] px-5 py-5 lg:hidden shadow-xl max-h-[calc(100dvh-64px)] overflow-y-auto"
             >
-              <div className="space-y-2">
+              <div className="divide-y divide-[#F3D9D9]">
                 <button
                   type="button"
                   onClick={() => handleSelectPageSection("home")}
-                  className="w-full px-4 py-3 rounded-2xl border border-[#E6D9C8] bg-white/80 flex items-center gap-2.5 font-extrabold text-sm text-[#4A3A33]"
+                  className="w-full py-3 flex items-center gap-2.5 font-medium text-sm text-[#4A3A33]"
                 >
-                  <Home className="w-4 h-4 text-[#8FC1BB]" />
+                  <Home className="w-4 h-4 text-[#8FC1BB] stroke-[1.75]" />
                   <span>Página de Inicio</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenCalculator) onOpenCalculator();
+                  }}
+                  className="w-full py-3 flex items-center justify-between gap-2.5 font-medium text-sm text-[#4A3A33]"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Calculator className="w-4 h-4 text-[#8FC1BB] stroke-[1.75]" />
+                    <span>Calculadora Gestacional</span>
+                  </span>
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#CFE6E2]/60 text-[#4A3A33] font-medium">
+                    Interactivo
+                  </span>
                 </button>
 
                 {menuGroups.map((group) => {
                   const IconComp = group.icon;
                   const isExpanded = openMobileAccordion === group.name;
                   return (
-                    <div
-                      key={group.name}
-                      className="rounded-2xl border border-[#E6D9C8] bg-white/70 overflow-hidden"
-                    >
-                      <div className="flex items-center justify-between px-4 py-2.5">
+                    <div key={group.name} className="py-1.5">
+                      <div className="flex items-center justify-between py-2">
                         <button
                           type="button"
                           onClick={() => handleSelectPageSection(group.viewId)}
-                          className="flex items-center gap-2.5 text-left font-extrabold text-sm text-[#4A3A33]"
+                          className="flex items-center gap-2.5 text-left font-medium text-sm text-[#4A3A33]"
                         >
-                          <span className="p-1.5 rounded-lg bg-[#8FC1BB]/30 text-[#4A3A33]">
-                            <IconComp className="w-4 h-4" />
-                          </span>
+                          <IconComp className="w-4 h-4 text-[#9A7B6C] stroke-[1.75]" />
                           <span>{group.name}</span>
                         </button>
                         <button
@@ -787,7 +823,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               isExpanded ? null : group.name
                             )
                           }
-                          className="p-1.5 rounded-lg bg-[#E6D9C8]/50 text-[#4A3A33]"
+                          className="p-1.5 rounded-full text-[#9A7B6C]"
                           aria-label={`Ver subsecciones de ${group.name}`}
                         >
                           <ChevronDown
@@ -799,10 +835,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </div>
 
                       {isExpanded && group.columns && (
-                        <div className="px-4 pb-3 pt-1 space-y-3 border-t border-[#E6D9C8]/60 bg-[#F7F2EC]/60">
+                        <div className="pl-6 pr-2 pb-2 pt-1 space-y-2.5">
                           {group.columns.map((col) => (
                             <div key={col.heading} className="space-y-1">
-                              <p className="text-[11px] font-black uppercase tracking-wider text-[#9A7B6C] px-2 pt-1">
+                              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#9A7B6C] pt-1">
                                 {col.heading}
                               </p>
                               {col.items.map((item) => (
@@ -817,11 +853,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                                       item.isCalculator
                                     )
                                   }
-                                  className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-[#4A3A33] hover:bg-[#CFE6E2]/60 flex items-center justify-between gap-2"
+                                  className="w-full text-left py-1.5 text-xs font-normal text-[#4A3A33]/85 hover:text-[#4A3A33] flex items-center justify-between gap-2"
                                 >
                                   <span>{item.label}</span>
                                   {item.badge && (
-                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EBCFC6] text-[#4A3A33] font-black">
+                                    <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#EBCFC6]/60 text-[#4A3A33] font-medium">
                                       {item.badge}
                                     </span>
                                   )}
@@ -836,14 +872,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 })}
               </div>
 
-              {/* Contact Info & Action Buttons in Mobile Menu */}
-              <div className="mt-4 pt-4 border-t border-[#E6D9C8] space-y-2.5">
-                <div className="p-3 rounded-2xl bg-[#E6D9C8]/40 border border-[#E6D9C8] text-xs space-y-1">
-                  <p className="font-extrabold text-[#4A3A33]">
-                    📍 {CONTACT_INFO.addressFull}
+              <div className="mt-4 pt-4 border-t border-[#E6D9C8]/70 space-y-3">
+                <div className="text-xs space-y-1 text-[#9A7B6C]">
+                  <p className="font-medium text-[#4A3A33]">
+                    {CONTACT_INFO.addressFull}
                   </p>
-                  <p className="font-bold text-[#9A7B6C]">
-                    📞 WhatsApp: {CONTACT_INFO.whatsappDisplay} • PBX:{" "}
+                  <p>
+                    WhatsApp: {CONTACT_INFO.whatsappDisplay} · PBX:{" "}
                     {CONTACT_INFO.pbxDisplay}
                   </p>
                 </div>
@@ -854,9 +889,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-extrabold text-[#4A3A33] bg-[#E6D9C8]/80 hover:bg-[#E6D9C8] border border-[#9A7B6C]/25 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-full text-xs font-medium text-[#4A3A33] bg-[#E6D9C8]/50"
                   >
-                    <Phone className="w-4 h-4 text-[#8FC1BB]" />
+                    <Phone className="w-3.5 h-3.5 text-[#8FC1BB]" />
                     <span>WhatsApp {CONTACT_INFO.whatsappDisplay}</span>
                   </a>
                   <button
@@ -865,9 +900,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                       setMobileMenuOpen(false);
                       if (onOpenAppointment) onOpenAppointment();
                     }}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-extrabold text-[#4A3A33] bg-[#8FC1BB] hover:bg-[#8FC1BB]/90 shadow-md transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-full text-xs font-medium text-[#FAF7F2] bg-[#4A3A33]"
                   >
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-3.5 h-3.5 text-[#8FC1BB]" />
                     <span>Agendar Cita Médica</span>
                   </button>
                 </div>

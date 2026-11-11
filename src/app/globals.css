@@ -2,37 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font-face declaration for Morisawa Role Serif Text Pro (uses local font if installed, with Playfair Display fallback) */
-@font-face {
-  font-family: "Morisawa Role Serif Text Pro";
-  src: local("Morisawa Role Serif Text Pro"),
-       local("Role Serif Text Pro"),
-       local("RoleSerifTextPro-Regular");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Morisawa Role Serif Text Pro";
-  src: local("Morisawa Role Serif Text Pro Bold"),
-       local("Role Serif Text Pro Bold"),
-       local("RoleSerifTextPro-Bold");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
-  --lino: #F7F2EC;
+  /* Paleta Oficial Línea Gráfica CediMujer (Oct-Nov 2026) */
+  --lino: #F7F6F4;
   --arena: #E6D9C8;
-  --nude-rosado: #EBCFC6;
+  --rosado-nude: #EBCFC6;
   --rosa-empolvado: #D7A7A8;
   --agua: #CFE6E2;
   --turquesa-salvia: #8FC1BB;
   --moka: #9A7B6C;
   --cacao: #4A3A33;
-  --font-title: "Morisawa Role Serif Text Pro", "Role Serif Text Pro", "Role Serif", var(--font-playfair), "Playfair Display", Baskerville, Georgia, serif;
+  --font-title: var(--font-playfair), "Playfair Display", Georgia, serif;
 }
 
 html {
@@ -40,20 +20,31 @@ html {
 }
 
 body {
-  background-color: #F7F2EC;
+  background-color: #F7F6F4;
   color: #4A3A33;
-  font-family: var(--font-montserrat), Montserrat, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  font-weight: 400;
   overflow-x: hidden;
+  letter-spacing: 0.005em;
 }
 
-/* Headings font assignment */
-h1, h2, h3, h4, .font-title {
-  font-family: var(--font-title);
-  letter-spacing: -0.015em;
+/* Títulos -> Playfair Display (Siempre más grande y llamativa) */
+h1, h2, h3, h4, .font-title, .font-serif {
+  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
-/* Custom Palette Utility Classes */
-.bg-lino { background-color: #F7F2EC; }
+/* Subtítulos e Información -> Montserrat */
+p, span, a, button, input, select, textarea, li, label, .font-sans {
+  font-family: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+}
+
+.font-title, .font-serif, h1 span, h2 span, h3 span, h4 span {
+  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+}
+
+/* Clases Oficiales de la Línea Gráfica */
+.bg-lino { background-color: #F7F6F4; }
 .bg-arena { background-color: #E6D9C8; }
 .bg-nude-rosado { background-color: #EBCFC6; }
 .bg-rosa-empolvado { background-color: #D7A7A8; }
@@ -67,35 +58,31 @@ h1, h2, h3, h4, .font-title {
 .text-turquesa { color: #8FC1BB; }
 .text-rosa { color: #D7A7A8; }
 
-.border-moka { border-color: #9A7B6C; }
-.border-turquesa { border-color: #8FC1BB; }
-.border-arena { border-color: #E6D9C8; }
-.border-nude { border-color: #EBCFC6; }
+.border-moka { border-color: rgba(154, 123, 108, 0.28); }
+.border-turquesa { border-color: rgba(143, 193, 187, 0.4); }
+.border-arena { border-color: rgba(230, 217, 200, 0.7); }
+.border-nude { border-color: rgba(235, 207, 198, 0.75); }
 
+/* Superficies Pastel Cálidas (Lino + Rosado Nude + Rosa Empolvado) */
 .glass-light {
-  background: rgba(247, 242, 236, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(230, 217, 200, 0.8);
+  background: rgba(247, 246, 244, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(235, 207, 198, 0.8);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(235, 207, 198, 0.6);
+  background: rgba(247, 246, 244, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(235, 207, 198, 0.85);
+  box-shadow: 0 10px 30px -15px rgba(74, 58, 51, 0.06);
 }
 
-.text-gradient-cacao {
-  background: linear-gradient(135deg, #4A3A33 0%, #9A7B6C 60%, #8FC1BB 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-gradient-rosa {
-  background: linear-gradient(135deg, #D7A7A8 0%, #9A7B6C 50%, #4A3A33 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.soft-card {
+  background: #F7F6F4;
+  border: 1px solid rgba(235, 207, 198, 0.9);
+  box-shadow: 0 12px 36px -16px rgba(74, 58, 51, 0.06);
 }
 
 @keyframes marquee {
@@ -106,7 +93,7 @@ h1, h2, h3, h4, .font-title {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 30s linear infinite;
+  animation: marquee 38s linear infinite;
   will-change: transform;
 }
 
@@ -114,13 +101,19 @@ h1, h2, h3, h4, .font-title {
   animation-play-state: paused;
 }
 
-/* Hardware Acceleration & Low-Power Optimization for mobile and older devices */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Force GPU compositing layer on moving sections without CPU repaints */
 [data-framer-motion-appear-animation],
 .will-change-transform {
   -webkit-backface-visibility: hidden;
@@ -128,7 +121,6 @@ h1, h2, h3, h4, .font-title {
   transform: translateZ(0);
 }
 
-/* Respect user's system preferences for reduced motion on older/slower battery devices */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -137,4 +129,3 @@ h1, h2, h3, h4, .font-title {
     scroll-behavior: auto !important;
   }
 }
-

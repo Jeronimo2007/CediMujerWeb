@@ -16,7 +16,6 @@ export const SquareTransitionPortal: React.FC<SquareTransitionPortalProps> = ({
   title = "Tecnología Diagnóstica de Vanguardia",
   subtitle = "Espacios diseñados para tu comodidad, privacidad y tranquilidad en cada etapa.",
   badge = "Experiencia CediMujer",
-  fromColor = "#F7F2EC",
   toColor = "#EBCFC6",
 }) => {
   const portalRef = useRef<HTMLDivElement>(null);
@@ -26,47 +25,45 @@ export const SquareTransitionPortal: React.FC<SquareTransitionPortalProps> = ({
     offset: ["start end", "end start"],
   });
 
-  const squareScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.0, 0.92]);
-  const squareRadius = useTransform(scrollYProgress, [0, 0.5, 1], ["32px", "24px", "32px"]);
-  const textScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.0, 0.96]);
+  const textY = useTransform(scrollYProgress, [0, 0.5, 1], [12, 0, -8]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.6, 1, 1, 0.65]);
 
   return (
-    <div ref={portalRef} className="relative py-10 sm:py-16 px-4 sm:px-6 bg-[#F7F2EC] overflow-hidden flex items-center justify-center">
-      {/* Dynamic Expanding Square Portal Container */}
+    <div
+      ref={portalRef}
+      className="relative py-12 sm:py-20 px-4 sm:px-6 overflow-hidden flex items-center justify-center"
+    >
+      {/* Delicate ambient aura in the background (no heavy box) */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[640px] h-[180px] sm:h-[260px] rounded-full opacity-40 [filter:blur(64px)] pointer-events-none"
+        style={{ backgroundColor: toColor }}
+      />
+
       <motion.div
-        style={{
-          scale: squareScale,
-          borderRadius: squareRadius,
-        }}
-        className="relative w-full max-w-5xl min-h-[240px] sm:min-h-[320px] flex items-center justify-center px-5 py-8 sm:p-10 shadow-xl border border-[#8FC1BB] overflow-hidden origin-center"
+        style={{ y: textY, opacity: textOpacity }}
+        className="relative z-10 text-center max-w-2xl mx-auto flex flex-col items-center"
       >
-        {/* Background Color Gradient Morph */}
-        <div
-          className="absolute inset-0 z-0 transition-colors duration-700"
-          style={{
-            background: `radial-gradient(ellipse at center, ${toColor} 0%, ${fromColor} 100%)`,
-          }}
-        />
+        {/* Minimalist vertical hairline */}
+        <div className="w-px h-8 sm:h-10 bg-gradient-to-b from-transparent via-[#9A7B6C]/35 to-[#8FC1BB]/70 mb-4" />
 
-        {/* Square Portal Ambient Rays */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 bg-[#CFE6E2]/40 rounded-full [filter:blur(36px)] pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-[#EBCFC6]/40 rounded-full [filter:blur(36px)] pointer-events-none" />
+        <div className="inline-flex items-center gap-2 text-[#9A7B6C] text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.22em] mb-3 font-sans">
+          <Sparkles className="w-3 h-3 text-[#8FC1BB] shrink-0" />
+          <span>{badge}</span>
+        </div>
 
-        {/* Content Inside Expanding Square */}
-        <motion.div style={{ scale: textScale }} className="relative z-10 text-center max-w-2xl mx-auto space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F2EC]/95 border border-[#8FC1BB] text-[#4A3A33] text-[11px] sm:text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#8FC1BB] shrink-0" />
-            <span>{badge}</span>
-          </div>
+        <h3 className="font-serif text-2xl sm:text-4xl lg:text-[2.65rem] font-normal text-[#4A3A33] tracking-tight leading-[1.2]">
+          {title}
+        </h3>
 
-          <h3 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-[#4A3A33] tracking-tight leading-tight">
-            {title}
-          </h3>
+        <p className="mt-3 text-[#9A7B6C] text-xs sm:text-base font-normal leading-relaxed max-w-xl font-sans">
+          {subtitle}
+        </p>
 
-          <p className="text-[#9A7B6C] text-sm sm:text-lg font-semibold leading-relaxed">
-            {subtitle}
-          </p>
-        </motion.div>
+        <div className="mt-6 flex items-center gap-2 opacity-60">
+          <span className="w-8 h-px bg-[#E6D9C8]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#8FC1BB]" />
+          <span className="w-8 h-px bg-[#E6D9C8]" />
+        </div>
       </motion.div>
     </div>
   );

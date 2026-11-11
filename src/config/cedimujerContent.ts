@@ -62,6 +62,7 @@ export const CONTACT_INFO = {
   mall: "Centro Comercial Aves María",
   city: "Sabaneta, Antioquia",
   email: "info@cedimujer.com",
+  googleReviewUrl: "https://g.page/r/CQOx9vi1duToEAE/review",
   hours: {
     weekdays: "Lunes a Viernes: 7:00 AM - 6:00 PM",
     saturdays: "Sábados: 7:00 AM - 1:00 PM",

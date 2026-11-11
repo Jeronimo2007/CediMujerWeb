@@ -2,249 +2,120 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Compass,
-  Target,
-  HeartHandshake,
-  CheckCircle2,
-  Sparkles,
-  Award,
-  Users,
-} from "lucide-react";
+import { Compass, Target, HeartHandshake, Sparkles } from "lucide-react";
 
 export const InstitutionalPhilosophy: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"mision" | "vision" | "valores">("mision");
+  const [activeTab, setActiveTab] = useState<"mision" | "vision" | "valores">(
+    "mision"
+  );
 
-  const personalAttributes = [
-    { label: "Íntegra", desc: "Ética, honestidad y rectitud en cada diagnóstico y trato hacia nuestras pacientes." },
-    { label: "Idónea", desc: "Capacitación continua y rigor científico de alto nivel en salud femenina." },
-    { label: "Emprendedora", desc: "Iniciativa, actualización tecnológica constante y búsqueda de soluciones." },
-    { label: "Comprometida", desc: "Dedicación genuina hacia la salud y el bienestar de cada mujer." },
-  ];
-
-  const organizationalTraits = [
-    "La pasión, compromiso, creatividad y alegría en lo que hacemos",
-    "La oportunidad y calidez de nuestra respuesta",
-    "La confiabilidad y profesionalismo",
-    "El cumplimiento de altos estándares de calidad",
-    "Ser abiertos al cambio",
-    "El trabajo en equipo y el respeto por la individualidad",
+  const values = [
+    { label: "Íntegra", desc: "Ética y honestidad." },
+    { label: "Idónea", desc: "Rigor científico." },
+    { label: "Emprendedora", desc: "Innovación constante." },
+    { label: "Comprometida", desc: "Calidez humana." },
   ];
 
   return (
-    <div id="filosofia" className="scroll-mt-24 mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-[#E6D9C8]">
-      {/* Header Badge & Title */}
-      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#CFE6E2]/50 border border-[#8FC1BB]/40 text-[#4A3A33] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-[#8FC1BB]" />
-          <span>Nuestra Identidad Institucional</span>
-        </div>
-        <h3 className="text-2xl sm:text-4xl font-extrabold text-[#4A3A33] tracking-tight">
-          Misión, Visión & Valores
-        </h3>
-        <p className="mt-3 text-sm sm:text-base text-[#9A7B6C] font-semibold leading-relaxed">
-          Los principios que guían nuestro compromiso médico diario con cada mujer en el sur del Valle de Aburrá.
-        </p>
-      </div>
-
-      {/* Interactive Tabs Selector */}
-      <div className="flex justify-center mb-8 sm:mb-10">
-        <div className="flex flex-wrap sm:inline-flex justify-center p-1.5 rounded-2xl sm:rounded-full bg-[#E6D9C8]/60 border border-[#E6D9C8] gap-1.5 sm:gap-2 shadow-inner w-full sm:w-auto">
+    <div
+      id="filosofia"
+      className="scroll-mt-24 mt-10 sm:mt-14 pt-8 sm:pt-10 border-t border-[#F3D9D9]"
+    >
+      {/* Minimalist Pill Selector */}
+      <div className="flex justify-center mb-6">
+        <div className="grid grid-cols-3 sm:inline-flex p-1 rounded-full bg-[#F9EAEA] border border-[#F3D9D9] gap-1 w-full sm:w-auto max-w-sm sm:max-w-none">
           <button
             onClick={() => setActiveTab("mision")}
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2 rounded-full text-xs font-medium transition-all ${
               activeTab === "mision"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
-                : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
+                ? "bg-[#4A3A33] text-[#FDF6F6]"
+                : "text-[#9A7B6C] hover:text-[#4A3A33]"
             }`}
           >
-            <Compass className="w-4 h-4 shrink-0" />
+            <Compass className="w-3.5 h-3.5 shrink-0 stroke-[1.75]" />
             <span>Misión</span>
           </button>
 
           <button
             onClick={() => setActiveTab("vision")}
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2 rounded-full text-xs font-medium transition-all ${
               activeTab === "vision"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
-                : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
+                ? "bg-[#4A3A33] text-[#FDF6F6]"
+                : "text-[#9A7B6C] hover:text-[#4A3A33]"
             }`}
           >
-            <Target className="w-4 h-4 shrink-0" />
+            <Target className="w-3.5 h-3.5 shrink-0 stroke-[1.75]" />
             <span>Visión 2030</span>
           </button>
 
           <button
             onClick={() => setActiveTab("valores")}
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-3 sm:px-5 py-2 rounded-full text-xs font-medium transition-all ${
               activeTab === "valores"
-                ? "bg-[#8FC1BB] text-[#4A3A33] shadow-md scale-[1.02]"
-                : "text-[#9A7B6C] hover:text-[#4A3A33] hover:bg-[#F7F2EC]/60"
+                ? "bg-[#4A3A33] text-[#FDF6F6]"
+                : "text-[#9A7B6C] hover:text-[#4A3A33]"
             }`}
           >
-            <HeartHandshake className="w-4 h-4 shrink-0" />
-            <span>Valores & Actitudes</span>
+            <HeartHandshake className="w-3.5 h-3.5 shrink-0 stroke-[1.75]" />
+            <span>Valores</span>
           </button>
         </div>
       </div>
 
-      {/* Tab Panels with AnimatePresence */}
-      <div className="max-w-5xl mx-auto">
+      {/* Concise Pastel Pink Panel */}
+      <div className="max-w-3xl mx-auto">
         <AnimatePresence mode="wait">
           {activeTab === "mision" && (
             <motion.div
               key="mision"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="bg-[#F7F2EC] rounded-3xl p-6 sm:p-12 border border-[#E6D9C8] shadow-lg relative overflow-hidden"
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+              className="bg-[#F9EAEA]/75 rounded-[1.75rem] p-6 sm:p-8 border border-[#F3D9D9] text-center"
             >
-              <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#8FC1BB] text-[#4A3A33] flex items-center justify-center shrink-0 shadow-md">
-                  <Compass className="w-7 h-7 sm:w-8 sm:h-8" />
-                </div>
-                <div className="space-y-4 flex-1">
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#8FC1BB]">
-                    Propósito Fundamental
-                  </span>
-                  <h4 className="text-xl sm:text-2xl font-black text-[#4A3A33] leading-snug">
-                    Nuestra Misión
-                  </h4>
-                  <p className="text-sm sm:text-lg text-[#4A3A33] font-semibold leading-relaxed">
-                    Brindar servicios especializados en el diagnóstico de salud para las mujeres del área de influencia, con integralidad y calidad, basada en el conocimiento científico, responsabilidad, oportunidad, calidez, comodidad y bajo costo.
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-[#E6D9C8]">
-                    {["Conocimiento Científico", "Responsabilidad & Oportunidad", "Calidez & Bajo Costo"].map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs font-bold text-[#9A7B6C]">
-                        <CheckCircle2 className="w-4 h-4 text-[#8FC1BB] shrink-0" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <p className="font-serif text-base sm:text-xl text-[#4A3A33] font-normal italic leading-relaxed">
+                &ldquo;Diagnóstico especializado en salud para la mujer con rigor científico, oportunidad, calidez y comodidad.&rdquo;
+              </p>
             </motion.div>
           )}
 
           {activeTab === "vision" && (
             <motion.div
               key="vision"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="bg-[#F7F2EC] rounded-3xl p-8 sm:p-12 border border-[#E6D9C8] shadow-lg relative overflow-hidden"
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+              className="bg-[#F9EAEA]/75 rounded-[1.75rem] p-6 sm:p-8 border border-[#F3D9D9] text-center"
             >
-              <div className="flex flex-col lg:flex-row items-start gap-8">
-                <div className="w-16 h-16 rounded-2xl bg-[#D7A7A8] text-[#4A3A33] flex items-center justify-center shrink-0 shadow-md">
-                  <Target className="w-8 h-8" />
-                </div>
-                <div className="space-y-4 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#D7A7A8]">
-                      Horizonte Estratégico
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#EBCFC6] text-[#4A3A33] text-xs font-black">
-                      Meta 2030
-                    </span>
-                  </div>
-                  <h4 className="text-xl sm:text-2xl font-black text-[#4A3A33] leading-snug">
-                    Nuestra Visión
-                  </h4>
-                  <p className="text-base sm:text-lg text-[#4A3A33] font-semibold leading-relaxed">
-                    Ser reconocidos en el 2030 como un centro de referencia, especializado en el diagnóstico en salud para la mujer en el sur del Valle de Aburrá.
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-[#E6D9C8]">
-                    <div className="p-3.5 rounded-2xl bg-[#E6D9C8]/40 border border-[#E6D9C8]">
-                      <p className="text-xs font-bold text-[#8FC1BB] uppercase">Referente Regional</p>
-                      <p className="text-xs text-[#4A3A33] font-semibold mt-1">Liderazgo en diagnóstico para el sur del Valle de Aburrá.</p>
-                    </div>
-                    <div className="p-3.5 rounded-2xl bg-[#CFE6E2]/40 border border-[#8FC1BB]/30">
-                      <p className="text-xs font-bold text-[#8FC1BB] uppercase">Alta Especialidad</p>
-                      <p className="text-xs text-[#4A3A33] font-semibold mt-1">Tecnología diagnóstica al alcance de todas las mujeres.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p className="font-serif text-base sm:text-xl text-[#4A3A33] font-normal italic leading-relaxed">
+                &ldquo;Ser en 2030 el centro de referencia en diagnóstico en salud para la mujer en el sur del Valle de Aburrá.&rdquo;
+              </p>
             </motion.div>
           )}
 
           {activeTab === "valores" && (
             <motion.div
               key="valores"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="space-y-6"
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
-              {/* Persona en CediMujer */}
-              <div className="bg-[#F7F2EC] rounded-3xl p-6 sm:p-8 border border-[#E6D9C8] shadow-md">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2.5 rounded-xl bg-[#8FC1BB] text-[#4A3A33]">
-                    <Users className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#9A7B6C]">
-                      ADN del Equipo Humano
-                    </span>
-                    <h4 className="text-lg sm:text-xl font-black text-[#4A3A33]">
-                      Cada persona en CediMujer es:
-                    </h4>
-                  </div>
+              {values.map((v) => (
+                <div
+                  key={v.label}
+                  className="bg-[#F9EAEA]/75 rounded-2xl p-4 border border-[#F3D9D9] text-center"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#D7A7A8] mx-auto mb-1.5" />
+                  <p className="font-serif text-base text-[#4A3A33]">
+                    {v.label}
+                  </p>
+                  <p className="text-[11px] text-[#9A7B6C] mt-0.5">{v.desc}</p>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {personalAttributes.map((attr) => (
-                    <div
-                      key={attr.label}
-                      className="p-4 rounded-2xl bg-[#E6D9C8]/40 border border-[#E6D9C8] hover:border-[#8FC1BB] transition-colors"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-[#8FC1BB]/30 flex items-center justify-center text-[#4A3A33] font-black text-sm mb-2">
-                        ✓
-                      </div>
-                      <p className="text-base font-extrabold text-[#4A3A33]">{attr.label}</p>
-                      <p className="text-xs text-[#9A7B6C] font-semibold mt-1 leading-relaxed">
-                        {attr.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Lo que nos caracteriza */}
-              <div className="bg-[#F7F2EC] rounded-3xl p-6 sm:p-8 border border-[#E6D9C8] shadow-md">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2.5 rounded-xl bg-[#D7A7A8] text-[#4A3A33]">
-                    <Award className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#9A7B6C]">
-                      Cultura de Servicio
-                    </span>
-                    <h4 className="text-lg sm:text-xl font-black text-[#4A3A33]">
-                      Nos caracterizamos por:
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  {organizationalTraits.map((trait, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-start gap-3 p-3.5 rounded-2xl bg-white/70 border border-[#E6D9C8]"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-[#8FC1BB] shrink-0 mt-0.5" />
-                      <p className="text-xs sm:text-sm text-[#4A3A33] font-semibold leading-relaxed">
-                        {trait}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>

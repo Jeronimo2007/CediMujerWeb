@@ -6,14 +6,15 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
-  weight: ["600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -40,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${montserrat.variable} ${playfair.variable}`}>
-      <body className="antialiased bg-[#F7F2EC] text-[#4A3A33] selection:bg-[#8FC1BB] selection:text-[#4A3A33] font-sans">
+      <body className="antialiased bg-[#FAF7F2] text-[#4A3A33] selection:bg-[#CFE6E2] selection:text-[#4A3A33] font-sans font-normal">
         {children}
       </body>
     </html>
