@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -38,30 +38,7 @@ export const About: React.FC<AboutProps> = ({
     useState<QuienesSomosTab>("nuestra-institucion");
   const [expandedDoctorId, setExpandedDoctorId] = useState<string | null>(null);
   const [showAsociacionModal, setShowAsociacionModal] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleNav = (e: Event) => {
-      const customEvent = e as CustomEvent<{
-        href?: string;
-        subKey?: string;
-      }>;
-      const { subKey } = customEvent.detail || {};
-      if (
-        subKey === "nuestra-sede" ||
-        subKey === "nuestra-institucion" ||
-        subKey === "especialistas"
-      ) {
-        setActiveSubSection(subKey);
-        setActiveIndex(0);
-      } else if (subKey === "asociacion-usuarios") {
-        setShowAsociacionModal(true);
-      }
-    };
-    window.addEventListener("cedimujer:navigate", handleNav);
-    return () => window.removeEventListener("cedimujer:navigate", handleNav);
-  }, []);
 
   const subSectionButtons: {
     id: QuienesSomosTab;
@@ -100,7 +77,6 @@ export const About: React.FC<AboutProps> = ({
       image: "/assets/images/unsplash-doctora.jpg",
       action: () => {
         setActiveSubSection("especialistas");
-        setActiveIndex(0);
       },
     },
     {
@@ -110,7 +86,6 @@ export const About: React.FC<AboutProps> = ({
       image: "/assets/images/equipo2.jpg",
       action: () => {
         setActiveSubSection("nuestra-sede");
-        setActiveIndex(0);
       },
     },
     {
@@ -120,7 +95,6 @@ export const About: React.FC<AboutProps> = ({
       image: "/assets/images/header.jpg",
       action: () => {
         setActiveSubSection("nuestra-sede");
-        setActiveIndex(0);
       },
     },
   ];
@@ -160,54 +134,135 @@ export const About: React.FC<AboutProps> = ({
     "dr-enrique-olivares": "/assets/images/unsplash-cardio-consulta.jpg",
   };
 
-  const currentSlideCount =
+  const baseCount =
     activeSubSection === "nuestra-institucion"
       ? esenciaSlides.length
       : activeSubSection === "especialistas"
         ? ESPECIALISTAS_CEDIMUJER.length
         : sedeSlides.length;
 
+  const totalExtendedCount = baseCount * 3;
+  const [rawActiveIndex, setRawActiveIndex] = useState<number>(baseCount);
+  const activeLogicalIndex =
+    ((rawActiveIndex % baseCount) + baseCount) % baseCount;
+
+  const centerCardAt = useCallback(
+    (rawIdx: number, behavior: ScrollBehavior = "smooth") => {
+      const container = carouselRef.current;
+      if (!container || totalExtendedCount === 0) return;
+      const clampedIdx =
+        ((rawIdx % totalExtendedCount) + totalExtendedCount) %
+        totalExtendedCount;
+      const targetCard = container.children[clampedIdx] as
+        | HTMLElement
+        | undefined;
+      if (!targetCard) return;
+
+      const scrollLeft =
+        targetCard.offsetLeft -
+        (container.clientWidth - targetCard.offsetWidth) / 2;
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior,
+      });
+      setRawActiveIndex(clampedIdx);
+    },
+    [totalExtendedCount]
+  );
+
+  // Recenter when switching tabs or on initial mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      centerCardAt(baseCount, "instant" as ScrollBehavior);
+    }, 35);
+    return () => clearTimeout(timer);
+  }, [activeSubSection, baseCount, centerCardAt]);
+
+  useEffect(() => {
+    const handleNav = (e: Event) => {
+      const customEvent = e as CustomEvent<{
+        href?: string;
+        subKey?: string;
+      }>;
+      const { subKey } = customEvent.detail || {};
+      if (
+        subKey === "nuestra-sede" ||
+        subKey === "nuestra-institucion" ||
+        subKey === "especialistas"
+      ) {
+        setActiveSubSection(subKey);
+      } else if (subKey === "asociacion-usuarios") {
+        setShowAsociacionModal(true);
+      }
+    };
+    window.addEventListener("cedimujer:navigate", handleNav);
+    return () => window.removeEventListener("cedimujer:navigate", handleNav);
+  }, []);
+
   const handleScroll = () => {
     const container = carouselRef.current;
     if (!container) return;
-    const firstCard = container.firstElementChild as HTMLElement | null;
-    if (!firstCard) return;
-    const gap = 20;
-    const cardStep = firstCard.offsetWidth + gap;
-    const index = Math.round(container.scrollLeft / cardStep);
-    setActiveIndex(Math.max(0, Math.min(currentSlideCount - 1, index)));
-  };
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
 
-  const scrollToIndex = (index: number) => {
-    const container = carouselRef.current;
-    if (!container || currentSlideCount === 0) return;
-    const clampedIndex =
-      ((index % currentSlideCount) + currentSlideCount) % currentSlideCount;
-    const targetCard = container.children[clampedIndex] as
-      | HTMLElement
-      | undefined;
-    if (targetCard) {
-      container.scrollTo({
-        left: targetCard.offsetLeft,
-        behavior: "smooth",
-      });
-      setActiveIndex(clampedIndex);
+    let closestIdx = rawActiveIndex;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < container.children.length; i++) {
+      const child = container.children[i] as HTMLElement;
+      const childCenter = child.offsetLeft + child.offsetWidth / 2;
+      const dist = Math.abs(containerCenter - childCenter);
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestIdx = i;
+      }
+    }
+
+    if (closestIdx !== rawActiveIndex) {
+      setRawActiveIndex(closestIdx);
     }
   };
 
-  const scrollPrev = () => scrollToIndex(activeIndex - 1);
-  const scrollNext = () => scrollToIndex(activeIndex + 1);
+  const scrollPrev = () => {
+    const nextIdx =
+      rawActiveIndex <= 0 ? baseCount * 2 - 1 : rawActiveIndex - 1;
+    centerCardAt(nextIdx, "smooth");
+  };
+
+  const scrollNext = () => {
+    const nextIdx =
+      rawActiveIndex >= totalExtendedCount - 1
+        ? baseCount
+        : rawActiveIndex + 1;
+    centerCardAt(nextIdx, "smooth");
+  };
+
+  const scrollToLogicalIndex = (logicalIdx: number) => {
+    centerCardAt(baseCount + logicalIdx, "smooth");
+  };
+
+  const extendedEsencia = [
+    ...esenciaSlides,
+    ...esenciaSlides,
+    ...esenciaSlides,
+  ];
+  const extendedEspecialistas = [
+    ...ESPECIALISTAS_CEDIMUJER,
+    ...ESPECIALISTAS_CEDIMUJER,
+    ...ESPECIALISTAS_CEDIMUJER,
+  ];
+  const extendedSede = [...sedeSlides, ...sedeSlides, ...sedeSlides];
 
   return (
     <section
       id="nosotros"
       className={`scroll-mt-20 ${
         isStandalonePage ? "py-4 sm:py-10" : "py-10 sm:py-16"
-      } text-[#4A3A33] relative overflow-hidden`}
+      } text-[#4A3A33] relative w-full overflow-hidden`}
     >
+      {/* Header inside max-w-7xl */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Minimalist Section Header, Switcher & Carousel Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-7 sm:mb-9 text-center md:text-left">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4 sm:mb-6 text-center md:text-left">
           {!isStandalonePage && (
             <div>
               <span className="inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A7B6C] mb-1.5">
@@ -232,7 +287,6 @@ export const About: React.FC<AboutProps> = ({
                     type="button"
                     onClick={() => {
                       setActiveSubSection(btn.id);
-                      setActiveIndex(0);
                     }}
                     className={`shrink-0 flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
                       isSelected
@@ -272,186 +326,41 @@ export const About: React.FC<AboutProps> = ({
             </div>
           </div>
         </div>
+      </div>
 
-        <AnimatePresence mode="wait">
-          {/* 1. ESENCIA Y CALIDEZ - CARRUSEL DE IMÁGENES PROTAGONISTAS (SOLO TÍTULO) */}
-          {activeSubSection === "nuestra-institucion" && (
-            <motion.div
-              key="nuestra-institucion"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+      {/* Full-Width Center-Focused Carousel */}
+      <AnimatePresence mode="wait">
+        {/* 1. ESENCIA Y CALIDEZ - CARRUSEL A TODO EL ANCHO (SOLO TÍTULO EN IMAGEN) */}
+        {activeSubSection === "nuestra-institucion" && (
+          <motion.div
+            key="nuestra-institucion"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="w-full"
+          >
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="w-full flex items-center gap-3 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar px-[11vw] sm:px-[calc(50vw-200px)] lg:px-[calc(50vw-240px)] py-6 sm:py-9"
             >
-              <div
-                ref={carouselRef}
-                onScroll={handleScroll}
-                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
-              >
-                {esenciaSlides.map((slide) => (
+              {extendedEsencia.map((slide, index) => {
+                const isCenter = index === rawActiveIndex;
+                return (
                   <div
-                    key={slide.id}
-                    onClick={slide.action}
-                    className="group relative snap-start shrink-0 w-[84vw] sm:w-[340px] lg:w-[380px] h-[360px] sm:h-[420px] rounded-[2rem] overflow-hidden cursor-pointer border border-[#D7A7A8]/50 shadow-[0_16px_40px_-18px_rgba(74,58,51,0.2)]"
-                  >
-                    <Image
-                      src={slide.image}
-                      alt={`${slide.title} ${slide.italicAccent}`}
-                      fill
-                      unoptimized
-                      sizes="(max-width: 640px) 85vw, 380px"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent group-hover:from-[#3A2422]/92 transition-all duration-500" />
-
-                    {/* Only the Title Inside Image */}
-                    <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 z-10 flex items-end justify-between gap-3">
-                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl font-light tracking-tight leading-[1.08]">
-                        <span className="font-sans font-light">
-                          {slide.title}{" "}
-                        </span>
-                        <span className="font-serif italic font-normal text-[#EBCFC6]">
-                          {slide.italicAccent}
-                        </span>
-                      </h3>
-                      <ArrowUpRight className="w-5 h-5 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* 2. ESPECIALISTAS - CARRUSEL DE RETRATOS */}
-          {activeSubSection === "especialistas" && (
-            <motion.div
-              key="especialistas"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div
-                ref={carouselRef}
-                onScroll={handleScroll}
-                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
-              >
-                {ESPECIALISTAS_CEDIMUJER.map((doc) => {
-                  const isExpanded = expandedDoctorId === doc.id;
-                  const photoSrc = doctorImages[doc.id] || doc.image;
-                  return (
-                    <div
-                      key={doc.id}
-                      className="snap-start shrink-0 w-[84vw] sm:w-[320px] lg:w-[340px] rounded-[2rem] bg-[#F7F6F4] border border-[#D7A7A8]/55 overflow-hidden flex flex-col justify-between shadow-sm group"
-                    >
-                      <div>
-                        <div className="relative h-64 sm:h-72 overflow-hidden bg-[#EBCFC6]/50">
-                          <Image
-                            src={photoSrc}
-                            alt={doc.name}
-                            fill
-                            unoptimized
-                            className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/90 via-[#4A3A33]/25 to-transparent" />
-                          <div className="absolute bottom-4 left-5 right-5 text-[#F7F6F4]">
-                            <h4 className="font-serif text-xl sm:text-2xl font-normal leading-tight">
-                              {doc.name}
-                            </h4>
-                          </div>
-                        </div>
-
-                        <div className="p-4 space-y-3">
-                          <div className="flex flex-wrap gap-1">
-                            {doc.specialties.slice(0, 2).map((spec, i) => (
-                              <span
-                                key={i}
-                                className="px-2.5 py-1 rounded-full bg-[#EBCFC6]/50 text-[10px] font-medium text-[#4A3A33]"
-                              >
-                                {spec}
-                              </span>
-                            ))}
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setExpandedDoctorId(isExpanded ? null : doc.id)
-                            }
-                            className="w-full py-1 text-[11px] font-medium text-[#9A7B6C] hover:text-[#4A3A33] flex items-center justify-between border-t border-[#D7A7A8]/35"
-                          >
-                            <span>
-                              {isExpanded
-                                ? "Ocultar títulos"
-                                : "Ver títulos académicos"}
-                            </span>
-                            <ChevronDown
-                              className={`w-3.5 h-3.5 text-[#D7A7A8] transition-transform ${
-                                isExpanded ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-
-                          {isExpanded && (
-                            <ul className="space-y-1.5 pt-1">
-                              {doc.credentials.map((cred, i) => (
-                                <li
-                                  key={i}
-                                  className="flex items-start gap-1.5 text-[11px] text-[#4A3A33]/85"
-                                >
-                                  <Award className="w-3 h-3 text-[#D7A7A8] shrink-0 mt-0.5" />
-                                  <span>{cred}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="px-4 pb-4">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onOpenAppointment &&
-                            onOpenAppointment(`Consulta con ${doc.name}`)
-                          }
-                          className="w-full py-2.5 px-3 rounded-full bg-[#EBCFC6]/65 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 font-medium text-xs transition-all flex items-center justify-center gap-1.5"
-                        >
-                          <Calendar className="w-3.5 h-3.5 text-[#D7A7A8]" />
-                          <span>( Agendar Cita )</span>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-
-          {/* 3. NUESTRA SEDE - CARRUSEL VISUAL DE INSTALACIONES (SOLO TÍTULO) */}
-          {activeSubSection === "nuestra-sede" && (
-            <motion.div
-              key="nuestra-sede"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div
-                ref={carouselRef}
-                onScroll={handleScroll}
-                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
-              >
-                {sedeSlides.map((slide) => (
-                  <div
-                    key={slide.id}
+                    key={`${slide.id}-${index}`}
                     onClick={() => {
-                      if (slide.href) {
-                        window.open(slide.href, "_blank", "noopener,noreferrer");
+                      if (isCenter) {
+                        slide.action();
+                      } else {
+                        centerCardAt(index, "smooth");
                       }
                     }}
-                    className={`group relative snap-start shrink-0 w-[84vw] sm:w-[340px] lg:w-[380px] h-[360px] sm:h-[420px] rounded-[2rem] overflow-hidden border border-[#D7A7A8]/50 shadow-[0_16px_40px_-18px_rgba(74,58,51,0.2)] ${
-                      slide.href ? "cursor-pointer" : ""
+                    className={`group relative snap-center shrink-0 w-[78vw] sm:w-[400px] lg:w-[480px] h-[360px] sm:h-[430px] lg:h-[470px] rounded-[2rem] overflow-hidden cursor-pointer border transition-all duration-500 ease-out ${
+                      isCenter
+                        ? "scale-100 sm:scale-105 opacity-100 z-20 border-[#D7A7A8] shadow-[0_24px_60px_-15px_rgba(74,58,51,0.34)]"
+                        : "scale-[0.86] opacity-60 hover:opacity-85 z-10 border-[#D7A7A8]/40 shadow-none"
                     }`}
                   >
                     <Image
@@ -459,14 +368,204 @@ export const About: React.FC<AboutProps> = ({
                       alt={`${slide.title} ${slide.italicAccent}`}
                       fill
                       unoptimized
-                      sizes="(max-width: 640px) 85vw, 380px"
+                      sizes="(max-width: 640px) 80vw, 480px"
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent group-hover:from-[#3A2422]/92 transition-all duration-500" />
 
                     {/* Only the Title Inside Image */}
                     <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 z-10 flex items-end justify-between gap-3">
-                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl font-light tracking-tight leading-[1.08]">
+                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight leading-[1.08]">
+                        <span className="font-sans font-light">
+                          {slide.title}{" "}
+                        </span>
+                        <span className="font-serif italic font-normal text-[#EBCFC6]">
+                          {slide.italicAccent}
+                        </span>
+                      </h3>
+                      <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 2. ESPECIALISTAS - CARRUSEL A TODO EL ANCHO CON CENTRO MÁS GRANDE */}
+        {activeSubSection === "especialistas" && (
+          <motion.div
+            key="especialistas"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="w-full"
+          >
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="w-full flex items-center gap-3 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar px-[11vw] sm:px-[calc(50vw-180px)] lg:px-[calc(50vw-200px)] py-6 sm:py-9"
+            >
+              {extendedEspecialistas.map((doc, index) => {
+                const isCenter = index === rawActiveIndex;
+                const isExpanded = expandedDoctorId === `${doc.id}-${index}`;
+                const photoSrc = doctorImages[doc.id] || doc.image;
+                return (
+                  <div
+                    key={`${doc.id}-${index}`}
+                    onClick={() => {
+                      if (!isCenter) {
+                        centerCardAt(index, "smooth");
+                      }
+                    }}
+                    className={`snap-center shrink-0 w-[78vw] sm:w-[360px] lg:w-[400px] rounded-[2rem] bg-[#F7F6F4] border overflow-hidden flex flex-col justify-between group cursor-pointer transition-all duration-500 ease-out ${
+                      isCenter
+                        ? "scale-100 sm:scale-105 opacity-100 z-20 border-[#D7A7A8] shadow-[0_24px_60px_-15px_rgba(74,58,51,0.3)]"
+                        : "scale-[0.86] opacity-60 hover:opacity-85 z-10 border-[#D7A7A8]/40 shadow-none"
+                    }`}
+                  >
+                    <div>
+                      <div className="relative h-64 sm:h-72 overflow-hidden bg-[#EBCFC6]/50">
+                        <Image
+                          src={photoSrc}
+                          alt={doc.name}
+                          fill
+                          unoptimized
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/90 via-[#4A3A33]/25 to-transparent" />
+                        <div className="absolute bottom-4 left-5 right-5 text-[#F7F6F4]">
+                          <h4 className="font-serif text-xl sm:text-2xl font-normal leading-tight">
+                            {doc.name}
+                          </h4>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-3">
+                        <div className="flex flex-wrap gap-1">
+                          {doc.specialties.slice(0, 2).map((spec, i) => (
+                            <span
+                              key={i}
+                              className="px-2.5 py-1 rounded-full bg-[#EBCFC6]/50 text-[10px] font-medium text-[#4A3A33]"
+                            >
+                              {spec}
+                            </span>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedDoctorId(
+                              isExpanded ? null : `${doc.id}-${index}`
+                            );
+                          }}
+                          className="w-full py-1 text-[11px] font-medium text-[#9A7B6C] hover:text-[#4A3A33] flex items-center justify-between border-t border-[#D7A7A8]/35"
+                        >
+                          <span>
+                            {isExpanded
+                              ? "Ocultar títulos"
+                              : "Ver títulos académicos"}
+                          </span>
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 text-[#D7A7A8] transition-transform ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isExpanded && (
+                          <ul className="space-y-1.5 pt-1">
+                            {doc.credentials.map((cred, i) => (
+                              <li
+                                key={i}
+                                className="flex items-start gap-1.5 text-[11px] text-[#4A3A33]/85"
+                              >
+                                <Award className="w-3 h-3 text-[#D7A7A8] shrink-0 mt-0.5" />
+                                <span>{cred}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="px-4 pb-4">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onOpenAppointment) {
+                            onOpenAppointment(`Consulta con ${doc.name}`);
+                          }
+                        }}
+                        className="w-full py-2.5 px-3 rounded-full bg-[#EBCFC6]/65 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 font-medium text-xs transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <Calendar className="w-3.5 h-3.5 text-[#D7A7A8]" />
+                        <span>( Agendar Cita )</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 3. NUESTRA SEDE - CARRUSEL A TODO EL ANCHO (SOLO TÍTULO EN IMAGEN) */}
+        {activeSubSection === "nuestra-sede" && (
+          <motion.div
+            key="nuestra-sede"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="w-full"
+          >
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="w-full flex items-center gap-3 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar px-[11vw] sm:px-[calc(50vw-200px)] lg:px-[calc(50vw-240px)] py-6 sm:py-9"
+            >
+              {extendedSede.map((slide, index) => {
+                const isCenter = index === rawActiveIndex;
+                return (
+                  <div
+                    key={`${slide.id}-${index}`}
+                    onClick={() => {
+                      if (isCenter) {
+                        if (slide.href) {
+                          window.open(
+                            slide.href,
+                            "_blank",
+                            "noopener,noreferrer"
+                          );
+                        }
+                      } else {
+                        centerCardAt(index, "smooth");
+                      }
+                    }}
+                    className={`group relative snap-center shrink-0 w-[78vw] sm:w-[400px] lg:w-[480px] h-[360px] sm:h-[430px] lg:h-[470px] rounded-[2rem] overflow-hidden cursor-pointer border transition-all duration-500 ease-out ${
+                      isCenter
+                        ? "scale-100 sm:scale-105 opacity-100 z-20 border-[#D7A7A8] shadow-[0_24px_60px_-15px_rgba(74,58,51,0.34)]"
+                        : "scale-[0.86] opacity-60 hover:opacity-85 z-10 border-[#D7A7A8]/40 shadow-none"
+                    }`}
+                  >
+                    <Image
+                      src={slide.image}
+                      alt={`${slide.title} ${slide.italicAccent}`}
+                      fill
+                      unoptimized
+                      sizes="(max-width: 640px) 80vw, 480px"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent group-hover:from-[#3A2422]/92 transition-all duration-500" />
+
+                    {/* Only the Title Inside Image */}
+                    <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 z-10 flex items-end justify-between gap-3">
+                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight leading-[1.08]">
                         <span className="font-sans font-light">
                           {slide.title}{" "}
                         </span>
@@ -475,26 +574,28 @@ export const About: React.FC<AboutProps> = ({
                         </span>
                       </h3>
                       {slide.href && (
-                        <ArrowUpRight className="w-5 h-5 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Carousel Indicators */}
-        <div className="flex items-center justify-center gap-2 mt-5">
-          {Array.from({ length: currentSlideCount }).map((_, idx) => (
+      {/* Carousel Indicators + Discreet Asociación de Usuarios */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex items-center justify-center gap-2 mt-2">
+          {Array.from({ length: baseCount }).map((_, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={() => scrollToIndex(idx)}
+              onClick={() => scrollToLogicalIndex(idx)}
               aria-label={`Ir a diapositiva ${idx + 1}`}
               className={`h-2 rounded-full transition-all duration-300 ${
-                activeIndex === idx
+                activeLogicalIndex === idx
                   ? "w-7 bg-[#4A3A33]"
                   : "w-2 bg-[#D7A7A8]/65 hover:bg-[#9A7B6C]"
               }`}

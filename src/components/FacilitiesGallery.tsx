@@ -84,6 +84,87 @@ export const FacilitiesGallery: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState<number>(0);
 
+  const baseFacilities = ASSETS.facilities;
+  const totalBase = baseFacilities.length;
+  const extendedFacilities = [
+    ...baseFacilities,
+    ...baseFacilities,
+    ...baseFacilities,
+  ];
+  const trackRef = React.useRef<HTMLDivElement>(null);
+  const [rawTrackIndex, setRawTrackIndex] = useState<number>(totalBase);
+  const activeLogicalTrackIndex =
+    ((rawTrackIndex % totalBase) + totalBase) % totalBase;
+
+  const centerTrackCardAt = useCallback(
+    (rawIdx: number, behavior: ScrollBehavior = "smooth") => {
+      const container = trackRef.current;
+      if (!container || extendedFacilities.length === 0) return;
+      const clampedIdx =
+        ((rawIdx % extendedFacilities.length) + extendedFacilities.length) %
+        extendedFacilities.length;
+      const targetCard = container.children[clampedIdx] as
+        | HTMLElement
+        | undefined;
+      if (!targetCard) return;
+
+      const scrollLeft =
+        targetCard.offsetLeft -
+        (container.clientWidth - targetCard.offsetWidth) / 2;
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior,
+      });
+      setRawTrackIndex(clampedIdx);
+    },
+    [extendedFacilities.length]
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      centerTrackCardAt(totalBase, "instant" as ScrollBehavior);
+    }, 35);
+    return () => clearTimeout(timer);
+  }, [centerTrackCardAt, totalBase]);
+
+  const handleTrackScroll = () => {
+    const container = trackRef.current;
+    if (!container) return;
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+
+    let closestIdx = rawTrackIndex;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < container.children.length; i++) {
+      const child = container.children[i] as HTMLElement;
+      const childCenter = child.offsetLeft + child.offsetWidth / 2;
+      const dist = Math.abs(containerCenter - childCenter);
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestIdx = i;
+      }
+    }
+
+    if (closestIdx !== rawTrackIndex) {
+      setRawTrackIndex(closestIdx);
+    }
+  };
+
+  const scrollTrackPrev = () => {
+    const nextIdx =
+      rawTrackIndex <= 0 ? totalBase * 2 - 1 : rawTrackIndex - 1;
+    centerTrackCardAt(nextIdx, "smooth");
+  };
+
+  const scrollTrackNext = () => {
+    const nextIdx =
+      rawTrackIndex >= extendedFacilities.length - 1
+        ? totalBase
+        : rawTrackIndex + 1;
+    centerTrackCardAt(nextIdx, "smooth");
+  };
+
   const isCarouselOpen = activeIndex !== null;
 
   const handleClose = useCallback(() => {
@@ -135,66 +216,108 @@ export const FacilitiesGallery: React.FC = () => {
   return (
     <section
       id="instalaciones"
-      className="scroll-mt-20 py-10 sm:py-18 text-[#4A3A33] relative overflow-hidden"
+      className="scroll-mt-20 py-10 sm:py-16 text-[#4A3A33] relative w-full overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Minimalist Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-8 sm:mb-12 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4 sm:mb-6 text-center sm:text-left">
           <div>
             <span className="inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A7B6C] mb-1.5">
-              Sede Aves María · Galería
+              Sede Aves María · Toca la imagen central para ampliar
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#4A3A33] tracking-tight">
-              Espacios y <span className="italic text-[#9A7B6C]">tecnología</span>
+              Espacios y <span className="italic text-[#D7A7A8]">tecnología</span>
             </h2>
           </div>
-          <span className="text-[11px] text-[#9A7B6C] font-normal">
-            Toca una foto para abrir el carrusel →
-          </span>
-        </div>
 
-        {/* Mobile-First Swipeable + Desktop Grid Facilities */}
-        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible snap-x no-scrollbar pb-2 sm:pb-0">
-          {ASSETS.facilities.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
+          <div className="flex items-center justify-center sm:justify-end gap-2">
+            <button
+              type="button"
+              onClick={scrollTrackPrev}
+              aria-label="Espacio anterior"
+              className="w-10 h-10 rounded-full bg-[#EBCFC6]/70 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 flex items-center justify-center transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={scrollTrackNext}
+              aria-label="Siguiente espacio"
+              className="w-10 h-10 rounded-full bg-[#EBCFC6]/70 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 flex items-center justify-center transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-Width Center-Focused Carousel */}
+      <div
+        ref={trackRef}
+        onScroll={handleTrackScroll}
+        className="w-full flex items-center gap-3 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar px-[11vw] sm:px-[calc(50vw-200px)] lg:px-[calc(50vw-240px)] py-6 sm:py-9"
+      >
+        {extendedFacilities.map((item, idx) => {
+          const isCenter = idx === rawTrackIndex;
+          const logicalIdx = idx % totalBase;
+          return (
+            <div
+              key={`${item.id}-${idx}`}
               onClick={() => {
-                setDirection(0);
-                setActiveIndex(idx);
+                if (isCenter) {
+                  setDirection(0);
+                  setActiveIndex(logicalIdx);
+                } else {
+                  centerTrackCardAt(idx, "smooth");
+                }
               }}
-              className="snap-start shrink-0 w-[78vw] max-w-[310px] sm:w-auto sm:max-w-none group relative h-64 sm:h-72 rounded-[1.75rem] overflow-hidden border border-[#F3D9D9] shadow-[0_10px_30px_-15px_rgba(154,123,108,0.12)] transition-all duration-500 cursor-pointer bg-[#F9EAEA]"
+              className={`snap-center shrink-0 w-[78vw] sm:w-[400px] lg:w-[480px] h-[340px] sm:h-[410px] lg:h-[450px] group relative rounded-[2rem] overflow-hidden border transition-all duration-500 ease-out cursor-pointer bg-[#F9EAEA] ${
+                isCenter
+                  ? "scale-100 sm:scale-105 opacity-100 z-20 border-[#D7A7A8] shadow-[0_24px_60px_-15px_rgba(74,58,51,0.34)]"
+                  : "scale-[0.86] opacity-60 hover:opacity-85 z-10 border-[#D7A7A8]/40 shadow-none"
+              }`}
             >
               <Image
                 src={item.image}
                 alt={item.title}
                 fill
                 unoptimized
+                sizes="(max-width: 640px) 80vw, 480px"
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/75 via-[#4A3A33]/15 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent pointer-events-none" />
 
-              <span className="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-[#FDF6F6]/95 text-[10px] font-medium uppercase tracking-wider text-[#4A3A33]">
-                {item.tag}
-              </span>
-
-              <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-[#FDF6F6]/95 text-[#4A3A33] flex items-center gap-1 text-[10px] font-medium">
+              <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-[#FDF6F6]/90 backdrop-blur-md text-[#4A3A33] flex items-center gap-1 text-[10px] font-medium">
                 <Images className="w-3 h-3 text-[#D7A7A8] stroke-[1.75]" />
-                <span>Galería</span>
+                <span>Ampliar</span>
               </div>
 
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="font-serif text-lg sm:text-xl font-normal tracking-tight text-[#FDF6F6]">
+              <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6">
+                <h3 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#FDF6F6]">
                   {item.title}
                 </h3>
               </div>
-            </motion.div>
-          ))}
-        </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Indicators */}
+      <div className="flex items-center justify-center gap-2 mt-2">
+        {baseFacilities.map((item, idx) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => centerTrackCardAt(totalBase + idx, "smooth")}
+            aria-label={`Ir a ${item.title}`}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              activeLogicalTrackIndex === idx
+                ? "w-7 bg-[#4A3A33]"
+                : "w-2 bg-[#D7A7A8]/65 hover:bg-[#9A7B6C]"
+            }`}
+          />
+        ))}
       </div>
 
       {/* Dedicated Full-Screen Minimalist Image Carousel (Rendered in Portal) */}
