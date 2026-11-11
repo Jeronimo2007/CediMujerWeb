@@ -360,12 +360,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       ],
     },
     {
-      name: "Ultrasonido y Radiología",
+      name: "Ultrasonido",
       viewId: "ultrasonido-radiologia",
       icon: Scan,
       columns: [
         {
-          heading: "Imágenes Diagnósticas Generales",
+          heading: "Ultrasonido y Radiología General",
           items: [
             {
               label: "Ecografía Abdominal Total y Hepatobiliar",
@@ -423,7 +423,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       ],
     },
     {
-      name: "Quiénes Somos",
+      name: "Nosotros",
       viewId: "quienes-somos",
       icon: Building2,
       columns: [
@@ -455,7 +455,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       ],
     },
     {
-      name: "Blog y FAQ",
+      name: "Blog",
       viewId: "blog",
       icon: BookOpen,
       columns: [
@@ -606,33 +606,35 @@ export const Navbar: React.FC<NavbarProps> = ({
             : "bg-[#FDF6F6]/90 backdrop-blur-md border-b border-[#F3D9D9]/70"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-          {/* Logo Brand */}
-          <button
-            type="button"
-            onClick={() => handleSelectPageSection("home")}
-            className="flex items-center shrink-0 group text-left"
-          >
-            <div className="relative h-8 w-28 sm:h-10 sm:w-36 flex items-center transition-opacity duration-300 group-hover:opacity-85">
-              <Image
-                src={ASSETS.logo.primary}
-                alt="CediMujer - Centro de Diagnóstico Especializado en Salud para la Mujer"
-                fill
-                priority
-                decoding="async"
-                unoptimized
-                className="object-contain object-left"
-              />
-            </div>
-          </button>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 min-h-[64px] sm:min-h-[76px] flex items-center justify-between lg:grid lg:grid-cols-[auto_1fr_auto] gap-3 xl:gap-6">
+          {/* Left Column: Logo Brand (Auto-sized, never overlaps) */}
+          <div className="flex items-center justify-start shrink-0">
+            <button
+              type="button"
+              onClick={() => handleSelectPageSection("home")}
+              className="flex items-center shrink-0 group text-left"
+            >
+              <div className="relative h-8 w-28 sm:h-9 sm:w-32 flex items-center transition-opacity duration-300 group-hover:opacity-85">
+                <Image
+                  src={ASSETS.logo.primary}
+                  alt="CediMujer - Centro de Diagnóstico Especializado en Salud para la Mujer"
+                  fill
+                  priority
+                  decoding="async"
+                  unoptimized
+                  className="object-contain object-left"
+                />
+              </div>
+            </button>
+          </div>
 
-          {/* Desktop Navigation (Delicate Underline Links, No Boxes) */}
-          <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 shrink-0">
+          {/* Center Column: Desktop Navigation (Strictly isolated in center grid column, wraps cleanly if zoomed) */}
+          <nav className="hidden lg:flex flex-wrap items-center justify-center gap-x-2.5 xl:gap-x-4 gap-y-1 px-1 min-w-0">
             <button
               type="button"
               onMouseEnter={() => setOpenDesktopDropdown(null)}
               onClick={() => handleSelectPageSection("home")}
-              className={`relative py-2 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
+              className={`relative py-1.5 text-[11.5px] xl:text-[12.5px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
                 currentView === "home" && !openDesktopDropdown
                   ? "text-[#4A3A33] font-medium"
                   : "text-[#4A3A33]/75 hover:text-[#4A3A33]"
@@ -653,7 +655,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   type="button"
                   onMouseEnter={() => handleMouseEnterGroup(group.name)}
                   onClick={() => handleSelectPageSection(group.viewId)}
-                  className={`relative py-2 inline-flex items-center gap-1 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
+                  className={`relative py-1.5 inline-flex items-center gap-0.5 text-[11.5px] xl:text-[12.5px] font-normal tracking-wide transition-colors duration-200 whitespace-nowrap ${
                     isDropdownOpen || isCurrentPage
                       ? "text-[#4A3A33] font-medium"
                       : "text-[#4A3A33]/75 hover:text-[#4A3A33]"
@@ -680,7 +682,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onMouseEnter={() => setOpenDesktopDropdown(null)}
               onClick={onOpenCalculator}
-              className={`relative py-2 text-[11.5px] xl:text-[13px] font-normal tracking-wide transition-colors duration-200 inline-flex items-center gap-1.5 whitespace-nowrap ${
+              className={`relative py-1.5 text-[11.5px] xl:text-[12.5px] font-normal tracking-wide transition-colors duration-200 inline-flex items-center gap-1 whitespace-nowrap ${
                 currentView === "calculator"
                   ? "text-[#4A3A33] font-medium"
                   : "text-[#9A7B6C] hover:text-[#4A3A33]"
@@ -694,8 +696,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </nav>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Right Column: Actions (Auto-sized, never overlaps) */}
+          <div className="flex items-center justify-end gap-2 shrink-0">
             <button
               type="button"
               onClick={() => {
@@ -703,7 +705,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setOpenDesktopDropdown(null);
                 if (onOpenAppointment) onOpenAppointment();
               }}
-              className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium text-[#4A3A33] bg-[#EBCFC6]/80 hover:bg-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8] transition-all duration-200 whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium text-[#4A3A33] bg-[#EBCFC6]/80 hover:bg-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8] transition-all duration-200 whitespace-nowrap shrink-0"
             >
               <span className="text-[#9A7B6C]">(</span>
               <span>Agendar</span>
