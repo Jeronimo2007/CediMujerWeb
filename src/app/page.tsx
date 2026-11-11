@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
-import { CertificationsMarquee } from "@/components/CertificationsMarquee";
 import { Services } from "@/components/Services";
 import { ImpactStats } from "@/components/ImpactStats";
 import { BlogAndFaq } from "@/components/BlogAndFaq";
@@ -19,14 +19,23 @@ import { GestationalCalculator } from "@/components/GestationalCalculator";
 import { CurtainPreloader } from "@/components/CurtainPreloader";
 import { SocialMediaBar } from "@/components/SocialMediaBar";
 import { ChatBot } from "@/components/ChatBot";
-import { SectionPageView, type AppSectionView } from "@/components/SectionPageView";
+import {
+  SectionPageView,
+  type AppSectionView,
+} from "@/components/SectionPageView";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState("Consulta Ginecológica");
+  const [selectedService, setSelectedService] = useState(
+    "Consulta Ginecológica"
+  );
   const [currentView, setCurrentView] = useState<AppSectionView>("home");
-  const [sectionSubKey, setSectionSubKey] = useState<string | undefined>(undefined);
-  const [sectionItemId, setSectionItemId] = useState<string | undefined>(undefined);
+  const [sectionSubKey, setSectionSubKey] = useState<string | undefined>(
+    undefined
+  );
+  const [sectionItemId, setSectionItemId] = useState<string | undefined>(
+    undefined
+  );
 
   const handleOpenAppointment = (serviceName?: string) => {
     if (serviceName) {
@@ -83,6 +92,10 @@ export default function Home() {
         handleSelectSection("embarazo", subKey, itemId);
       } else if (href === "#ginecologia") {
         handleSelectSection("ginecologia", subKey, itemId);
+      } else if (href === "#cardiodiagnostico") {
+        handleSelectSection("cardiodiagnostico", subKey, itemId);
+      } else if (href === "#ultrasonido-radiologia") {
+        handleSelectSection("ultrasonido-radiologia", subKey, itemId);
       } else if (href === "#telemedicina") {
         handleSelectSection("telemedicina", subKey, itemId);
       } else if (href === "#nosotros") {
@@ -99,7 +112,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#FDF6F6] text-[#4A3A33] overflow-x-clip font-sans">
+    <main className="min-h-screen bg-[#F7F6F4] text-[#4A3A33] overflow-x-clip font-sans">
       {/* Editorial Pastel Pink Preloader */}
       <CurtainPreloader />
 
@@ -166,62 +179,81 @@ export default function Home() {
             />
 
             <div className="relative z-20 bg-[#F7F6F4]">
-              {/* Línea móvil de certificaciones justo debajo del Hero */}
-              <CertificationsMarquee />
-
-              {/* Métricas Oficiales de CediMujer justo debajo de la línea móvil */}
+              {/* Cifras Oficiales de CediMujer justo debajo del Header */}
               <ImpactStats />
 
-              {/* Unidades y Especialidades */}
+              {/* Nuestras Unidades de Cuidado (Imágenes Protagonistas) */}
               <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <Services
-                  onSelectService={(serviceName) => handleOpenAppointment(serviceName)}
+                  onSelectService={(serviceName) =>
+                    handleOpenAppointment(serviceName)
+                  }
                   onOpenCalculator={handleOpenCalculator}
                   onOpenSection={handleSelectSection}
                 />
               </ZoomSquarePortal>
 
-              {/* Quiénes Somos: Institución, Sede, Especialistas y Asociación */}
+              {/* Calculadora Gestacional justo debajo de Nuestras Unidades de Cuidado */}
+              <section className="py-6 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div
+                  onClick={handleOpenCalculator}
+                  className="group relative h-64 sm:h-72 rounded-[2rem] overflow-hidden cursor-pointer border border-[#D7A7A8]/60 shadow-[0_16px_42px_-18px_rgba(74,58,51,0.18)] flex items-center"
+                >
+                  <Image
+                    src="/assets/images/unsplash-bebe.jpg"
+                    alt="Calculadora Gestacional CediMujer"
+                    fill
+                    unoptimized
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#3A2422]/90 via-[#4A3A33]/65 to-[#4A3A33]/25" />
+
+                  <div className="relative z-10 px-6 sm:px-12 max-w-2xl space-y-3">
+                    <span className="inline-block px-3 py-1 rounded-full bg-[#EBCFC6]/90 text-[#4A3A33] text-[10px] font-medium uppercase tracking-[0.2em]">
+                      Calculadora Obstétrica Interactiva
+                    </span>
+                    <h3 className="text-2xl sm:text-4xl font-light text-[#F7F6F4] leading-tight">
+                      ¿Sabes cuántas semanas tiene tu{" "}
+                      <span className="font-serif italic font-normal text-[#EBCFC6]">
+                        bebé hoy?
+                      </span>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#F7F6F4]/85 font-light max-w-md">
+                      Descubre tu fecha probable de parto, trimestre actual y qué ecografía te corresponde en segundos.
+                    </p>
+                    <div className="pt-1">
+                      <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium tracking-wider text-[#EBCFC6] group-hover:text-[#F7F6F4] transition-colors">
+                        <span className="text-[#D7A7A8]">(</span>
+                        <span className="border-b border-[#EBCFC6]/60 pb-0.5">
+                          Calcular mis semanas de embarazo
+                        </span>
+                        <span className="text-[#D7A7A8]">)</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Salud Femenina con Sentido Humano (Imágenes Protagonistas) */}
               <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
                 <About onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
               </ZoomSquarePortal>
 
-              {/* Galería de Salas & Equipos Clínicos (Abre Carrusel Fullscreen) */}
+              {/* Galería de Espacios y Tecnología (Abre Carrusel Fullscreen) */}
               <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#E6D9C8">
                 <FacilitiesGallery />
               </ZoomSquarePortal>
 
-              {/* Compact Pastel Pink Call-To-Action to Gestational Calculator */}
-              <section className="py-8 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-                <div className="relative rounded-[2rem] bg-gradient-to-r from-[#EBCFC6]/70 via-[#F7F6F4] to-[#EBCFC6]/85 p-6 sm:p-10 border border-[#D7A7A8]/65 shadow-[0_12px_36px_-18px_rgba(154,123,108,0.12)] flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
-                  <div>
-                    <span className="inline-block text-[10px] font-medium text-[#9A7B6C] uppercase tracking-[0.2em] mb-1">
-                      Herramienta Obstétrica
-                    </span>
-                    <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3A33] leading-snug">
-                      ¿Estás en embarazo?{" "}
-                      <span className="italic text-[#D7A7A8]">
-                        Calcula tus semanas hoy
-                      </span>
-                    </h3>
-                  </div>
-                  <button
-                    onClick={handleOpenCalculator}
-                    className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#4A3A33] hover:bg-[#4A3A33]/90 text-[#F7F6F4] font-medium text-xs sm:text-sm tracking-wide transition-all shrink-0"
-                  >
-                    ( Abrir Calculadora )
-                  </button>
-                </div>
-              </section>
+              {/* Experiencias en CediMujer (Videos Reels + Sobres Interactivos) */}
+              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
+                <Testimonials />
+              </ZoomSquarePortal>
 
               {/* Blog y Preguntas Frecuentes */}
               <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
-                <BlogAndFaq onOpenAppointment={(srv) => handleOpenAppointment(srv)} />
-              </ZoomSquarePortal>
-
-              {/* Testimonios Reales */}
-              <ZoomSquarePortal bgGradientFrom="#F7F6F4" bgGradientTo="#EBCFC6">
-                <Testimonials />
+                <BlogAndFaq
+                  onOpenAppointment={(srv) => handleOpenAppointment(srv)}
+                />
               </ZoomSquarePortal>
 
               {/* Ubicación y Atención al Usuario */}

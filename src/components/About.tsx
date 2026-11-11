@@ -1,21 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ShieldCheck,
-  HeartHandshake,
-  Microscope,
-  CheckCircle2,
   Building2,
   MapPin,
-  Users,
   Stethoscope,
-  Phone,
   Award,
   Calendar,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  Users,
+  ArrowUpRight,
 } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 import {
@@ -23,18 +22,13 @@ import {
   INSTITUCION_INFO,
   CONTACT_INFO,
 } from "@/config/cedimujerContent";
-import { InstitutionalPhilosophy } from "@/components/InstitutionalPhilosophy";
 
 interface AboutProps {
   onOpenAppointment?: (serviceName?: string) => void;
   isStandalonePage?: boolean;
 }
 
-type QuienesSomosTab =
-  | "nuestra-institucion"
-  | "nuestra-sede"
-  | "especialistas"
-  | "asociacion-usuarios";
+type QuienesSomosTab = "nuestra-institucion" | "nuestra-sede" | "especialistas";
 
 export const About: React.FC<AboutProps> = ({
   onOpenAppointment,
@@ -43,9 +37,9 @@ export const About: React.FC<AboutProps> = ({
   const [activeSubSection, setActiveSubSection] =
     useState<QuienesSomosTab>("nuestra-institucion");
   const [expandedDoctorId, setExpandedDoctorId] = useState<string | null>(null);
-  const [asociacionMobileTab, setAsociacionMobileTab] = useState<
-    "funciones" | "derechos" | "deberes"
-  >("funciones");
+  const [showAsociacionModal, setShowAsociacionModal] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleNav = (e: Event) => {
@@ -57,118 +51,230 @@ export const About: React.FC<AboutProps> = ({
       if (
         subKey === "nuestra-sede" ||
         subKey === "nuestra-institucion" ||
-        subKey === "especialistas" ||
-        subKey === "asociacion-usuarios"
+        subKey === "especialistas"
       ) {
         setActiveSubSection(subKey);
+        setActiveIndex(0);
+      } else if (subKey === "asociacion-usuarios") {
+        setShowAsociacionModal(true);
       }
     };
     window.addEventListener("cedimujer:navigate", handleNav);
     return () => window.removeEventListener("cedimujer:navigate", handleNav);
   }, []);
 
-  const pillars = [
-    {
-      title: "Empatía y Calidez",
-      icon: HeartHandshake,
-      desc: "Explicación clara y acompañamiento humano.",
-    },
-    {
-      title: "3D/4D HD Live",
-      icon: Microscope,
-      desc: "Ultrasonido obstétrico y ginecológico de alta resolución.",
-    },
-    {
-      title: "Sede Aves María",
-      icon: ShieldCheck,
-      desc: "Consultorios privados y confortables en Sabaneta.",
-    },
-  ];
-
   const subSectionButtons: {
     id: QuienesSomosTab;
     label: string;
-    shortLabel: string;
     icon: React.ElementType;
   }[] = [
     {
       id: "nuestra-institucion",
-      label: "Nuestra Institución",
-      shortLabel: "Institución",
+      label: "Esencia y Calidez",
       icon: Building2,
     },
     {
-      id: "nuestra-sede",
-      label: "Nuestra Sede",
-      shortLabel: "Sede",
-      icon: MapPin,
-    },
-    {
       id: "especialistas",
-      label: "Especialistas",
-      shortLabel: "Especialistas",
+      label: "Nuestros Especialistas",
       icon: Stethoscope,
     },
     {
-      id: "asociacion-usuarios",
-      label: "Asociación de Usuarios",
-      shortLabel: "Asociación",
-      icon: Users,
+      id: "nuestra-sede",
+      label: "Sede Aves María",
+      icon: MapPin,
     },
   ];
+
+  const esenciaSlides = [
+    {
+      id: "calidez",
+      title: "Calidez",
+      italicAccent: "Humana",
+      image: ASSETS.about.mainImage,
+      action: () => onOpenAppointment && onOpenAppointment(),
+    },
+    {
+      id: "equipo",
+      title: "Nuestros",
+      italicAccent: "Especialistas",
+      image: "/assets/images/unsplash-doctora.jpg",
+      action: () => {
+        setActiveSubSection("especialistas");
+        setActiveIndex(0);
+      },
+    },
+    {
+      id: "tecnologia",
+      title: "Tecnología",
+      italicAccent: "3D/4D HD Live",
+      image: "/assets/images/equipo2.jpg",
+      action: () => {
+        setActiveSubSection("nuestra-sede");
+        setActiveIndex(0);
+      },
+    },
+    {
+      id: "sede",
+      title: "Sede",
+      italicAccent: "Aves María",
+      image: "/assets/images/header.jpg",
+      action: () => {
+        setActiveSubSection("nuestra-sede");
+        setActiveIndex(0);
+      },
+    },
+  ];
+
+  const sedeSlides = [
+    {
+      id: "recepcion",
+      title: "Sede",
+      italicAccent: "Sabaneta",
+      image: "/assets/images/header.jpg",
+      href: CONTACT_INFO.whatsappUrl,
+    },
+    {
+      id: "ecografia-hd",
+      title: "Ecografía",
+      italicAccent: "3D/4D HD Live",
+      image: "/assets/images/equipo2.jpg",
+    },
+    {
+      id: "consultorios",
+      title: "Consultorios",
+      italicAccent: "Privados",
+      image: "/assets/images/sala1.jpg",
+    },
+    {
+      id: "sala-espera",
+      title: "Ambiente",
+      italicAccent: "Acogedor",
+      image: "/assets/images/sala3.jpg",
+    },
+  ];
+
+  const doctorImages: Record<string, string> = {
+    "dr-diego-gaviria": "/assets/images/trabajo.jpg",
+    "dra-durley-maya": "/assets/images/unsplash-doctora.jpg",
+    "dra-claudia-gomez": "/assets/images/unsplash-ginecologia.jpg",
+    "dr-enrique-olivares": "/assets/images/unsplash-cardio-consulta.jpg",
+  };
+
+  const currentSlideCount =
+    activeSubSection === "nuestra-institucion"
+      ? esenciaSlides.length
+      : activeSubSection === "especialistas"
+        ? ESPECIALISTAS_CEDIMUJER.length
+        : sedeSlides.length;
+
+  const handleScroll = () => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const firstCard = container.firstElementChild as HTMLElement | null;
+    if (!firstCard) return;
+    const gap = 20;
+    const cardStep = firstCard.offsetWidth + gap;
+    const index = Math.round(container.scrollLeft / cardStep);
+    setActiveIndex(Math.max(0, Math.min(currentSlideCount - 1, index)));
+  };
+
+  const scrollToIndex = (index: number) => {
+    const container = carouselRef.current;
+    if (!container || currentSlideCount === 0) return;
+    const clampedIndex =
+      ((index % currentSlideCount) + currentSlideCount) % currentSlideCount;
+    const targetCard = container.children[clampedIndex] as
+      | HTMLElement
+      | undefined;
+    if (targetCard) {
+      container.scrollTo({
+        left: targetCard.offsetLeft,
+        behavior: "smooth",
+      });
+      setActiveIndex(clampedIndex);
+    }
+  };
+
+  const scrollPrev = () => scrollToIndex(activeIndex - 1);
+  const scrollNext = () => scrollToIndex(activeIndex + 1);
 
   return (
     <section
       id="nosotros"
       className={`scroll-mt-20 ${
-        isStandalonePage ? "py-4 sm:py-10" : "py-12 sm:py-20"
+        isStandalonePage ? "py-4 sm:py-10" : "py-10 sm:py-16"
       } text-[#4A3A33] relative overflow-hidden`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Minimalist Section Header */}
-        {!isStandalonePage && (
-          <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10">
-            <span className="inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A7B6C] mb-2">
-              Quiénes Somos · Desde 2008
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#4A3A33] tracking-tight">
-              Salud femenina con <span className="italic text-[#9A7B6C]">sentido humano</span>
-            </h2>
-          </div>
-        )}
+        {/* Minimalist Section Header, Switcher & Carousel Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-7 sm:mb-9 text-center md:text-left">
+          {!isStandalonePage && (
+            <div>
+              <span className="inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A7B6C] mb-1.5">
+                Quiénes Somos · Desde Mayo 2008
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#4A3A33] tracking-tight">
+                Salud femenina con{" "}
+                <span className="italic text-[#D7A7A8]">sentido humano</span>
+              </h2>
+            </div>
+          )}
 
-        {/* Pastel Pink Navigation Pills */}
-        <div className="flex justify-center mb-8 sm:mb-12">
-          <div className="grid grid-cols-2 lg:inline-flex p-1.5 rounded-2xl lg:rounded-full bg-[#F9EAEA] border border-[#F3D9D9] gap-1.5 w-full lg:w-auto">
-            {subSectionButtons.map((btn) => {
-              const IconComp = btn.icon;
-              const isSelected = activeSubSection === btn.id;
-              return (
-                <button
-                  key={btn.id}
-                  type="button"
-                  onClick={() => setActiveSubSection(btn.id)}
-                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2.5 rounded-xl lg:rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
-                    isSelected
-                      ? "bg-[#4A3A33] text-[#FDF6F6]"
-                      : "text-[#4A3A33]/80 hover:text-[#4A3A33] hover:bg-white/60"
-                  }`}
-                >
-                  <IconComp
-                    className={`w-3.5 h-3.5 shrink-0 stroke-[1.75] ${
-                      isSelected ? "text-[#F7D6D6]" : "text-[#D7A7A8]"
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3">
+            {/* Clean 3-Tab Pill Switcher */}
+            <div className="inline-flex p-1 rounded-full bg-[#EBCFC6]/50 border border-[#D7A7A8]/60 gap-1 overflow-x-auto max-w-full no-scrollbar">
+              {subSectionButtons.map((btn) => {
+                const IconComp = btn.icon;
+                const isSelected = activeSubSection === btn.id;
+                return (
+                  <button
+                    key={btn.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveSubSection(btn.id);
+                      setActiveIndex(0);
+                    }}
+                    className={`shrink-0 flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                      isSelected
+                        ? "bg-[#4A3A33] text-[#F7F6F4]"
+                        : "text-[#4A3A33]/80 hover:text-[#4A3A33]"
                     }`}
-                  />
-                  <span className="sm:hidden truncate">{btn.shortLabel}</span>
-                  <span className="hidden sm:inline">{btn.label}</span>
-                </button>
-              );
-            })}
+                  >
+                    <IconComp
+                      className={`w-3.5 h-3.5 shrink-0 stroke-[1.75] ${
+                        isSelected ? "text-[#EBCFC6]" : "text-[#D7A7A8]"
+                      }`}
+                    />
+                    <span>{btn.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Carousel Prev / Next Arrows */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={scrollPrev}
+                aria-label="Anterior"
+                className="w-10 h-10 rounded-full bg-[#EBCFC6]/70 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 flex items-center justify-center transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={scrollNext}
+                aria-label="Siguiente"
+                className="w-10 h-10 rounded-full bg-[#EBCFC6]/70 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 flex items-center justify-center transition-colors"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
         <AnimatePresence mode="wait">
-          {/* 1. NUESTRA INSTITUCIÓN */}
+          {/* 1. ESENCIA Y CALIDEZ - CARRUSEL DE IMÁGENES PROTAGONISTAS (SOLO TÍTULO) */}
           {activeSubSection === "nuestra-institucion" && (
             <motion.div
               key="nuestra-institucion"
@@ -177,153 +283,46 @@ export const About: React.FC<AboutProps> = ({
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center">
-                <div className="lg:col-span-6 relative">
-                  <div className="relative rounded-[1.75rem] overflow-hidden border border-[#F3D9D9] h-60 sm:h-80 shadow-sm">
+              <div
+                ref={carouselRef}
+                onScroll={handleScroll}
+                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
+              >
+                {esenciaSlides.map((slide) => (
+                  <div
+                    key={slide.id}
+                    onClick={slide.action}
+                    className="group relative snap-start shrink-0 w-[84vw] sm:w-[340px] lg:w-[380px] h-[360px] sm:h-[420px] rounded-[2rem] overflow-hidden cursor-pointer border border-[#D7A7A8]/50 shadow-[0_16px_40px_-18px_rgba(74,58,51,0.2)]"
+                  >
                     <Image
-                      src={ASSETS.about.mainImage}
-                      alt="Equipo Médico CediMujer"
+                      src={slide.image}
+                      alt={`${slide.title} ${slide.italicAccent}`}
                       fill
                       unoptimized
-                      className="object-cover"
+                      sizes="(max-width: 640px) 85vw, 380px"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/40 via-transparent to-transparent" />
-                    <div className="absolute bottom-3.5 left-3.5 bg-[#FDF6F6]/95 backdrop-blur-md px-3.5 py-2 rounded-xl flex items-center gap-2.5 border border-[#F3D9D9]">
-                      <Image
-                        src={ASSETS.logo.emblem}
-                        alt="Emblema CediMujer"
-                        width={24}
-                        height={24}
-                        unoptimized
-                        className="object-contain"
-                      />
-                      <span className="font-serif text-xs sm:text-sm text-[#4A3A33]">
-                        CediMujer · Desde Mayo 2008
-                      </span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent group-hover:from-[#3A2422]/92 transition-all duration-500" />
+
+                    {/* Only the Title Inside Image */}
+                    <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 z-10 flex items-end justify-between gap-3">
+                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl font-light tracking-tight leading-[1.08]">
+                        <span className="font-sans font-light">
+                          {slide.title}{" "}
+                        </span>
+                        <span className="font-serif italic font-normal text-[#EBCFC6]">
+                          {slide.italicAccent}
+                        </span>
+                      </h3>
+                      <ArrowUpRight className="w-5 h-5 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
-                </div>
-
-                <div className="lg:col-span-6 space-y-5">
-                  <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3A33] leading-snug">
-                    Promoción, prevención y diagnóstico temprano en cada etapa
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-[#4A3A33]/80 font-normal leading-relaxed">
-                    Acompañamos a las mujeres de Medellín y el sur del Valle de Aburrá con tecnología de vanguardia y especialistas comprometidos con tu tranquilidad.
-                  </p>
-
-                  {/* 3 Visual Pastel Pink Pillar Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {pillars.map((pillar) => {
-                      const IconComp = pillar.icon;
-                      return (
-                        <div
-                          key={pillar.title}
-                          className="p-4 rounded-2xl bg-[#F9EAEA]/80 border border-[#F3D9D9] space-y-1.5"
-                        >
-                          <IconComp className="w-4 h-4 text-[#D7A7A8] stroke-[1.75]" />
-                          <h4 className="font-serif text-sm sm:text-base text-[#4A3A33]">
-                            {pillar.title}
-                          </h4>
-                          <p className="text-[11px] text-[#9A7B6C] leading-snug">
-                            {pillar.desc}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <InstitutionalPhilosophy />
-            </motion.div>
-          )}
-
-          {/* 2. NUESTRA SEDE */}
-          {activeSubSection === "nuestra-sede" && (
-            <motion.div
-              key="nuestra-sede"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center"
-            >
-              <div className="lg:col-span-5 space-y-4">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-[#9A7B6C]">
-                  <MapPin className="w-3.5 h-3.5 text-[#D7A7A8]" />
-                  <span>C.C. Aves María · Local 341-342</span>
-                </span>
-                <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3A33]">
-                  Sede Sabaneta
-                </h3>
-                <p className="text-xs sm:text-sm text-[#4A3A33]/80 leading-relaxed">
-                  {CONTACT_INFO.addressFull}. Consultorios privados, sala de ecografía 3D/4D HD Live con pantalla para acompañantes y parqueadero cubierto.
-                </p>
-
-                <div className="flex flex-wrap gap-2.5 pt-1">
-                  <a
-                    href={CONTACT_INFO.whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2.5 rounded-full bg-[#4A3A33] text-[#FDF6F6] text-xs font-medium inline-flex items-center gap-1.5"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#F7D6D6]" />
-                    <span>WhatsApp: {CONTACT_INFO.whatsappDisplay}</span>
-                  </a>
-                  <a
-                    href={CONTACT_INFO.pbxTel}
-                    className="px-4 py-2.5 rounded-full bg-[#F9EAEA] border border-[#F3D9D9] text-[#4A3A33] text-xs font-medium inline-flex items-center gap-1.5"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#D7A7A8]" />
-                    <span>PBX: {CONTACT_INFO.pbxDisplay}</span>
-                  </a>
-                </div>
-              </div>
-
-              <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="col-span-2 relative h-44 sm:h-56 rounded-[1.5rem] overflow-hidden border border-[#F3D9D9]">
-                  <Image
-                    src="/assets/images/header.jpg"
-                    alt="Recepción CediMujer"
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                  <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-[#FDF6F6]/95 text-[#4A3A33] text-[10px] font-medium">
-                    Recepción · Local 341-342
-                  </span>
-                </div>
-                <div className="relative h-32 sm:h-40 rounded-[1.25rem] overflow-hidden border border-[#F3D9D9]">
-                  <Image
-                    src="/assets/images/equipo2.jpg"
-                    alt="Sala Ecografía HD"
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                  <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-[#FDF6F6]/95 text-[#4A3A33] text-[10px] font-medium">
-                    Sala Ecografía HD
-                  </span>
-                </div>
-                <div className="relative h-32 sm:h-40 rounded-[1.25rem] overflow-hidden border border-[#F3D9D9]">
-                  <Image
-                    src="/assets/images/sala1.jpg"
-                    alt="Consultorio"
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                  <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-[#FDF6F6]/95 text-[#4A3A33] text-[10px] font-medium">
-                    Consultorios
-                  </span>
-                </div>
+                ))}
               </div>
             </motion.div>
           )}
 
-          {/* 3. ESPECIALISTAS */}
+          {/* 2. ESPECIALISTAS - CARRUSEL DE RETRATOS */}
           {activeSubSection === "especialistas" && (
             <motion.div
               key="especialistas"
@@ -331,199 +330,244 @@ export const About: React.FC<AboutProps> = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
             >
-              {ESPECIALISTAS_CEDIMUJER.map((doc) => {
-                const isExpanded = expandedDoctorId === doc.id;
-                return (
-                  <div
-                    key={doc.id}
-                    className="rounded-[1.75rem] bg-white/85 border border-[#F3D9D9] p-5 sm:p-6 flex flex-col justify-between gap-4"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3.5">
-                        <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-[#F3D9D9] shrink-0 bg-[#F9EAEA]">
+              <div
+                ref={carouselRef}
+                onScroll={handleScroll}
+                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
+              >
+                {ESPECIALISTAS_CEDIMUJER.map((doc) => {
+                  const isExpanded = expandedDoctorId === doc.id;
+                  const photoSrc = doctorImages[doc.id] || doc.image;
+                  return (
+                    <div
+                      key={doc.id}
+                      className="snap-start shrink-0 w-[84vw] sm:w-[320px] lg:w-[340px] rounded-[2rem] bg-[#F7F6F4] border border-[#D7A7A8]/55 overflow-hidden flex flex-col justify-between shadow-sm group"
+                    >
+                      <div>
+                        <div className="relative h-64 sm:h-72 overflow-hidden bg-[#EBCFC6]/50">
                           <Image
-                            src={doc.image}
+                            src={photoSrc}
                             alt={doc.name}
                             fill
                             unoptimized
-                            className="object-cover"
+                            className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/90 via-[#4A3A33]/25 to-transparent" />
+                          <div className="absolute bottom-4 left-5 right-5 text-[#F7F6F4]">
+                            <h4 className="font-serif text-xl sm:text-2xl font-normal leading-tight">
+                              {doc.name}
+                            </h4>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <h4 className="font-serif text-base sm:text-xl font-normal text-[#4A3A33] leading-snug truncate">
-                            {doc.name}
-                          </h4>
-                          <p className="text-[11px] font-medium text-[#9A7B6C] mt-0.5">
-                            {doc.role}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="flex flex-wrap gap-1.5">
-                        {doc.specialties.slice(0, 3).map((spec, i) => (
-                          <span
-                            key={i}
-                            className="px-2.5 py-1 rounded-full bg-[#F9EAEA] text-[10px] font-medium text-[#4A3A33]"
+                        <div className="p-4 space-y-3">
+                          <div className="flex flex-wrap gap-1">
+                            {doc.specialties.slice(0, 2).map((spec, i) => (
+                              <span
+                                key={i}
+                                className="px-2.5 py-1 rounded-full bg-[#EBCFC6]/50 text-[10px] font-medium text-[#4A3A33]"
+                              >
+                                {spec}
+                              </span>
+                            ))}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedDoctorId(isExpanded ? null : doc.id)
+                            }
+                            className="w-full py-1 text-[11px] font-medium text-[#9A7B6C] hover:text-[#4A3A33] flex items-center justify-between border-t border-[#D7A7A8]/35"
                           >
-                            {spec}
-                          </span>
-                        ))}
+                            <span>
+                              {isExpanded
+                                ? "Ocultar títulos"
+                                : "Ver títulos académicos"}
+                            </span>
+                            <ChevronDown
+                              className={`w-3.5 h-3.5 text-[#D7A7A8] transition-transform ${
+                                isExpanded ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          {isExpanded && (
+                            <ul className="space-y-1.5 pt-1">
+                              {doc.credentials.map((cred, i) => (
+                                <li
+                                  key={i}
+                                  className="flex items-start gap-1.5 text-[11px] text-[#4A3A33]/85"
+                                >
+                                  <Award className="w-3 h-3 text-[#D7A7A8] shrink-0 mt-0.5" />
+                                  <span>{cred}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setExpandedDoctorId(isExpanded ? null : doc.id)
-                        }
-                        className="w-full py-1.5 text-[11px] font-medium text-[#9A7B6C] hover:text-[#4A3A33] flex items-center justify-between border-t border-[#F3D9D9]/70"
-                      >
-                        <span>
-                          {isExpanded ? "Ocultar títulos" : "Ver formación académica"}
-                        </span>
-                        <ChevronDown
-                          className={`w-3.5 h-3.5 text-[#D7A7A8] transition-transform ${
-                            isExpanded ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-
-                      {isExpanded && (
-                        <ul className="space-y-1.5 pt-1">
-                          {doc.credentials.map((cred, i) => (
-                            <li
-                              key={i}
-                              className="flex items-start gap-2 text-[11px] text-[#4A3A33]/85"
-                            >
-                              <Award className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
-                              <span>{cred}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <div className="px-4 pb-4">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onOpenAppointment &&
+                            onOpenAppointment(`Consulta con ${doc.name}`)
+                          }
+                          className="w-full py-2.5 px-3 rounded-full bg-[#EBCFC6]/65 hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8]/60 font-medium text-xs transition-all flex items-center justify-center gap-1.5"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-[#D7A7A8]" />
+                          <span>( Agendar Cita )</span>
+                        </button>
+                      </div>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onOpenAppointment &&
-                        onOpenAppointment(`Consulta con ${doc.name}`)
-                      }
-                      className="w-full py-2.5 px-4 rounded-full bg-[#F9EAEA] hover:bg-[#4A3A33] text-[#4A3A33] hover:text-[#FDF6F6] border border-[#F3D9D9] font-medium text-xs transition-all flex items-center justify-center gap-2"
-                    >
-                      <Calendar className="w-3.5 h-3.5 text-[#D7A7A8]" />
-                      <span>
-                        ( Agendar con {doc.name.split(" ").slice(0, 2).join(" ")} )
-                      </span>
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </motion.div>
           )}
 
-          {/* 4. ASOCIACIÓN DE USUARIOS */}
-          {activeSubSection === "asociacion-usuarios" && (
+          {/* 3. NUESTRA SEDE - CARRUSEL VISUAL DE INSTALACIONES (SOLO TÍTULO) */}
+          {activeSubSection === "nuestra-sede" && (
             <motion.div
-              key="asociacion-usuarios"
+              key="nuestra-sede"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
-              className="space-y-6"
             >
-              {/* Mobile Tabs */}
-              <div className="lg:hidden grid grid-cols-3 gap-1 p-1 rounded-full bg-[#F9EAEA] border border-[#F3D9D9]">
-                {(["funciones", "derechos", "deberes"] as const).map((tabKey) => (
-                  <button
-                    key={tabKey}
-                    type="button"
-                    onClick={() => setAsociacionMobileTab(tabKey)}
-                    className={`py-2 px-2 rounded-full text-xs font-medium capitalize transition-all ${
-                      asociacionMobileTab === tabKey
-                        ? "bg-[#4A3A33] text-[#FDF6F6]"
-                        : "text-[#4A3A33]/80"
+              <div
+                ref={carouselRef}
+                onScroll={handleScroll}
+                className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2"
+              >
+                {sedeSlides.map((slide) => (
+                  <div
+                    key={slide.id}
+                    onClick={() => {
+                      if (slide.href) {
+                        window.open(slide.href, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className={`group relative snap-start shrink-0 w-[84vw] sm:w-[340px] lg:w-[380px] h-[360px] sm:h-[420px] rounded-[2rem] overflow-hidden border border-[#D7A7A8]/50 shadow-[0_16px_40px_-18px_rgba(74,58,51,0.2)] ${
+                      slide.href ? "cursor-pointer" : ""
                     }`}
                   >
-                    {tabKey}
-                  </button>
+                    <Image
+                      src={slide.image}
+                      alt={`${slide.title} ${slide.italicAccent}`}
+                      fill
+                      unoptimized
+                      sizes="(max-width: 640px) 85vw, 380px"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/85 via-[#4A3A33]/20 to-transparent group-hover:from-[#3A2422]/92 transition-all duration-500" />
+
+                    {/* Only the Title Inside Image */}
+                    <div className="absolute bottom-5 left-5 right-5 sm:bottom-6 sm:left-6 sm:right-6 z-10 flex items-end justify-between gap-3">
+                      <h3 className="text-[#F7F6F4] text-2xl sm:text-3xl font-light tracking-tight leading-[1.08]">
+                        <span className="font-sans font-light">
+                          {slide.title}{" "}
+                        </span>
+                        <span className="font-serif italic font-normal text-[#EBCFC6]">
+                          {slide.italicAccent}
+                        </span>
+                      </h3>
+                      {slide.href && (
+                        <ArrowUpRight className="w-5 h-5 text-[#EBCFC6] shrink-0 mb-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      )}
+                    </div>
+                  </div>
                 ))}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div
-                  className={`${
-                    asociacionMobileTab === "funciones" ? "block" : "hidden lg:block"
-                  } p-5 sm:p-6 rounded-[1.75rem] bg-white/85 border border-[#F3D9D9] space-y-3`}
-                >
-                  <h4 className="font-serif text-lg text-[#4A3A33] pb-2 border-b border-[#F3D9D9]">
-                    Funciones
-                  </h4>
-                  <ul className="space-y-2">
-                    {INSTITUCION_INFO.asociacionUsuarios.functions
-                      .slice(0, 4)
-                      .map((fn, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-2 text-xs text-[#4A3A33]/85"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
-                          <span>{fn}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-
-                <div
-                  className={`${
-                    asociacionMobileTab === "derechos" ? "block" : "hidden lg:block"
-                  } p-5 sm:p-6 rounded-[1.75rem] bg-white/85 border border-[#F3D9D9] space-y-3`}
-                >
-                  <h4 className="font-serif text-lg text-[#4A3A33] pb-2 border-b border-[#F3D9D9]">
-                    Derechos de la Paciente
-                  </h4>
-                  <ul className="space-y-2">
-                    {INSTITUCION_INFO.asociacionUsuarios.rights
-                      .slice(0, 4)
-                      .map((r, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-2 text-xs text-[#4A3A33]/85"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
-                          <span>{r}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-
-                <div
-                  className={`${
-                    asociacionMobileTab === "deberes" ? "block" : "hidden lg:block"
-                  } p-5 sm:p-6 rounded-[1.75rem] bg-white/85 border border-[#F3D9D9] space-y-3`}
-                >
-                  <h4 className="font-serif text-lg text-[#4A3A33] pb-2 border-b border-[#F3D9D9]">
-                    Deberes de la Usuaria
-                  </h4>
-                  <ul className="space-y-2">
-                    {INSTITUCION_INFO.asociacionUsuarios.duties
-                      .slice(0, 4)
-                      .map((d, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-2 text-xs text-[#4A3A33]/85"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
-                          <span>{d}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Carousel Indicators */}
+        <div className="flex items-center justify-center gap-2 mt-5">
+          {Array.from({ length: currentSlideCount }).map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => scrollToIndex(idx)}
+              aria-label={`Ir a diapositiva ${idx + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeIndex === idx
+                  ? "w-7 bg-[#4A3A33]"
+                  : "w-2 bg-[#D7A7A8]/65 hover:bg-[#9A7B6C]"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Discreet Secondary Collapsible Link for Asociación de Usuarios */}
+        <div className="mt-6 pt-4 border-t border-[#D7A7A8]/35 flex flex-col items-center">
+          <button
+            type="button"
+            onClick={() => setShowAsociacionModal(!showAsociacionModal)}
+            className="inline-flex items-center gap-2 text-xs font-normal text-[#9A7B6C] hover:text-[#4A3A33] transition-colors"
+          >
+            <Users className="w-3.5 h-3.5 text-[#D7A7A8]" />
+            <span>
+              {showAsociacionModal
+                ? "( Ocultar Asociación de Usuarios · Derechos y Deberes )"
+                : "( Asociación de Usuarios · Derechos y Deberes de la Paciente )"}
+            </span>
+          </button>
+
+          <AnimatePresence>
+            {showAsociacionModal && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="w-full overflow-hidden mt-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 rounded-[1.75rem] bg-[#EBCFC6]/35 border border-[#D7A7A8]/50">
+                  <div>
+                    <h4 className="font-serif text-base text-[#4A3A33] mb-2">
+                      Derechos de la Paciente
+                    </h4>
+                    <ul className="space-y-1.5">
+                      {INSTITUCION_INFO.asociacionUsuarios.rights
+                        .slice(0, 3)
+                        .map((r, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 text-xs text-[#4A3A33]/85"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-base text-[#4A3A33] mb-2">
+                      Deberes de la Usuaria
+                    </h4>
+                    <ul className="space-y-1.5">
+                      {INSTITUCION_INFO.asociacionUsuarios.duties
+                        .slice(0, 3)
+                        .map((d, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 text-xs text-[#4A3A33]/85"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#D7A7A8] shrink-0 mt-0.5" />
+                            <span>{d}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

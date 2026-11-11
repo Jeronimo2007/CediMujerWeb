@@ -18,6 +18,8 @@ import {
   CONTACT_INFO,
   EMBARAZO_SERVICES,
   GINECOLOGIA_SERVICES,
+  CARDIODIAGNOSTICO_SERVICES,
+  ULTRASONIDO_RADIOLOGIA_SERVICES,
   TELEMEDICINA_SERVICES,
 } from "@/config/cedimujerContent";
 
@@ -92,8 +94,16 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
       items: GINECOLOGIA_SERVICES.tamizajes.map((s) => s.title),
     },
     {
-      group: "Ginecología - Procedimientos",
+      group: "Ginecología - Procedimientos Ambulatorios",
       items: GINECOLOGIA_SERVICES.procedimientos.map((s) => s.title),
+    },
+    {
+      group: "Cardiodiagnóstico",
+      items: CARDIODIAGNOSTICO_SERVICES.map((s) => s.title),
+    },
+    {
+      group: "Ultrasonido y Radiología General",
+      items: ULTRASONIDO_RADIOLOGIA_SERVICES.map((s) => s.title),
     },
     {
       group: "Telemedicina",

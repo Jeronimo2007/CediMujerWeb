@@ -12,6 +12,11 @@ interface HeroProps {
 
 const HERO_SLIDES = [
   {
+    id: "maternidad",
+    src: "/assets/images/unsplash-maternidad.jpg",
+    alt: "Te acompañamos en cada etapa de la vida · CediMujer",
+  },
+  {
     id: "principal",
     src: ASSETS.hero.mainImage,
     alt: "CediMujer · Salud Integral para la Mujer",
@@ -22,9 +27,9 @@ const HERO_SLIDES = [
     alt: "Calidez Humana y Tecnología Diagnóstica en CediMujer",
   },
   {
-    id: "equipos",
-    src: "/assets/images/equipo2.jpg",
-    alt: "Ecografía 3D/4D HD Live de Última Generación",
+    id: "bebe",
+    src: "/assets/images/unsplash-bebe.jpg",
+    alt: "Bienestar Fetal y Ecografía 3D/4D HD Live",
   },
 ];
 

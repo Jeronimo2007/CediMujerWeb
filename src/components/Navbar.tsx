@@ -17,6 +17,8 @@ import {
   MessageSquareHeart,
   Calculator,
   Home,
+  HeartPulse,
+  Scan,
 } from "lucide-react";
 import { ASSETS } from "@/config/assets";
 import { CONTACT_INFO } from "@/config/cedimujerContent";
@@ -329,6 +331,68 @@ export const Navbar: React.FC<NavbarProps> = ({
       ],
     },
     {
+      name: "Cardiodiagnóstico",
+      viewId: "cardiodiagnostico",
+      icon: HeartPulse,
+      columns: [
+        {
+          heading: "Estudios Cardiovasculares No Invasivos",
+          items: [
+            {
+              label: "Electrocardiograma de Reposo (ECG)",
+              viewId: "cardiodiagnostico",
+              itemId: "cardio-ecg",
+            },
+            {
+              label: "Ecocardiograma Transtorácico Doppler Color",
+              viewId: "cardiodiagnostico",
+              itemId: "cardio-ecocardiograma",
+              badge: "Doppler",
+            },
+            {
+              label: "Monitoreo de Presión Arterial (MAPA) y Holter 24h",
+              viewId: "cardiodiagnostico",
+              itemId: "cardio-mapa-holter",
+              badge: "24 Horas",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Ultrasonido y Radiología",
+      viewId: "ultrasonido-radiologia",
+      icon: Scan,
+      columns: [
+        {
+          heading: "Imágenes Diagnósticas Generales",
+          items: [
+            {
+              label: "Ecografía Abdominal Total y Hepatobiliar",
+              viewId: "ultrasonido-radiologia",
+              itemId: "ultra-abdominal",
+            },
+            {
+              label: "Ecografía Renal y de Vías Urinarias",
+              viewId: "ultrasonido-radiologia",
+              itemId: "ultra-renal",
+            },
+            {
+              label: "Ecografía de Tiroides y Tejidos Blandos",
+              viewId: "ultrasonido-radiologia",
+              itemId: "ultra-tiroides-tejidos",
+            },
+            {
+              label: "Doppler Vascular Periférico y Estudios de Imagen",
+              viewId: "ultrasonido-radiologia",
+              itemId: "ultra-doppler-radiologia",
+              badge: "Doppler Color",
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: "Telemedicina",
       viewId: "telemedicina",
       icon: Video,
@@ -631,7 +695,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onClick={() => {
@@ -639,25 +703,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setOpenDesktopDropdown(null);
                 if (onOpenAppointment) onOpenAppointment();
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-medium text-[#4A3A33] bg-[#F7E0E0] hover:bg-[#4A3A33] hover:text-[#FDF6F6] border border-[#EBC5C5] transition-all duration-200 whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium text-[#4A3A33] bg-[#EBCFC6]/80 hover:bg-[#4A3A33] hover:text-[#F7F6F4] border border-[#D7A7A8] transition-all duration-200 whitespace-nowrap shrink-0"
             >
-              <span className="text-[#9A7B6C] group-hover:text-[#F7E0E0]">(</span>
-              <span>Agendar Cita</span>
-              <span className="text-[#9A7B6C] group-hover:text-[#F7E0E0]">)</span>
+              <span className="text-[#9A7B6C]">(</span>
+              <span>Agendar</span>
+              <span className="hidden sm:inline">Cita</span>
+              <span className="text-[#9A7B6C]">)</span>
             </button>
 
-            {/* Menu Button for Mobile & Tablet (< lg) */}
+            {/* Menu Button for Mobile & Tablet (< lg) with clear visual callout that Services & Sections are inside the 3 lines */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-full text-[#4A3A33] hover:bg-[#F7E0E0]/60 transition-colors shrink-0"
-              aria-label="Abrir menú de navegación"
+              className="lg:hidden inline-flex items-center gap-2 pl-3 pr-2.5 py-1.5 rounded-full bg-[#4A3A33] text-[#F7F6F4] border border-[#4A3A33] shadow-sm active:scale-95 transition-all shrink-0"
+              aria-label="Abrir menú de servicios y navegación"
               aria-expanded={mobileMenuOpen}
             >
+              <span className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#EBCFC6] animate-pulse" />
+                <span>{mobileMenuOpen ? "Cerrar" : "Menú · Servicios"}</span>
+              </span>
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 stroke-[1.75]" />
+                <X className="w-4 h-4 text-[#EBCFC6] stroke-[2]" />
               ) : (
-                <Menu className="w-5 h-5 stroke-[1.75]" />
+                <Menu className="w-4 h-4 text-[#EBCFC6] stroke-[2]" />
               )}
             </button>
           </div>

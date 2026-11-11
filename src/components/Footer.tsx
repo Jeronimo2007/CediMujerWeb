@@ -166,7 +166,8 @@ export const Footer: React.FC<FooterProps> = ({
               {[
                 { label: "Embarazo y Ecografías", href: "#embarazo" },
                 { label: "Ginecología Integral", href: "#ginecologia" },
-                { label: "Tamizajes Preventivos", href: "#ginecologia", subKey: "ginecologia-tamizajes" },
+                { label: "Cardiodiagnóstico", href: "#cardiodiagnostico" },
+                { label: "Ultrasonido y Radiología General", href: "#ultrasonido-radiologia" },
                 { label: "Telemedicina", href: "#telemedicina" },
                 { label: "Especialistas", href: "#nosotros", subKey: "especialistas" },
                 { label: "Guías y FAQ", href: "#blog-faq" },

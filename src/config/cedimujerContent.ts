@@ -894,6 +894,174 @@ export const TELEMEDICINA_SERVICES: ServiceItemDetail[] = [
   },
 ];
 
+export const CARDIODIAGNOSTICO_SERVICES: ServiceItemDetail[] = [
+  {
+    id: "cardio-ecg",
+    title: "Electrocardiograma de Reposo (ECG)",
+    subcategory: "Cardiodiagnóstico No Invasivo",
+    shortDescription:
+      "Registro eléctrico del corazón en 12 derivaciones para evaluar el ritmo cardíaco, conducción y salud cardiovascular.",
+    whatIsIt:
+      "El Electrocardiograma de Reposo es un estudio rápido, indoloro y seguro que registra la actividad eléctrica del corazón en cada latido. Permite identificar arritmias, alteraciones de conducción y realizar controles preventivos o pre-procedimientos.",
+    howItIsDone:
+      "En un consultorio cómodo y privado, se colocan electrodos adhesivos suaves sobre el pecho, muñecas y tobillos mientras descansas en camilla durante unos minutos, obteniendo el trazado digital de alta fidelidad interpretado por especialista.",
+    preparationAndIndications: [
+      "No aplicar cremas ni lociones corporales en el pecho el día del examen.",
+      "Asistir con ropa cómoda de dos piezas.",
+      "Traer lista de medicamentos actuales y estudios cardíacos previos.",
+    ],
+    highlights: [
+      "Equipo digital de 12 derivaciones de alta precisión",
+      "Estudio rápido, no invasivo y sin radiación",
+      "Lectura e interpretación médica especializada",
+    ],
+    image: "/assets/images/unsplash-cardio.jpg",
+    recommendedSpecialist: "Unidad de Cardiodiagnóstico CediMujer",
+    durationOrTiming: "15 minutos • Entrega oportuna",
+  },
+  {
+    id: "cardio-ecocardiograma",
+    title: "Ecocardiograma Transtorácico Doppler Color",
+    subcategory: "Cardiodiagnóstico No Invasivo",
+    shortDescription:
+      "Ultrasonido cardíaco de alta definición para visualizar válvulas, cavidades, fuerza de contracción y flujos del corazón.",
+    whatIsIt:
+      "El Ecocardiograma Transtorácico utiliza ultrasonido de alta resolución y Doppler color para observar el corazón en movimiento en tiempo real, evaluando el músculo cardíaco, el funcionamiento de las válvulas y el flujo sanguíneo.",
+    howItIsDone:
+      "Recostada cómodamente, el especialista desliza un transductor con gel tibio sobre el tórax para capturar imágenes detalladas y mediciones hemodinámicas del corazón sin ningún dolor ni radiación.",
+    preparationAndIndications: [
+      "No requiere ayuno previo.",
+      "Llevar historia clínica o fórmulas médicas si tomas medicamentos para la presión o el corazón.",
+    ],
+    highlights: [
+      "Tecnología Doppler Color y alta definición",
+      "Evaluación integral de válvulas y función ventricular",
+      "Ambiente cálido y explicación clara del estudio",
+    ],
+    image: "/assets/images/unsplash-cardio-consulta.jpg",
+    recommendedSpecialist: "Especialistas en Cardiodiagnóstico CediMujer",
+    durationOrTiming: "25 - 30 minutos • Alta Definición",
+  },
+  {
+    id: "cardio-mapa-holter",
+    title: "Monitoreo de Presión Arterial (MAPA) y Holter 24h",
+    subcategory: "Cardiodiagnóstico No Invasivo",
+    shortDescription:
+      "Seguimiento continuo durante 24 horas de la presión arterial (MAPA) o del ritmo cardíaco (Holter) en tu rutina diaria.",
+    whatIsIt:
+      "El MAPA y el Holter permiten evaluar cómo se comporta tu presión arterial o tu ritmo cardíaco a lo largo de 24 horas completas (incluyendo el sueño), siendo fundamentales para diagnosticar hipertensión arterial, preeclampsia en gestantes o palpitaciones.",
+    howItIsDone:
+      "Instalamos un monitor digital ligero y discreto en nuestra sede de Sabaneta que llevas contigo a casa durante 24 horas. Al día siguiente lo retiramos y descargamos el registro para su lectura especializada.",
+    preparationAndIndications: [
+      "Asistir con blusa o camisa holgada de botones.",
+      "Bañarse justo antes de acudir a la cita de instalación, ya que el equipo no debe mojarse durante las 24 horas.",
+    ],
+    highlights: [
+      "Equipos livianos, silenciosos y cómodos de llevar",
+      "Ideal también para control de presión arterial en el embarazo",
+      "Informe detallado con curvas diurnas y nocturnas",
+    ],
+    image: "/assets/images/unsplash-doctora.jpg",
+    recommendedSpecialist: "Unidad de Cardiodiagnóstico CediMujer",
+    durationOrTiming: "Monitoreo ambulatorio 24 horas",
+  },
+];
+
+export const ULTRASONIDO_RADIOLOGIA_SERVICES: ServiceItemDetail[] = [
+  {
+    id: "ultra-abdominal",
+    title: "Ecografía Abdominal Total y Hepatobiliar",
+    subcategory: "Ultrasonido y Radiología General",
+    shortDescription:
+      "Evaluación ecográfica de alta resolución de hígado, vesícula biliar, páncreas, bazo y riñones.",
+    whatIsIt:
+      "La Ecografía Abdominal Total permite explorar de forma segura y sin radiación los órganos internos del abdomen superior e inferior para detectar cálculos biliares, hígado graso, quistes o causas de dolor abdominal.",
+    howItIsDone:
+      "Se aplica gel conductor tibio sobre el abdomen y mediante un transductor convexo de alta definición se examina cada órgano en tiempo real, entregándote el reporte médico ilustrado.",
+    preparationAndIndications: [
+      "Asistir en ayuno de 6 a 8 horas para permitir la adecuada distensión de la vesícula biliar.",
+      "Si incluye abdomen inferior, tomar agua 1 hora antes sin vaciar la vejiga.",
+    ],
+    highlights: [
+      "Equipos de ultrasonido de alta definición",
+      "Entrega inmediata del informe diagnóstico",
+      "Atención cálida y puntual en C.C. Aves María",
+    ],
+    image: "/assets/images/equipo1.jpg",
+    recommendedSpecialist: "Unidad de Ultrasonido y Radiología CediMujer",
+    durationOrTiming: "20 minutos • Entrega inmediata",
+  },
+  {
+    id: "ultra-renal",
+    title: "Ecografía Renal y de Vías Urinarias",
+    subcategory: "Ultrasonido y Radiología General",
+    shortDescription:
+      "Estudio detallado de ambos riñones, uréteres y vejiga urinaria para descartar cálculos, infecciones o retención.",
+    whatIsIt:
+      "Es un examen diagnóstico no invasivo que evalúa el tamaño, forma y estructura de los riñones y la vejiga (incluyendo medición de volumen pre y posmiccional), ideal ante dolor lumbar, infecciones urinarias recurrentes o cólico renal.",
+    howItIsDone:
+      "Se examina inicialmente con la vejiga llena y posteriormente tras vaciar la vejiga en el baño privado del consultorio para medir el residuo posmiccional con total exactitud.",
+    preparationAndIndications: [
+      "No requiere ayuno.",
+      "Tomar de 4 a 5 vasos de agua 1 hora antes del examen y no orinar hasta finalizar la primera parte del estudio.",
+    ],
+    highlights: [
+      "Medición exacta de volumen vesical y residuo posmiccional",
+      "Detección oportuna de litiasis (cálculos) o hidronefrosis",
+      "Consultorio con baño privado interno",
+    ],
+    image: "/assets/images/equipo2.jpg",
+    recommendedSpecialist: "Unidad de Ultrasonido y Radiología CediMujer",
+    durationOrTiming: "20 minutos • Sin radiación",
+  },
+  {
+    id: "ultra-tiroides-tejidos",
+    title: "Ecografía de Tiroides y Tejidos Blandos",
+    subcategory: "Ultrasonido y Radiología General",
+    shortDescription:
+      "Ultrasonido de alta frecuencia con Doppler para estudio de glándula tiroides, cuello, pared abdominal y tejidos blandos.",
+    whatIsIt:
+      "Utiliza transductores lineales de alta frecuencia para visualizar con precisión milimétrica la glándula tiroides (nódulos, quistes, tiroiditis), ganglios del cuello, hernias de pared abdominal o lesiones musculares y subcutáneas.",
+    howItIsDone:
+      "Con el cuello ligeramente extendido sobre una almohadilla ergonómica, se realiza el barrido ecográfico de ambos lóbulos tiroideos e istmo con evaluación Doppler color de su vascularización.",
+    preparationAndIndications: [
+      "No requiere ayuno ni preparación especial.",
+      "Retirar collares o cadenas antes de iniciar el examen y traer estudios tiroideos previos.",
+    ],
+    highlights: [
+      "Clasificación TI-RADS de nódulos tiroideos",
+      "Transductores lineales de alta resolución y Doppler Color",
+      "Entrega inmediata de resultados",
+    ],
+    image: "/assets/images/equipo1vista3.jpg",
+    recommendedSpecialist: "Unidad de Ultrasonido y Radiología CediMujer",
+    durationOrTiming: "15 - 20 minutos • Alta Resolución",
+  },
+  {
+    id: "ultra-doppler-radiologia",
+    title: "Doppler Vascular Periférico y Estudios de Imagen",
+    subcategory: "Ultrasonido y Radiología General",
+    shortDescription:
+      "Evaluación Doppler color arterial y venoso de miembros inferiores/superiores y orientación en radiología general.",
+    whatIsIt:
+      "El Doppler Vascular evalúa la circulación sanguínea de venas y arterias en piernas o brazos para descartar trombosis venosa, insuficiencia venosa (várices) o alteraciones arteriales, complementando el portafolio de imagen diagnóstica general.",
+    howItIsDone:
+      "Se examina el trayecto vascular mediante ultrasonido espectral y Doppler color, verificando la permeabilidad de los vasos y el funcionamiento de las válvulas venosas.",
+    preparationAndIndications: [
+      "No requiere ayuno.",
+      "Asistir con ropa cómoda y holgada que permita descubrir fácilmente las extremidades.",
+    ],
+    highlights: [
+      "Doppler Color y Espectral de alta sensibilidad",
+      "Estudio clave ante dolor, inflamación o várices en piernas",
+      "Diagnóstico confiable y seguro",
+    ],
+    image: "/assets/images/equipo1vista2.jpg",
+    recommendedSpecialist: "Unidad de Ultrasonido y Radiología CediMujer",
+    durationOrTiming: "25 - 30 minutos • Doppler Color",
+  },
+];
+
 // ============================================================================
 // QUIÉNES SOMOS - ESPECIALISTAS, SEDE, INSTITUCIÓN Y ASOCIACIÓN DE USUARIOS
 // ============================================================================

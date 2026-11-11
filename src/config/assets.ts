@@ -1,15 +1,9 @@
 /**
  * Configuración de Recursos y Multimedia de CediMujer
- * 
- * Imágenes locales mapeadas desde frontend/public/assets/images/:
- * - Header / Hero: header.jpg
- * - Sobre CediMujer: trabajo.jpg (demuestra calidad humana y profesionalismo), sala1.jpg
- * - Equipos e Instalaciones: equipo1.jpg, equipo2.jpg, equipo1vista2.jpg, equipo1vista3.jpg, sala2.jpg
- * - Logos corporativos: logosinfondo#1.jpeg, logo#1.jpg, logo#2.jpeg, logo#3.jpeg
  */
 
 export const ASSETS = {
-  // Logos corporativos oficiales
+  // Logos corporativos oficiales (intactos según manual de marca)
   logo: {
     primary: "/assets/images/logo-cedimujer.png",
     primaryHd: "/assets/images/logo-cedimujer-hd.png",
@@ -20,55 +14,94 @@ export const ASSETS = {
     banner: "/assets/images/logo#3.jpeg",
   },
 
-  // Hero Video / Imagen de fondo
+  // Hero Imagen de fondo
   hero: {
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-doctor-checking-a-patient-in-a-clinic-40822-large.mp4",
+    videoUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-doctor-checking-a-patient-in-a-clinic-40822-large.mp4",
     fallbackImage: "/assets/images/header.jpg",
     mainImage: "/assets/images/header.jpg",
   },
-  
+
   // Sección Sobre Nosotros (instalaciones y equipo de trabajo)
   about: {
-    mainImage: "/assets/images/trabajo.jpg", // Calidad del equipo médico en consulta
-    secondaryImage: "/assets/images/sala1.jpg", // Instalaciones y salas de la clínica
+    mainImage: "/assets/images/trabajo.jpg",
+    secondaryImage: "/assets/images/sala1.jpg",
   },
 
-  // Imágenes de Servicios Médicos y Tecnología de la Clínica
+  // Imágenes de Unidades Médicas
   services: {
-    ginecologia: "/assets/images/sala1.jpg", // Sala de consulta ginecológica
-    obstetricia: "/assets/images/trabajo.jpg", // Atención personalizada y calidez
-    ecografia: "/assets/images/equipo1.jpg", // Equipo de ultrasonido y ecografía de alta tecnología
-    mastologia: "/assets/images/equipo2.jpg", // Tecnología diagnóstica avanzada
-    endocrinologia: "/assets/images/equipo1vista2.jpg", // Monitoreo y equipos especializados
-    cirugia: "/assets/images/sala2.jpg", // Sala quirúrgica / procedimientos clínicos
+    embarazo: "/assets/images/unsplash-maternidad.jpg",
+    ginecologia: "/assets/images/unsplash-doctora.jpg",
+    cardiodiagnostico: "/assets/images/unsplash-cardio-consulta.jpg",
+    ultrasonido: "/assets/images/equipo2.jpg",
+    telemedicina: "/assets/images/unsplash-ginecologia.jpg",
+    obstetricia: "/assets/images/unsplash-maternidad.jpg",
+    ecografia: "/assets/images/equipo1.jpg",
+    mastologia: "/assets/images/equipo2.jpg",
+    endocrinologia: "/assets/images/equipo1vista2.jpg",
+    cirugia: "/assets/images/sala1.jpg",
   },
 
-  // Galería de Equipos e Instalaciones
+  // Galería de Equipos e Instalaciones (Sin quirófano)
   facilities: [
-    { id: 1, title: "Consultorios y Salas Clínicas", image: "/assets/images/sala1.jpg", tag: "Salas de Atención" },
-    { id: 2, title: "Quirófano y Procedimientos", image: "/assets/images/sala2.jpg", tag: "Instalaciones" },
-    { id: 3, title: "Tecnología de Ultrasonido HD", image: "/assets/images/equipo1.jpg", tag: "Equipos" },
-    { id: 4, title: "Diagnóstico Clínico Avanzado", image: "/assets/images/equipo2.jpg", tag: "Equipos" },
-    { id: 5, title: "Monitoreo y Precisión", image: "/assets/images/equipo1vista2.jpg", tag: "Equipos" },
-    { id: 6, title: "Atención Médica Humanizada", image: "/assets/images/trabajo.jpg", tag: "Nuestro Equipo" },
-  ],
-
-  // Logotipos / Certificaciones para el Marquee
-  certifications: [
-    { id: 1, name: "Sociedad Médica de Ginecología", tag: "Certificación Oro" },
-    { id: 2, name: "ISO 9001:2015 Calidad Médica", tag: "Acreditación Internacional" },
-    { id: 3, name: "Red de Salud Integral de la Mujer", tag: "Miembro Oficial" },
-    { id: 4, name: "Federación Médica Internacional", tag: "Excelencia Clínica" },
-    { id: 5, name: "Centro de Ultrasonografía Avanzada", tag: "Sello de Garantía" },
-    { id: 6, name: "Colegio de Obstetricia y Salud", tag: "Miembro Honorario" }
+    {
+      id: 1,
+      title: "Sala de Ecografía 3D/4D HD Live",
+      image: "/assets/images/equipo2.jpg",
+      tag: "Ultrasonido Avanzado",
+    },
+    {
+      id: 2,
+      title: "Consultorios Ginecológicos",
+      image: "/assets/images/sala1.jpg",
+      tag: "Atención Privada",
+    },
+    {
+      id: 3,
+      title: "Ultrasonido y Radiología General",
+      image: "/assets/images/equipo1.jpg",
+      tag: "Alta Definición",
+    },
+    {
+      id: 4,
+      title: "Unidad de Cardiodiagnóstico",
+      image: "/assets/images/unsplash-cardio-consulta.jpg",
+      tag: "Salud Cardiovascular",
+    },
+    {
+      id: 5,
+      title: "Doppler y Monitoreo Materno-Fetal",
+      image: "/assets/images/equipo1vista2.jpg",
+      tag: "Precisión Clínica",
+    },
+    {
+      id: 6,
+      title: "Calidez y Sentido Humano",
+      image: "/assets/images/trabajo.jpg",
+      tag: "Especialistas",
+    },
+    {
+      id: 7,
+      title: "Recepción Sede C.C. Aves María",
+      image: "/assets/images/header.jpg",
+      tag: "Sabaneta · Local 341-342",
+    },
+    {
+      id: 8,
+      title: "Bienestar en Cada Etapa",
+      image: "/assets/images/unsplash-maternidad.jpg",
+      tag: "Maternidad y Vida",
+    },
   ],
 
   // Redes Sociales Oficiales de CediMujer
   socialLinks: {
-    instagram: "https://www.instagram.com/cedimujer_?utm_source=ig_web_button_share_sheet&rpxt=ZDNlZDc0MzIxNw==",
-    tiktok: "https://www.tiktok.com/@cedimujer_?is_from_webapp=1&sender_device=pc",
+    instagram:
+      "https://www.instagram.com/cedimujer_?utm_source=ig_web_button_share_sheet&rpxt=ZDNlZDc0MzIxNw==",
+    tiktok:
+      "https://www.tiktok.com/@cedimujer_?is_from_webapp=1&sender_device=pc",
     facebook: "https://www.facebook.com/CEDIMUJERSABANETA/?locale=es_LA",
     youtube: "https://www.youtube.com/@cedimujer",
     whatsapp: "https://wa.me/573113979905",
-  }
+  },
 };

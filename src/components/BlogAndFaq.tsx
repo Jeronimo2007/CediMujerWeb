@@ -116,7 +116,7 @@ export const BlogAndFaq: React.FC<BlogAndFaqProps> = ({
           </div>
         </div>
 
-        {/* PARTE A: ARTÍCULOS (Mobile Horizontal Swipe + Desktop Grid, Minimal Text) */}
+        {/* PARTE A: ARTÍCULOS (Imágenes Protagonistas + Deslizables en Móvil) */}
         {activeTab === "blog" && (
           <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 overflow-x-auto sm:overflow-visible snap-x no-scrollbar pb-2 sm:pb-0">
             {BLOG_ARTICLES.map((article, idx) => (
@@ -127,43 +127,38 @@ export const BlogAndFaq: React.FC<BlogAndFaqProps> = ({
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: idx * 0.04 }}
                 onClick={() => setSelectedArticle(article)}
-                className={`snap-start shrink-0 w-[76vw] max-w-[290px] sm:w-auto sm:max-w-none group cursor-pointer rounded-[1.75rem] bg-white/85 border border-[#F3D9D9] hover:border-[#D7A7A8] shadow-[0_10px_28px_-16px_rgba(154,123,108,0.1)] transition-all duration-300 overflow-hidden flex flex-col justify-between ${
+                className={`snap-start shrink-0 w-[80vw] max-w-[300px] sm:w-auto sm:max-w-none group cursor-pointer relative h-72 sm:h-80 rounded-[2rem] border border-[#D7A7A8]/55 shadow-[0_14px_32px_-16px_rgba(74,58,51,0.16)] overflow-hidden ${
                   idx === 0 ? "lg:col-span-2" : ""
                 }`}
               >
-                <div>
-                  <div className="relative h-40 sm:h-44 overflow-hidden bg-[#F9EAEA]">
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      fill
-                      unoptimized
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#4A3A33]/45 via-transparent to-transparent" />
+                <Image
+                  src={article.image}
+                  alt={article.title}
+                  fill
+                  unoptimized
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#3A2422]/95 via-[#4A3A33]/40 to-transparent" />
 
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-[#FDF6F6]/95 text-[#4A3A33] text-[10px] font-medium uppercase tracking-wider">
-                      {article.category}
+                <span className="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-[#F7F6F4]/90 backdrop-blur-md text-[#4A3A33] text-[10px] font-medium uppercase tracking-wider">
+                  {article.category}
+                </span>
+
+                <span className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-[#4A3A33]/80 backdrop-blur-md text-[#EBCFC6] text-[10px] font-normal flex items-center gap-1">
+                  <Clock className="w-2.5 h-2.5 text-[#EBCFC6]" />
+                  {article.readTime}
+                </span>
+
+                <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 space-y-2">
+                  <h3 className="font-serif text-lg sm:text-xl font-normal text-[#F7F6F4] leading-snug line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-xs font-medium text-[#EBCFC6] group-hover:text-[#F7F6F4] transition-colors">
+                      ( Leer guía )
                     </span>
-
-                    <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-[#FDF6F6]/95 text-[#9A7B6C] text-[10px] font-normal flex items-center gap-1">
-                      <Clock className="w-2.5 h-2.5 text-[#D7A7A8]" />
-                      {article.readTime}
-                    </span>
+                    <ArrowUpRight className="w-4 h-4 text-[#EBCFC6] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </div>
-
-                  <div className="p-4 sm:p-5">
-                    <h3 className="font-serif text-lg sm:text-xl font-normal text-[#4A3A33] leading-snug group-hover:text-[#9A7B6C] transition-colors line-clamp-2">
-                      {article.title}
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-2 flex items-center justify-between border-t border-[#F3D9D9]/60">
-                  <span className="text-xs font-medium text-[#9A7B6C] group-hover:text-[#4A3A33] transition-colors">
-                    ( Leer guía )
-                  </span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#D7A7A8] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </div>
               </motion.article>
             ))}

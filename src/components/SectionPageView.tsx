@@ -25,11 +25,14 @@ import {
   ShieldCheck,
   ChevronRight,
   Layers,
+  Scan,
 } from "lucide-react";
 import {
   EMBARAZO_SERVICES,
   GINECOLOGIA_SERVICES,
   TELEMEDICINA_SERVICES,
+  CARDIODIAGNOSTICO_SERVICES,
+  ULTRASONIDO_RADIOLOGIA_SERVICES,
   CONTACT_INFO,
   ServiceItemDetail,
 } from "@/config/cedimujerContent";
@@ -42,6 +45,8 @@ export type AppSectionView =
   | "home"
   | "embarazo"
   | "ginecologia"
+  | "cardiodiagnostico"
+  | "ultrasonido-radiologia"
   | "telemedicina"
   | "quienes-somos"
   | "blog"
@@ -165,6 +170,28 @@ export const SectionPageView: React.FC<SectionPageViewProps> = ({
         }
       }
       setSelectedItem(list[0] || null);
+    } else if (view === "cardiodiagnostico") {
+      if (initialItemId) {
+        const found = CARDIODIAGNOSTICO_SERVICES.find(
+          (i) => i.id === initialItemId
+        );
+        if (found) {
+          setSelectedItem(found);
+          return;
+        }
+      }
+      setSelectedItem(CARDIODIAGNOSTICO_SERVICES[0] || null);
+    } else if (view === "ultrasonido-radiologia") {
+      if (initialItemId) {
+        const found = ULTRASONIDO_RADIOLOGIA_SERVICES.find(
+          (i) => i.id === initialItemId
+        );
+        if (found) {
+          setSelectedItem(found);
+          return;
+        }
+      }
+      setSelectedItem(ULTRASONIDO_RADIOLOGIA_SERVICES[0] || null);
     } else if (view === "telemedicina") {
       if (initialItemId) {
         const found = TELEMEDICINA_SERVICES.find((i) => i.id === initialItemId);
@@ -255,11 +282,37 @@ export const SectionPageView: React.FC<SectionPageViewProps> = ({
       title: "Ginecología y Diagnóstico Especializado",
       mobileTitle: "Ginecología Integral",
       subtitle:
-        "Ecografías, consultas especializadas, paquetes de tamizaje y procedimientos ambulatorios.",
+        "Ecografías, consultas especializadas, paquetes de tamizaje y atención en consultorio.",
       mobileSubtitle:
-        "Ecografías, consultas, tamizajes y procedimientos.",
-      image: "/assets/images/sala1.jpg",
+        "Ecografías, consultas y tamizajes preventivos.",
+      image: "/assets/images/unsplash-doctora.jpg",
       icon: Stethoscope,
+      accentBg: "from-[#EBCFC6]/55 via-[#F7F6F4] to-[#E6D9C8]/35",
+    },
+    cardiodiagnostico: {
+      badge: "Salud Cardiovascular",
+      shortBadge: "Cardiodiagnóstico",
+      title: "Unidad de Cardiodiagnóstico",
+      mobileTitle: "Cardiodiagnóstico",
+      subtitle:
+        "Electrocardiograma, Ecocardiograma Transtorácico Doppler Color y Monitoreo 24h (MAPA / Holter).",
+      mobileSubtitle:
+        "Ecocardiograma, ECG de reposo y monitoreo 24h.",
+      image: "/assets/images/unsplash-cardio-consulta.jpg",
+      icon: HeartPulse,
+      accentBg: "from-[#EBCFC6]/55 via-[#F7F6F4] to-[#CFE6E2]/35",
+    },
+    "ultrasonido-radiologia": {
+      badge: "Imágenes Diagnósticas",
+      shortBadge: "Ultrasonido y Radiología",
+      title: "Ultrasonido y Radiología General",
+      mobileTitle: "Ultrasonido y Radiología",
+      subtitle:
+        "Ecografía abdominal, renal, tiroides, tejidos blandos y Doppler vascular con equipos de alta definición.",
+      mobileSubtitle:
+        "Ecografías generales, Doppler vascular y estudios de imagen.",
+      image: "/assets/images/equipo2.jpg",
+      icon: Scan,
       accentBg: "from-[#EBCFC6]/55 via-[#F7F6F4] to-[#E6D9C8]/35",
     },
     telemedicina: {
@@ -912,6 +965,8 @@ export const SectionPageView: React.FC<SectionPageViewProps> = ({
                 [
                   { id: "embarazo", label: "Embarazo" },
                   { id: "ginecologia", label: "Ginecología" },
+                  { id: "cardiodiagnostico", label: "Cardiodiagnóstico" },
+                  { id: "ultrasonido-radiologia", label: "Ultrasonido y Radiología" },
                   { id: "telemedicina", label: "Telemedicina" },
                   { id: "quienes-somos", label: "Quiénes Somos" },
                   { id: "blog", label: "Blog y FAQ" },
@@ -1162,7 +1217,29 @@ export const SectionPageView: React.FC<SectionPageViewProps> = ({
           </div>
         )}
 
-        {/* 3. TELEMEDICINA */}
+        {/* 3. CARDIODIAGNÓSTICO */}
+        {view === "cardiodiagnostico" && (
+          <div className="space-y-8 sm:space-y-10">
+            {renderInteractiveClinicalWorkspace(
+              CARDIODIAGNOSTICO_SERVICES,
+              "Estudios de Cardiodiagnóstico",
+              "Electrocardiograma de reposo, Ecocardiograma Transtorácico Doppler Color y Monitoreo 24h (MAPA / Holter)."
+            )}
+          </div>
+        )}
+
+        {/* 4. ULTRASONIDO Y RADIOLOGÍA GENERAL */}
+        {view === "ultrasonido-radiologia" && (
+          <div className="space-y-8 sm:space-y-10">
+            {renderInteractiveClinicalWorkspace(
+              ULTRASONIDO_RADIOLOGIA_SERVICES,
+              "Ultrasonido y Radiología General",
+              "Ecografía abdominal, renal, tiroides, tejidos blandos y Doppler vascular periférico."
+            )}
+          </div>
+        )}
+
+        {/* 5. TELEMEDICINA */}
         {view === "telemedicina" && (
           <div className="space-y-8 sm:space-y-10">
             {renderInteractiveClinicalWorkspace(
